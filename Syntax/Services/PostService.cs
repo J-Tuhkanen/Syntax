@@ -1,9 +1,9 @@
-﻿using Syntax.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Syntax.Data;
 using Syntax.Models;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Syntax.Services
 {
@@ -14,6 +14,7 @@ namespace Syntax.Services
         public PostService(ApplicationDbContext appDbContext)
         {
             _appDbContext = appDbContext;
+            
         }
 
         public async Task<Post> CreatePostAsync(Post post)
@@ -37,9 +38,9 @@ namespace Syntax.Services
             return await _appDbContext.Posts.Where(p => p.IsDeleted == false).ToListAsync();
         }
 
-        public Post GetPostById(string id)
+        public async Task<Post> GetPostById(string id)
         {
-            return _appDbContext.Posts.FirstOrDefault(p => p.IsDeleted == false && p.Id == id);
+            return await _appDbContext.Posts.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
         }
 
         public async Task<bool> DeletePost(string id)

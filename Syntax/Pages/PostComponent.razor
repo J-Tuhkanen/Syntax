@@ -1,0 +1,16 @@
+﻿@using Syntax.Data
+@using Syntax.Models
+@inject ApplicationDbContext postService
+
+<div>
+    <h3>@Post.Title</h3>
+    <p>@Post.Body</p>
+    <p>@postService.Users.FirstOrDefault(u => u.Id == Post.UserId).UserName</p>
+</div>
+
+
+@code {
+    
+    [Parameter]
+    public Post Post{ get; set; }
+}

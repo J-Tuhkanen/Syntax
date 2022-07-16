@@ -1,7 +1,33 @@
 ﻿@page "{id}"
 @model Syntax.Pages.PostModel
+@inject ApplicationDbContext AppDBContext
 
-<div>
+<div class="post-area post">
     <h1>@Model.Post.Title</h1>
     <p>@Model.Post.Body</p>
+</div>
+
+<div class="post-comment-area">
+    @foreach(var comment in Model.Comments)
+    {
+        <div class="comment">
+            <p class="comment-content">@comment.Content</p>
+            <p class="comment-author">@AppDBContext.Users.FirstOrDefault(u => u.Id == comment.UserId)</p>
+        </div>
+    }
+</div>
+
+<div class="post-comment-field">
+    <form method="post">
+    <h2>Comment this post</h2>
+    <hr />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-floating">
+        <input asp-for="Input.Comment" class="form-control" aria-required="true" />
+        <label asp-for="Input.Comment"></label>
+        <span asp-validation-for="Input.Comment" class="text-danger"></span>
+    </div>
+    <button hidden="hidden" type="submit"/>
+</form>
+
 </div>

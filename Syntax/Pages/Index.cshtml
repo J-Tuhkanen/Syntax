@@ -1,10 +1,28 @@
 ﻿@page
+@inject ApplicationDbContext AppDBContext
+
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
-
+@*
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+*@
+
+<div>
+
+    @foreach(var post in Model.Posts)
+    {        
+        @*<PostComponent Post = post/>*@
+        <a href="/post/@post.Id" style="text-decoration: none; color: black;">
+            <div class="post">
+                <h3>@post.Title</h3>
+                <p class="post-content">@post.Body</p>
+                <p class="post-creator">@AppDBContext.Users.FirstOrDefault(u => u.Id == post.UserId).UserName</p>
+            </div>
+        </a>
+    }
 </div>

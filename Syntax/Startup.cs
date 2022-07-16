@@ -43,6 +43,7 @@ namespace Syntax
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IPostService, PostService>();
+            services.AddTransient<ICommentService, CommentService>();
 
             services.AddDistributedMemoryCache();
             services.AddRazorPages();
