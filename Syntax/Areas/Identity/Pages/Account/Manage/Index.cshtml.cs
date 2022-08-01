@@ -10,6 +10,10 @@ using Syntax.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Syntax.Services;
 
 namespace Syntax.Areas.Identity.Pages.Account.Manage
 {
@@ -17,13 +21,19 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<UserAccount> _userManager;
         private readonly SignInManager<UserAccount> _signInManager;
+        private readonly IFileService _fileService;
+        private readonly UserService _userService;
 
         public IndexModel(
             UserManager<UserAccount> userManager,
-            SignInManager<UserAccount> signInManager)
+            SignInManager<UserAccount> signInManager, 
+            IFileService fileService,
+            UserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _fileService = fileService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -59,19 +69,9 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
-        }
-                                     
-        private async Task LoadAsync(UserAccount user)
-        {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
 
-            Username = userName;
+            public IFormFile ProfilePicture { get; set; }
 
-            Input = new InputModel
-            {
-                PhoneNumber = phoneNumber
-            };
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -82,7 +82,7 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            //await LoadAsync(user);
             return Page();
         }
 
@@ -96,7 +96,7 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                //await LoadAsync(user);
                 return Page();
             }
 
@@ -111,7 +111,21 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            if(Input.ProfilePicture != null)
+            {
+                Blob blob = await _fileService.UploadFileAsync(Input.ProfilePicture, user.Id);
+
+                if(blob == null)
+                {
+                    StatusMessage = "Unexpected error when trying to set profile picture";
+                    return RedirectToPage();
+                }
+
+                await _userService.SetUserProfilePictureAsync(user.Id, blob);
+            }
+
             await _signInManager.RefreshSignInAsync(user);
+            
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }

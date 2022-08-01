@@ -41,12 +41,12 @@ namespace Syntax.Services
 
         public async Task<Comment> GetCommentById(string id)
         {
-            return await _appDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
+            return await _appDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id && c.IsDeleted == false);
         }
 
         public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId)
         {
-            return await _appDbContext.Comments.Where(c => c.PostId == postId).ToListAsync();
+            return await _appDbContext.Comments.Where(c => c.PostId == postId && c.IsDeleted == false).ToListAsync();
         }
     }
 }

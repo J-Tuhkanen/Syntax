@@ -44,6 +44,8 @@ namespace Syntax
 
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<IFileService, FileService>();
+            services.AddTransient<UserService>();
 
             services.AddDistributedMemoryCache();
             services.AddRazorPages();

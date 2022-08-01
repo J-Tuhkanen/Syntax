@@ -22,8 +22,6 @@ namespace Syntax.Pages
         {
             _userManager = userManager;
             _postService = postService;
-
-            //_postService.CreatePostAsync(new Post() { Id = Guid.NewGuid().ToString() }).GetAwaiter().GetResult();
         }
 
         [BindProperty]
@@ -50,8 +48,7 @@ namespace Syntax.Pages
                 Title = Input.Title,
                 Body = Input.SubmitBody
             };
-
-            
+                        
             if(await _postService.CreatePostAsync(newPost) != null)
             {
                 return Redirect($"Post/{newPost.Id}");

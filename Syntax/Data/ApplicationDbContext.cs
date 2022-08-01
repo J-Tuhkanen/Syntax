@@ -10,6 +10,8 @@ namespace Syntax.Data
 
         public DbSet<Comment> Comments { get; set; }
 
+        public DbSet<Blob> Blobs { get; set; }
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
