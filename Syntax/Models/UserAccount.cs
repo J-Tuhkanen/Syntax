@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace Syntax.Models
 {
@@ -7,5 +8,7 @@ namespace Syntax.Models
         public bool IsDeleted { get; set; }
 
         public string ProfilePictureFileId { get; set; }
+    
+        public DateTime JoinedDate { get; set; }
     }
 }
