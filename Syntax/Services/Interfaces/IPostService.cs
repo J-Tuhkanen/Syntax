@@ -9,6 +9,7 @@ namespace Syntax.Services
         Task<Post> CreatePostAsync(Post post);
         Task<bool> DeletePost(string id);
         Task<Post> GetPostById(string id);
+        Task<IEnumerable<Post>> GetPostsByUserAsync(string userId);
         Task<IEnumerable<Post>> GetPosts();
     }
 }

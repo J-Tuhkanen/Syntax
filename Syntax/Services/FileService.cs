@@ -4,6 +4,7 @@ using Syntax.Data;
 using Syntax.Models;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Syntax.Services
@@ -19,33 +20,46 @@ namespace Syntax.Services
             _appDbContext = appDbContext;
         }
 
+        /// <summary>
+        /// TODO: Replace later with Azure Storage
+        /// </summary>
         public async Task<Blob> UploadFileAsync(IFormFile Upload, string userId)
         {
             try
             {
-                string file = Path.Combine(_environment.WebRootPath, "uploads", Upload.FileName);
-                using (var fileStream = new FileStream(file, FileMode.Create))
+                var fileExtension = Upload.FileName.Split(".").LastOrDefault();
+
+                if(fileExtension != null)
                 {
-                    await Upload.CopyToAsync(fileStream);
+                    string publicPath = Path.Combine("files", userId + "." + fileExtension);
+                    string fileName = Path.Combine(_environment.WebRootPath, publicPath);
 
-                    var newBlob = new Blob
+                    using (var fileStream = new FileStream(fileName, FileMode.Create))
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        Path = file,
-                        Timestamp = DateTime.Now,
-                        UserId = userId
-                    };
+                        await Upload.CopyToAsync(fileStream);
 
-                    await _appDbContext.Blobs.AddAsync(newBlob);
-                    await _appDbContext.SaveChangesAsync();
+                        var newBlob = new Blob
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Path = "/" + publicPath.Replace("\\", "/"),
+                            Timestamp = DateTime.Now,
+                            UserId = userId
+                        };
 
-                    return newBlob;
+                        await _appDbContext.Blobs.AddAsync(newBlob);
+                        await _appDbContext.SaveChangesAsync();
+
+                        return newBlob;
+                    }
                 }
+
+                throw new Exception("Invalid file");
             }
             catch
             {
-                return null;
+                throw;
             }
         }
+
     }
 }

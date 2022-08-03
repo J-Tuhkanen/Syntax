@@ -1,6 +1,24 @@
-﻿@page
+﻿@page "{id}"
 @model Syntax.Pages.ProfileModel
 
-<div>
+<div class="row">
+    <div class="col-4">
+        <img height="200" width="200" src="@Model.ProfilePictureBlob.Path"/>
+        <p>@Model.ViewedUser.UserName</p>
+    </div>
 
+    <div class="col-8">
+        <h1>Post history</h1>
+        <div>
+            @foreach(var post in Model.UserPosts)
+            {
+                <a href="/post/@post.Id" style="text-decoration: none; color: black;">
+                    <div class="post">
+                        <h3>@post.Title</h3>
+                        <p class="post-content">@post.Body</p>
+                    </div>
+                </a>
+            }
+        </div>
+    </div>
 </div>

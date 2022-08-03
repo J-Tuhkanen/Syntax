@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using Syntax.Data;
 using Syntax.Models;
 using Syntax.Services;
 using System;
@@ -17,12 +19,18 @@ namespace Syntax.Pages
         private IPostService _postService;
         private ICommentService _commentService;
         private UserManager<UserAccount> _userManager;
+        private ApplicationDbContext _appDbContext;
 
-        public PostModel(IPostService postService, ICommentService commentService, UserManager<UserAccount> userManager)
+        public PostModel(
+            IPostService postService, 
+            ICommentService commentService, 
+            UserManager<UserAccount> userManager,
+            ApplicationDbContext appDbContext)
         {
             _postService = postService;
             _commentService = commentService;
             _userManager = userManager;
+            _appDbContext = appDbContext;
         }
 
         [BindProperty]
@@ -35,6 +43,8 @@ namespace Syntax.Pages
 
         public Post Post { get; private set; }
         public IEnumerable<Comment> Comments { get; private set; }
+        public UserAccount PostCreator { get; private set; }
+        public Blob PostCreatorProfilePicBlob { get; private set; }
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -44,6 +54,9 @@ namespace Syntax.Pages
             {
                 Post = post;
                 Comments = await _commentService.GetCommentsAsync(Post.Id);
+
+                PostCreator = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == Post.UserId);
+                PostCreatorProfilePicBlob = await _appDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == PostCreator.ProfilePictureFileId);
 
                 return Page();
             }

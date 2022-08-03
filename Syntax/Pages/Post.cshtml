@@ -1,10 +1,21 @@
 ﻿@page "{id}"
+@using Microsoft.EntityFrameworkCore
 @model Syntax.Pages.PostModel
 @inject ApplicationDbContext AppDBContext
 
-<div class="post-area post">
-    <h1>@Model.Post.Title</h1>
-    <p>@Model.Post.Body</p>
+<div class="post-area post row">
+    <div class="col-10">
+        <div class="row">
+            <h1>@Model.Post.Title</h1>
+        </div>
+        <div class="row">
+            <p>@Model.Post.Body</p>
+        </div>
+    </div>
+    <div class="col-2">
+        <img height="150" width="150" style="border-radius:50%;" src="@Model.PostCreatorProfilePicBlob.Path"/>
+        <p>@Model.PostCreator.UserName</p>
+    </div>
 </div>
 
 <div class="post-comment-area">
@@ -19,15 +30,11 @@
 
 <div class="post-comment-field">
     <form method="post">
-    <h2>Comment this post</h2>
-    <hr />
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-floating">
-        <input asp-for="Input.Comment" class="form-control" aria-required="true" />
-        <label asp-for="Input.Comment"></label>
-        <span asp-validation-for="Input.Comment" class="text-danger"></span>
-    </div>
-    <button hidden="hidden" type="submit"/>
-</form>
-
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-floating">
+            <input asp-for="Input.Comment" class="form-control" aria-required="true" />
+        </div>
+        <button hidden="hidden" type="submit"/>
+    </form>
 </div>

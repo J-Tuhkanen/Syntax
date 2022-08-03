@@ -26,5 +26,15 @@ namespace Syntax.Services
                 await _appDbContext.SaveChangesAsync();
             }
         }
+
+        public async Task GetUserProfilePictureAsync(string userId)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if(user.ProfilePictureFileId != null)
+            {
+                //var file = 
+            }
+        }
     }
 }

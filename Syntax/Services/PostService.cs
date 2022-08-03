@@ -33,6 +33,11 @@ namespace Syntax.Services
             }
         }
 
+        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId)
+        {
+            return await _appDbContext.Posts.Where(p => p.UserId == userId).ToListAsync();
+        }
+
         public async Task<IEnumerable<Post>> GetPosts()
         {
             return await _appDbContext.Posts.Where(p => p.IsDeleted == false).ToListAsync();
