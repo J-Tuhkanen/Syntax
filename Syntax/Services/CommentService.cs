@@ -48,5 +48,14 @@ namespace Syntax.Services
         {
             return await _appDbContext.Comments.Where(c => c.PostId == postId && c.IsDeleted == false).ToListAsync();
         }
+
+        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, int amount)
+        {
+            var userComments = _appDbContext.Comments.Where(c => c.UserId == userId);
+
+            return amount > 0 
+                ? await userComments.Take(amount).ToListAsync() 
+                : await userComments.ToListAsync();
+        }
     }
 }

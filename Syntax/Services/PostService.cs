@@ -33,27 +33,40 @@ namespace Syntax.Services
             }
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId)
+        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, int amount)
         {
-            return await _appDbContext.Posts.Where(p => p.UserId == userId).ToListAsync();
+            var postsByUser = _appDbContext.Posts.Where(p => p.UserId == userId);
+
+            return amount > 0 
+                ? await postsByUser.Take(amount).ToListAsync() 
+                : await postsByUser.ToListAsync();
         }
 
-        public async Task<IEnumerable<Post>> GetPosts()
+        public async Task<IEnumerable<Post>> GetPosts(int amount)
         {
-            return await _appDbContext.Posts.Where(p => p.IsDeleted == false).ToListAsync();
+            var notDeletedPosts = _appDbContext.Posts.Where(p => p.IsDeleted == false);
+
+            return amount > 0
+                ? await notDeletedPosts.ToListAsync()
+                : await notDeletedPosts.Take(amount).ToListAsync();
         }
 
         public async Task<Post> GetPostById(string id)
         {
             return await _appDbContext.Posts.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
-        }
+        }        
 
+        /// <summary>
+        /// Mark post as deleted by post id
+        /// </summary>
         public async Task<bool> DeletePost(string id)
         {
             try
             {
+                // Get post from database
                 var post = _appDbContext.Posts.FirstOrDefault(p => p.Id == id);
 
+                // If post was found, mark it as deleted.
                 if (post != null)
                 {
                     post.IsDeleted = true;

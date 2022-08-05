@@ -10,5 +10,6 @@ namespace Syntax.Services
         Task<bool> DeleteComment(string id);
         Task<Comment> GetCommentById(string id);
         Task<IEnumerable<Comment>> GetCommentsAsync(string postId);
+        Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, int amount = 0);
     }
 }

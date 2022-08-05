@@ -1,14 +1,20 @@
 ﻿@page "{id}"
-@model Syntax.Pages.ProfileModel
+@using Syntax.Models.Base
+@model ProfileModel
+
+@{
+    IEnumerable<EntityWithId> UserActivity = ((IEnumerable<EntityWithId>)Model.UserComments).Concat(Model.UserPosts);    
+}
 
 <div class="row">
-    <div class="col-4">
-        <img height="200" width="200" src="@Model.ProfilePictureBlob.Path"/>
+    <div class="col-3">
+        <img style="height:100%;width:100%" src="@Model.ProfilePictureBlob.Path"/>
         <p>@Model.ViewedUser.UserName</p>
+        <p>Member since @Model.ViewedUser.JoinedDate.ToString("d.M.yyyy")</p>
     </div>
 
-    <div class="col-8">
-        <h1>Post history</h1>
+    <div class="col-9">
+        <h1>Overview</h1>
         <div>
             @foreach(var post in Model.UserPosts)
             {
