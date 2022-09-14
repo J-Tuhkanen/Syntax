@@ -1,4 +1,5 @@
 ﻿@page "{id}"
+@using Syntax.Models
 @using Syntax.Models.Base
 @model ProfileModel
 
@@ -8,7 +9,7 @@
 
 <div class="row">
     <div class="col-3">
-        <img style="height:100%;width:100%" src="@Model.ProfilePictureBlob.Path"/>
+        <img style="height:100%;width:100%" src="@Model.ProfilePictureBlob?.Path"/>
         <p>@Model.ViewedUser.UserName</p>
         <p>Member since @Model.ViewedUser.JoinedDate.ToString("d.M.yyyy")</p>
     </div>
@@ -16,14 +17,32 @@
     <div class="col-9">
         <h1>Overview</h1>
         <div>
-            @foreach(var post in Model.UserPosts)
+            @foreach(IUserActivity item in Model.UserActivity)
             {
-                <a href="/post/@post.Id" style="text-decoration: none; color: black;">
-                    <div class="post">
-                        <h3>@post.Title</h3>
-                        <p class="post-content">@post.Body</p>
-                    </div>
-                </a>
+                var itemType = item.GetType();
+
+                if(itemType == typeof(Post))
+                {
+                    var post = item as Post;
+
+                    <a href="/post/@post.Id" style="text-decoration: none; color: black;">
+                        <div class="post">
+                            <h3>@post.Title</h3>
+                            <p class="post-content">@post.Body</p>
+                        </div>
+                    </a>
+                }
+
+                else if(itemType == typeof(Comment))
+                {
+                    var comment = item as Comment;
+
+                    <a href="/post/@comment.PostId" style="text-decoration: none; color: black;">
+                        <div class="post">
+                            <p class="post-content">@comment.Content</p>
+                        </div>
+                    </a>
+                }
             }
         </div>
     </div>

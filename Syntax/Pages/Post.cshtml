@@ -13,19 +13,9 @@
         </div>
     </div>
     <div class="col-2">
-        <img height="150" width="150" style="border-radius:50%;" src="@Model.PostCreatorProfilePicBlob.Path"/>
+        <img height="150" width="150" style="border-radius:50%;" src="@Model.PostCreatorProfilePicBlob?.Path"/>
         <p>@Model.PostCreator.UserName</p>
     </div>
-</div>
-
-<div class="post-comment-area">
-    @foreach(var comment in Model.Comments)
-    {
-        <div class="comment">
-            <p class="comment-content">@comment.Content</p>
-            <p class="comment-author">@AppDBContext.Users.FirstOrDefault(u => u.Id == comment.UserId)</p>
-        </div>
-    }
 </div>
 
 <div class="post-comment-field">
@@ -37,4 +27,14 @@
         </div>
         <button hidden="hidden" type="submit"/>
     </form>
+</div>
+
+<div class="post-comment-area">
+    @foreach(var comment in Model.Comments)
+    {
+        <div class="comment">
+            <p class="comment-content">@comment.Content</p>
+            <p class="comment-author">@AppDBContext.Users.FirstOrDefault(u => u.Id == comment.UserId)</p>
+        </div>
+    }
 </div>

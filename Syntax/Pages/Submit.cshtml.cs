@@ -46,7 +46,8 @@ namespace Syntax.Pages
                 UserId = user.Id,
                 IsDeleted = false,
                 Title = Input.Title,
-                Body = Input.SubmitBody
+                Body = Input.SubmitBody,
+                Timestamp = DateTime.Now
             };
                         
             if(await _postService.CreatePostAsync(newPost) != null)

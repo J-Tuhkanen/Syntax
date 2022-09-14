@@ -4,9 +4,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Syntax.Data;
 using Syntax.Models;
+using Syntax.Models.Base;
 using Syntax.Services;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Syntax.Pages
@@ -24,6 +26,8 @@ namespace Syntax.Pages
 
         public IEnumerable<Post> UserPosts { get; private set; }
         public IEnumerable<Comment> UserComments { get; private set; }
+
+        public IEnumerable<IUserActivity> UserActivity { get; private set; }
         public bool ShowEditButton { get; private set; }
 
         public ProfileModel(
@@ -45,6 +49,8 @@ namespace Syntax.Pages
 
             UserPosts = await _postService.GetPostsByUserAsync(id, 5);
             UserComments = await _commentService.GetCommentsByUserAsync(id, 5);
+
+            UserActivity = ((IEnumerable<IUserActivity>)UserPosts).Concat(UserComments).OrderBy(a => a.Timestamp);
         }
     }
 }

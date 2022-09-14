@@ -10,6 +10,6 @@ namespace Syntax.Services
         Task<bool> DeletePost(string id);
         Task<Post> GetPostById(string id);
         Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, int amount = 0);
-        Task<IEnumerable<Post>> GetPosts(int amount = 0);
+        Task<IEnumerable<Post>> GetPosts(int skipAmount = 0, int amount = 5);
     }
 }

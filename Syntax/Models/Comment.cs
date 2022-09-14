@@ -3,7 +3,7 @@ using System;
 
 namespace Syntax.Models
 {
-    public class Comment : EntityWithId
+    public class Comment : EntityWithId, IUserActivity
     {
         public string PostId { get; set; }
         public string UserId { get; set; }

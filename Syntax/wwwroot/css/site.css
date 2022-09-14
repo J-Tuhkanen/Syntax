@@ -1,16 +1,38 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+/*Syntax-Gray: #d4cfc7*/
+/*Syntax-Orange: #cf7500*/
+/*Syntax-Blue: #323e8f*/
+/*Syntax-LightBlue: #0d70a1*/
+
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
+
+a.navbar-brand span{
+
+    font-weight: bold;
+}
+
+    a.navbar-brand .bracket {
+        color: #cf7500
+    }
+
+    a.navbar-brand .capsuled {
+        color: #0f0da1;
+    }
+
+        a.navbar-brand .capsuled:hover {
+            color: #0d70a1
+        }
 
 .btn-primary {
   color: #fff;
@@ -24,10 +46,19 @@ a {
   border-color: #1861ac;
 }
 
+.nav-button{
+    color: black;
+    text-decoration: none;
+    margin: 0 1vw;
+}
+
+    .nav-button:hover {
+        color: #cf7500;
+    }
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 @media (min-width: 768px) {
   html {
@@ -70,29 +101,50 @@ body {
   line-height: 60px; /* Vertically center the text there */
 }
 
-.post {
-    background: #aecdfc40;
-    padding: 1vw;
-    margin-top: 2vw;
-    margin-bottom: 2vw;
-}
-
-.post > h3{
-
-    font-size: 1.8vw;
-}
-
-.post > .post-content {
-    font-size: 1.3vw;
-}
-
-.post > .post-creator{
-
-    font-size: 0.8vw;
-}
-
 .comment {
     background: #80808020;
     padding: 1vw 2vw;
     margin-bottom: 1vw;
 }
+
+.post {
+    background: #aecdfc40;
+    text-decoration: none;
+    color: black;
+    /*padding: 1vw;*/
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    display:flex;
+}
+    
+    .post > .post-ratio{
+
+        background-color: darkgray;
+        width: 5%;
+    }
+    .post > .post-content{
+        width:100%;
+    }
+
+    .post-ratio > *{
+        display:block;
+    }
+    
+    .header-container{
+
+        border-bottom: 1px solid black;
+    }
+
+    .post-sub-container > h3 {
+        font-size: 1.8vw;
+    }
+
+    .post-sub-container > .post-content {
+
+        font-size: 1.3vw;
+    }
+
+    .post-creator {
+
+        font-size: 0.8vw;
+    }

@@ -74,7 +74,8 @@ namespace Syntax.Pages
                 Content = Input.Comment,
                 IsDeleted = false,
                 PostId = id,
-                UserId = user.Id
+                UserId = user.Id,
+                Timestamp = DateTime.Now
             };
 
             await _commentService.CreateCommentAsync(newComment);

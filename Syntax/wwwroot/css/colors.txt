@@ -1,0 +1,4 @@
+﻿Syntax-Gray: #d4cfc7
+Syntax-Orange: #cf7500
+Syntax-Blue: #323e8f
+Syntax-LightBlue: #0d70a1
