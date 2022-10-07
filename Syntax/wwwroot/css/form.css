@@ -1,0 +1,21 @@
+﻿form {
+    background: #3D773870;
+    padding: 2vw 2vh;    
+}
+
+.form-button {
+    background: #3D7738;
+    border: 1px solid;
+    border-radius: 0.25rem;
+}
+
+    .form-button:hover {
+        background: #3D773890;
+    }
+
+.form-input {
+}
+
+    .form-input:hover {
+            
+    }

@@ -3,7 +3,12 @@
 @model PostModel
 @inject ApplicationDbContext AppDBContext
 
-<div class="post-area post row">
+@section Styles {
+    <link href="@Url.Content("~/css/site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/post.css")" rel="stylesheet" type="text/css" />
+}
+
+<div class="post-page-post">
     <div class="col-10">
         <div class="row">
             <h1>@Model.Post.Title</h1>
@@ -13,8 +18,8 @@
         </div>
     </div>
     <div class="col-2">
-        <img height="150" width="150" style="border-radius:50%;" src="@Model.PostCreatorProfilePicBlob?.Path"/>
-        <p>@Model.PostCreator.UserName</p>
+        <img style="border-radius:50%; width: 100%" src="@Model.PostCreatorProfilePicBlob?.Path"/>
+        <p style="width:100%; text-align:center">@Model.PostCreator.UserName</p>
     </div>
 </div>
 
@@ -22,7 +27,7 @@
     <form method="post">
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-floating">
+        <div class="form-floating"> 
             <input asp-for="Input.Comment" class="form-control" aria-required="true" />
         </div>
         <button hidden="hidden" type="submit"/>

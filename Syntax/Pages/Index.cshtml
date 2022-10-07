@@ -2,31 +2,28 @@
 @inject ApplicationDbContext AppDBContext
 
 @model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-
-} 
-
+@section Styles {
+    <link href="@Url.Content("~/css/site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/post.css")" rel="stylesheet" type="text/css" />
+}
 <div>
     @foreach(var post in Model.Posts)
     {
-        <a href="/post/@post.Id" style="text-decoration: none; color: black;">
-            <div class="post">
-                <div class="post-ratio">
-                    <input type="button" value="<" style="height:25%; width:100%"/>
-                    <span style="height:50%; text-align:center; width:100%">35</span>
-                    <input type="button" value=">" style="height:25%; width:100%"/>
-                </div>
+        var postUrl = @Url.Page("post", new { id = post.Id });
+
+        <a href="@postUrl" style="text-decoration: none; color: black;">
+            <div class="main-page-post">
                 <div class="post-content">
                     <div class="post-sub-container header-container">
                         <h3 style">@post.Title</h3>
                     </div>
 
                      <div class="post-sub-container">
-                        <p class="post-content">@post.Body</p>
+                        <p class="post-body">@post.Body</p>
                      </div>
 
-                     <div class="post-sub-container">
+                     
+                     <div class="post-sub-container author-container">
                         <p>@AppDBContext.Users.FirstOrDefault(u => u.Id == post.UserId).UserName</p>
                      </div>
                 </div>

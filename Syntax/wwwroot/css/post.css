@@ -1,1 +1,55 @@
-﻿
+﻿/*Main Page CSS*/
+.main-page-post {
+    background: #3D773870;
+    text-decoration: none;
+    color: black;
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    display: flex;
+}
+    .main-page-post > .post-content {
+        width: 100%;
+    }
+        .main-page-post > .post-content >.post-sub-container {
+            padding: 0.5vw 1vw;
+        }
+            .main-page-post > .post-content > .post-sub-container > h3 {
+                font-size: 2vw;
+            }
+
+
+            .main-page-post > .post-content > .post-sub-container > .post-body {
+                font-size: 2vw;
+            }
+
+        .main-page-post > .post-content > .header-container {
+            border-bottom: 1px solid black;
+            background: #3D773870;
+            padding: 1vw;
+        }
+
+        .main-page-post > .post-content > .author-container {
+            font-size: 1.3vw;
+            height: auto;
+        }
+
+            .main-page-post > .post-content > .author-container > p {
+                margin: 0;
+            }
+
+/*Post Page CSS*/
+.post-page-post {
+    background: #3D773870;
+    text-decoration: none;
+    color: black;
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    display: flex;
+    padding: 1vw;
+}
+
+.comment {
+    background: #80808020;
+    padding: 1vw 2vw;
+    margin-bottom: 1vw;
+}
