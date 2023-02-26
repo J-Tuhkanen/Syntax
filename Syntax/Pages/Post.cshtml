@@ -23,16 +23,6 @@
     </div>
 </div>
 
-<div class="post-comment-field">
-    <form method="post">
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-floating"> 
-            <input asp-for="Input.Comment" class="form-control" aria-required="true" />
-        </div>
-        <button hidden="hidden" type="submit"/>
-    </form>
-</div>
 
 <div class="post-comment-area">
     @foreach(var comment in Model.Comments)
@@ -42,4 +32,15 @@
             <p class="comment-author">@AppDBContext.Users.FirstOrDefault(u => u.Id == comment.UserId)</p>
         </div>
     }
+</div>
+
+<div class="post-comment-field">
+    <form method="post">
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-floating"> 
+            <input asp-for="Input.Comment" class="form-control" aria-required="true" />
+        </div>
+        <button hidden="hidden" type="submit"/>
+    </form>
 </div>

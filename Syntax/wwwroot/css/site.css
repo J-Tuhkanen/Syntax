@@ -6,6 +6,7 @@ for details on configuring this project to bundle and minify static web assets. 
 /*Syntax-Blue: #323e8f*/
 /*Syntax-LightBlue: #0d70a1*/
 
+@import url('form.css');
 a.navbar-brand {
     white-space: normal;
     text-align: center;
@@ -27,11 +28,11 @@ a.navbar-brand span{
     }
 
     a.navbar-brand .capsuled {
-        color: #0f0da1;
+        color: #0d70a1;
     }
 
         a.navbar-brand .capsuled:hover {
-            color: #0d70a1
+            color: #cf7500;
         }
 
 .btn-primary {
@@ -46,14 +47,29 @@ a.navbar-brand span{
   border-color: #1861ac;
 }
 
-.nav-button{
-    color: black;
+.navbar {
+    background: #ffffff10;
+}
+
+.nav-link {
+    color: #0d70a1;
+}
+
+.nav-item > button{
+
+    border: none;
+    background: none;
+}
+
+.nav-button {
+    color: #0d70a1;
     text-decoration: none;
     margin: 0 1vw;
 }
 
     .nav-button:hover {
         color: #cf7500;
+        text-decoration: none;
     }
 /* Sticky footer styles
 -------------------------------------------------- */
@@ -82,8 +98,7 @@ button.accept-policy {
   line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
+/* Sticky footer styles */
 html {
   position: relative;
   min-height: 100%;
@@ -92,6 +107,7 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+  background: #000;
 }
 .footer {
   position: absolute;

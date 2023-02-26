@@ -1,8 +1,9 @@
 ﻿/*Main Page CSS*/
 .main-page-post {
-    background: #3D773870;
+    
+    /*background: #3D773870;*/
     text-decoration: none;
-    color: black;
+    color: #fff;
     margin-top: 2vw;
     margin-bottom: 2vw;
     display: flex;
@@ -10,26 +11,30 @@
     .main-page-post > .post-content {
         width: 100%;
     }
-        .main-page-post > .post-content >.post-sub-container {
-            padding: 0.5vw 1vw;
+        .main-page-post > .post-content > .post-sub-container {
+            padding: 0.3vw 1vw;
+            background: #ffffff10;
         }
             .main-page-post > .post-content > .post-sub-container > h3 {
-                font-size: 2vw;
+                /*font-size: 1vw;*/
             }
 
-
             .main-page-post > .post-content > .post-sub-container > .post-body {
-                font-size: 2vw;
+                color: white;
+                /*font-size: 0.8vw;*/
+                padding: 2vw 0 0 0;
             }
 
         .main-page-post > .post-content > .header-container {
-            border-bottom: 1px solid black;
-            background: #3D773870;
-            padding: 1vw;
+            border-bottom: 1px solid #fff;
+            /*background: #3D773870;*/
+            padding: 0.8vw;
+            color: #cf7500;
         }
 
         .main-page-post > .post-content > .author-container {
-            font-size: 1.3vw;
+            /*font-size: 0.5vw;*/
+            color:gray;
             height: auto;
         }
 
@@ -39,17 +44,18 @@
 
 /*Post Page CSS*/
 .post-page-post {
-    background: #3D773870;
+    background: #ffffff10;
     text-decoration: none;
-    color: black;
+    color: #fff;
     margin-top: 2vw;
     margin-bottom: 2vw;
     display: flex;
     padding: 1vw;
+    border-bottom: 1px solid white;
 }
 
 .comment {
     background: #80808020;
-    padding: 1vw 2vw;
+    padding: 1vw;
     margin-bottom: 1vw;
 }

@@ -1,17 +1,31 @@
-﻿form {
+﻿/*form {
     background: #3D773870;
     padding: 2vw 2vh;    
+}*/
+
+.user-detail-form {
+    background: #ffffff10;
+    padding: 1vw 3vw;
 }
 
+    .user-detail-form > h1, p, input, label {
+        color: #0d70a1;
+    }
+
 .form-button {
-    background: #3D7738;
+    background: #000;
     border: 1px solid;
     border-radius: 0.25rem;
+    color: #0d70a1
 }
 
     .form-button:hover {
-        background: #3D773890;
+        /*background: white;*/
+        color: #cf7500;
+        border: 1px solid #cf7500;
     }
+
+
 
 .form-input {
 }
