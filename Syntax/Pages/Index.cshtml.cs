@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Syntax.Models;
 using Syntax.Services;
+using Syntax.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,11 +23,11 @@ namespace Syntax.Pages
             _postService = postService;
         }
 
-        public IEnumerable<Post> Posts { get; private set; }
+        public IEnumerable<PostWrapper> Posts { get; private set; }
 
         public async Task OnGetAsync()
         {
-            Posts = await _postService.GetPosts();
+            Posts = (await _postService.GetPosts()).Select(p => new PostWrapper(p));
         }
     }
 }

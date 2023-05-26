@@ -70,8 +70,8 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
 
+            [Display(Name = "Profile picture")]
             public IFormFile ProfilePicture { get; set; }
-
         }
 
         public async Task<IActionResult> OnGetAsync()

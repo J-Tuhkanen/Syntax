@@ -9,38 +9,48 @@
 }
 
 <div class="post-page-post">
-    <div class="col-10">
-        <div class="row">
+    <div class="col-10 post-content">
+        <div class="post-title">
             <h1>@Model.Post.Title</h1>
         </div>
-        <div class="row">
+        <div class="post-body">
             <p>@Model.Post.Body</p>
         </div>
     </div>
-    <div class="col-2">
+    <div class="col-2" style="text-align:center">
         <img style="border-radius:50%; width: 100%" src="@Model.PostCreatorProfilePicBlob?.Path"/>
-        <p style="width:100%; text-align:center">@Model.PostCreator.UserName</p>
+        <a href="@Url.Page("profile", new { id = Model.Post.UserId })">@Model.PostCreator.UserName</a>
     </div>
 </div>
 
+@if (Model.IsLoggedIn)
+{  
+    <div class="post-comment-field">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating"> 
+                <input asp-for="Input.Comment" class="form-control" aria-required="true" />
+            </div>
+            <button hidden="hidden" type="submit"/>
+        </form>
+    </div>
+}
 
 <div class="post-comment-area">
     @foreach(var comment in Model.Comments)
     {
         <div class="comment">
-            <p class="comment-content">@comment.Content</p>
-            <p class="comment-author">@AppDBContext.Users.FirstOrDefault(u => u.Id == comment.UserId)</p>
+            <div class="row">
+                <div class="col-8">
+                    <a class="comment-author" href="@Url.Page("profile", new { id = comment.UserId })">@AppDBContext.Users.FirstOrDefault(u => u.Id == comment.UserId).UserName</a>
+                </div>
+                <div class="col-4" >
+                    <p style="text-align:right">@comment.Timestamp.ToLongDateString()</p>
+                </div>
+            </div>
+            <div>
+                <p class="comment-content">@comment.Content</p>
+            </div>
         </div>
     }
-</div>
-
-<div class="post-comment-field">
-    <form method="post">
-        <hr />
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-floating"> 
-            <input asp-for="Input.Comment" class="form-control" aria-required="true" />
-        </div>
-        <button hidden="hidden" type="submit"/>
-    </form>
 </div>

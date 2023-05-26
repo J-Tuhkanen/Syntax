@@ -19,9 +19,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
+using Syntax.Extensions;
 
 namespace Syntax.Areas.Identity.Pages.Account
 {
+
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<UserAccount> _signInManager;
@@ -104,17 +109,17 @@ namespace Syntax.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
-
-        public async Task OnGetAsync(string returnUrl = null)
-        {
+        public async Task OnGetAsync(string returnUrl = null, int step = 1)
+        {   
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null, int step = 1)
         {
-            returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            returnUrl ??= Url.Content("~/");
+
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
@@ -176,9 +181,8 @@ namespace Syntax.Areas.Identity.Pages.Account
         private IUserEmailStore<UserAccount> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
-            {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
+            
             return (IUserEmailStore<UserAccount>)_userStore;
         }
     }

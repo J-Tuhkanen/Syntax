@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace Syntax.Pages
 {
-    [Authorize]
     public class PostModel : PageModel
     {
         private IPostService _postService;
@@ -46,15 +45,21 @@ namespace Syntax.Pages
         public UserAccount PostCreator { get; private set; }
         public Blob PostCreatorProfilePicBlob { get; private set; }
 
+        public bool IsLoggedIn { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            IsLoggedIn = currentUser != null;
+
             var post = await _postService.GetPostById(id);
 
-            if(post != null)
+            if (post != null)
             {
                 Post = post;
+                
                 Comments = await _commentService.GetCommentsAsync(Post.Id);
-
                 PostCreator = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == Post.UserId);
                 PostCreatorProfilePicBlob = await _appDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == PostCreator.ProfilePictureFileId);
 

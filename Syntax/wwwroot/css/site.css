@@ -1,12 +1,11 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-/*Syntax-Gray: #d4cfc7*/
+/*Syntax-Gray: #ffffff10*/
 /*Syntax-Orange: #cf7500*/
 /*Syntax-Blue: #323e8f*/
 /*Syntax-LightBlue: #0d70a1*/
 
-@import url('form.css');
 a.navbar-brand {
     white-space: normal;
     text-align: center;
@@ -116,4 +115,52 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.profile-container {
+    background: #ffffff10;
+    text-decoration: none;
+    color: #fff;
+    margin-top: 2vw;
+    margin-bottom: 2vw;
+    padding: 1vw;
+    border-bottom: 1px solid white;
+}
+
+.syntax-form {
+    background: #ffffff10;
+    padding: 1vw 3vw;
+}
+
+.text-orange {
+    color: #cf7500;
+}
+.text-blue {
+    color: #0d70a1;
+}
+
+.form-control {
+    background: #ffffff10;
+    color: #cf7500;
+    border-color: #0d70a1;
+}
+
+    .form-control:focus {
+        background: #ffffff10;
+        border-color: #cf7500;
+        color: #cf7500;
+    }
+
+.form-button {
+    background: #000;
+    border: 1px solid;
+    border-radius: 0.25rem;
+    color: #0d70a1;
+    height: 40px;
+    
+}
+
+    .form-button:hover {
+        color: #cf7500;
+        border: 1px solid #cf7500;
+    }
 

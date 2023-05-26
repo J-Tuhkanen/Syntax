@@ -6,14 +6,14 @@
     <hr />
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-floating">
-        <input asp-for="Input.Title" class="form-control" aria-required="true" />
+        <input asp-for="Input.Title" class="form-control" aria-required="true" maxlength="80"/>
         <label asp-for="Input.Title"></label>
         <span asp-validation-for="Input.Title" class="text-danger"></span>
     </div>
     <div class="form-floating">
-        <input asp-for="Input.SubmitBody" class="form-control" aria-required="true" />
+        <textarea asp-for="Input.SubmitBody" class="form-control" aria-required="true"></textarea>
         <label asp-for="Input.SubmitBody"></label>
         <span asp-validation-for="Input.SubmitBody" class="text-danger"></span>
     </div>
-    <button hidden="hidden" type="submit"/>
+    <button type="submit"/>
 </form>

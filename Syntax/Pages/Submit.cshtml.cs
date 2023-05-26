@@ -31,6 +31,7 @@ namespace Syntax.Pages
         {
             [Required]
             [Display(Name = "Title")]
+            [MaxLength(80)]
             public string Title { get; set; }
 
             [Required]
@@ -39,23 +40,28 @@ namespace Syntax.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-            var newPost = new Post()
+            if (ModelState.IsValid)
             {
-                Id = Guid.NewGuid().ToString(),
-                UserId = user.Id,
-                IsDeleted = false,
-                Title = Input.Title,
-                Body = Input.SubmitBody,
-                Timestamp = DateTime.Now
-            };
+                var user = await _userManager.GetUserAsync(User);
+                var newPost = new Post()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = user.Id,
+                    IsDeleted = false,
+                    Title = Input.Title,
+                    Body = Input.SubmitBody,
+                    Timestamp = DateTime.Now
+                };
                         
-            if(await _postService.CreatePostAsync(newPost) != null)
-            {
-                return Redirect($"Post/{newPost.Id}");
+                if(await _postService.CreatePostAsync(newPost) != null)
+                {
+                    return Redirect($"Post/{newPost.Id}");
+                }
+
+                return Redirect("/Error");
             }
 
-            return Redirect("/Error");
+            return Page();
         }
     }
 }

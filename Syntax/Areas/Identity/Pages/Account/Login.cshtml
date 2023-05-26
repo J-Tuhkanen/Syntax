@@ -3,38 +3,37 @@
 
 @section Styles {
     <link href="@Url.Content("~/css/site.css")" rel="stylesheet" type="text/css" />
-    <link href="@Url.Content("~/css/form.css")" rel="stylesheet" type="text/css" />
 }
 
 <div class="row">
     <div class="col-md-7" style="margin:auto">
         <section style="margin-top: 12vh">
-            <form id="account" method="post" class="user-detail-form">
+            <form id="account" method="post" class="syntax-form">
 
-                <h1 style="text-align:center; margin-bottom: 3vh">Log in</h1>
+                <h1 style="text-align:center; margin-bottom: 3vh" class="text-orange">Log in</h1>
 
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-floating">
-                    <label asp-for="Input.Username" class="form-label"></label>
+                <div class="form-floating"style="margin: 1vw 0px">
+                    <label asp-for="Input.Username" class="text-blue"></label>
                     <input asp-for="Input.Username" class="form-control" autocomplete="username" aria-required="true" />
                     <span asp-validation-for="Input.Username" class="text-danger"></span>
                 </div>
                 
-                <div class="form-floating">
-                    <label asp-for="Input.Password" class="form-label"></label>
+                <div class="form-floating" style="margin: 1vw 0px">
+                    <label asp-for="Input.Password" class="text-blue"></label>
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 
-                <div>
+                <div style="margin: 1vw 0px">
                     <div class="checkbox">
-                        <label asp-for="Input.RememberMe">
+                        <label asp-for="Input.RememberMe" class="text-blue">
                             <input asp-for="Input.RememberMe" />
                             @Html.DisplayNameFor(m => m.Input.RememberMe)
                         </label>
                     </div>
                 </div>
-                <div>
+                <div style="margin: 1vw 0px">
                     <button id="login-submit" type="submit" class="w-100 form-button">Log in</button>
                 </div>
                 <div>

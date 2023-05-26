@@ -40,7 +40,8 @@ namespace Syntax
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 0;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<ICommentService, CommentService>();
@@ -68,9 +69,7 @@ namespace Syntax
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
             app.UseAuthentication();
             app.UseAuthorization();
 
