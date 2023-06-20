@@ -41,6 +41,7 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string Username { get; set; }
+        public Blob ProfilePictureBlob { get; private set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -82,6 +83,9 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            ProfilePictureBlob = await _userService.GetUserProfilePictureAsync(user.Id);
+            
+            
             //await LoadAsync(user);
             return Page();
         }
