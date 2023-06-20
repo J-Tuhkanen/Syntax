@@ -27,14 +27,13 @@ namespace Syntax.Services
             }
         }
 
-        public async Task GetUserProfilePictureAsync(string userId)
+        public async Task<Blob> GetUserProfilePictureAsync(string userId)
         {
             var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-            if(user.ProfilePictureFileId != null)
-            {
-                //var file = 
-            }
+            return user.ProfilePictureFileId != null 
+                ? await _appDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == user.ProfilePictureFileId)
+                : null;
         }
     }
 }
