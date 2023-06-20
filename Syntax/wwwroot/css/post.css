@@ -33,6 +33,7 @@
 /*Main Page Hover CSS*/
 .main-page-post-hover {
     background: #ffffff20;
+    cursor: pointer;
 }
 
     .main-page-post-hover > .post-content > .header-container {
