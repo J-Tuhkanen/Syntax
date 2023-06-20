@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Syntax.Data;
 using Syntax.Models;
 using Syntax.Services;
@@ -85,7 +86,7 @@ namespace Syntax.Pages
 
             await _commentService.CreateCommentAsync(newComment);
 
-            return Redirect($"/post/{id}");
+            return Redirect(Url.Page("post", new { id = id }));
         }
     }
 }

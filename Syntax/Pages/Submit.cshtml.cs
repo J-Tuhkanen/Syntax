@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 using System;
 using Syntax.Data;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace Syntax.Pages
 {
@@ -55,7 +56,7 @@ namespace Syntax.Pages
                         
                 if(await _postService.CreatePostAsync(newPost) != null)
                 {
-                    return Redirect($"Post/{newPost.Id}");
+                    return Redirect(Url.Page("post", new { id = newPost.Id }));
                 }
 
                 return Redirect("/Error");

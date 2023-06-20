@@ -18,7 +18,7 @@
         </div>
     </div>
     <div class="col-2" style="text-align:center">
-        <img style="border-radius:50%; width: 100%" src="@Model.PostCreatorProfilePicBlob?.Path"/>
+        <img style="border-radius:50%; width: 75px; height: 75px" src="@Model.PostCreatorProfilePicBlob?.Path"/>
         <a href="@Url.Page("profile", new { id = Model.Post.UserId })">@Model.PostCreator.UserName</a>
     </div>
 </div>
