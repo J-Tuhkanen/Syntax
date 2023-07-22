@@ -5,6 +5,7 @@ namespace Syntax.Models
 {
     public class Comment : EntityWithId, IUserActivity
     {
+        // Showcase of pull request
         public string PostId { get; set; }
         public string UserId { get; set; }
         public string Content { get; set; }
