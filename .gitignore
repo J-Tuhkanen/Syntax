@@ -363,3 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 /.svn
 /.editorconfig
+
+# Other stuff
+/wwwroot/files

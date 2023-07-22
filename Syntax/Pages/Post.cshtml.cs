@@ -76,7 +76,6 @@ namespace Syntax.Pages
 
             var newComment = new Comment
             {
-                Id = Guid.NewGuid().ToString(),
                 Content = Input.Comment,
                 IsDeleted = false,
                 PostId = id,

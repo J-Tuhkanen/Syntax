@@ -46,7 +46,6 @@ namespace Syntax.Pages
                 var user = await _userManager.GetUserAsync(User);
                 var newPost = new Post()
                 {
-                    Id = Guid.NewGuid().ToString(),
                     UserId = user.Id,
                     IsDeleted = false,
                     Title = Input.Title,

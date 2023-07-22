@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Syntax.Models;
 using Syntax.Services;
 using Syntax.Wrappers;
 using System;
@@ -11,7 +12,6 @@ using System.Threading.Tasks;
 
 namespace Syntax.Pages
 {
-    //[Authorize]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
@@ -27,7 +27,11 @@ namespace Syntax.Pages
 
         public async Task OnGetAsync()
         {
-            Posts = (await _postService.GetPosts()).Select(p => new PostWrapper(p));
+            IEnumerable<Post> postQueryResult = await _postService.GetPostsAsync();
+
+            IEnumerable<PostWrapper> postWrapper = postQueryResult.Select(p => new PostWrapper(p));
+
+            Posts = postWrapper;
         }
     }
 }

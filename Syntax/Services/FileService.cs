@@ -42,7 +42,6 @@ namespace Syntax.Services
 
                         var newBlob = new Blob
                         {
-                            Id = Guid.NewGuid().ToString(),
                             Path = "/" + publicPath.Replace("\\", "/"),
                             Timestamp = DateTime.Now,
                             UserId = userId

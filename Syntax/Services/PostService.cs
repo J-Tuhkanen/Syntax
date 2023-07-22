@@ -42,7 +42,7 @@ namespace Syntax.Services
                 : await postsByUser.ToListAsync();
         }
 
-        public async Task<IEnumerable<Post>> GetPosts(int skipAmount, int amount)
+        public async Task<IEnumerable<Post>> GetPostsAsync(int skipAmount, int amount)
         {
             var notDeletedPosts = _appDbContext.Posts.Where(p => p.IsDeleted == false);
 
