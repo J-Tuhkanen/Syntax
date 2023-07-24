@@ -86,8 +86,6 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
 
             ProfilePictureBlob = await _userService.GetUserProfilePictureAsync(user.Id);
             
-            
-            //await LoadAsync(user);
             return Page();
         }
 

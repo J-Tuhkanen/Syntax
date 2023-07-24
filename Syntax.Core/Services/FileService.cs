@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Syntax.Core.Data;
+using Syntax.Core.Helpers;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Interfaces;
-using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Syntax.Core.Services
 {
@@ -14,7 +11,6 @@ namespace Syntax.Core.Services
     {
         private IWebHostEnvironment _environment;
         private ApplicationDbContext _appDbContext;
-        private string[] _allowedExtensions = new[] { "jpg", "jpeg", "png" };
 
         public FileService(IWebHostEnvironment environment, ApplicationDbContext appDbContext)
         {
@@ -26,42 +22,48 @@ namespace Syntax.Core.Services
         /// <summary>
         /// TODO: Replace later with Azure Storage
         /// </summary>
-        public async Task<Blob> UploadFileAsync(IFormFile Upload, string userId)
+        public async Task<Blob> UploadFileAsync(IFormFile file, string userId)
         {
-            try
-            {
-                var fileExtension = Upload.FileName.Split(".").LastOrDefault().ToLower();
-
-                if (_allowedExtensions.Contains(fileExtension))
-                {
-                    string publicPath = Path.Combine("files", userId + "." + fileExtension);
-                    string fileName = Path.Combine(_environment.WebRootPath, publicPath);
-
-                    using (var fileStream = new FileStream(fileName, FileMode.Create))
-                    {
-                        await Upload.CopyToAsync(fileStream);
-
-                        var newBlob = new Blob
-                        {
-                            Path = "/" + publicPath.Replace("\\", "/"),
-                            Timestamp = DateTime.Now,
-                            UserId = userId
-                        };
-
-                        await _appDbContext.Blobs.AddAsync(newBlob);
-                        await _appDbContext.SaveChangesAsync();
-
-                        return newBlob;
-                    }
-                }
-
+            if(file.Length < 0)
                 throw new Exception("Invalid file");
-            }
-            catch
+
+            var fileExtension = await GetFileFormat(file);
+
+            if (fileExtension == ImageFormat.unknown)
+                throw new Exception("Invalid file");
+
+            string userFileName = Path.Combine("files", userId + "." + fileExtension.ToString());
+            string fileName = Path.Combine(_environment.WebRootPath, userFileName);
+
+            using (var fileStream = new FileStream(fileName, FileMode.Create))
             {
-                throw;
-            }
+                await file.CopyToAsync(fileStream);
+
+                var newBlob = new Blob
+                {
+                    Path = "/" + userFileName.Replace("\\", "/"),
+                    Timestamp = DateTime.Now,
+                    UserId = userId
+                };
+
+                await _appDbContext.Blobs.AddAsync(newBlob);
+                await _appDbContext.SaveChangesAsync();
+
+                return newBlob;
+            }            
+
+            throw new Exception("Invalid file");
         }
 
+
+        private async Task<ImageFormat> GetFileFormat(IFormFile file)
+        {
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+
+                return FileHelper.GetImageFormatFromBytes(stream.ToArray());
+            }
+        }
     }
 }
