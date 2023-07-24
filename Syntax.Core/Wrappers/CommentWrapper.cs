@@ -1,16 +1,14 @@
 ﻿using Syntax.Core.Models;
+using Syntax.Core.Wrappers.Base;
 
 namespace Syntax.Core.Wrappers
 {
-    public class CommentWrapper : Comment
+    public class CommentWrapper : WrapperBase<Comment>
     {
-        public CommentWrapper(Comment comment)
+        public CommentWrapper(Comment comment) 
+            : base(comment)
         {
-            PostId = comment.PostId;
-            UserId = comment.UserId;
-            Content = comment.Content;
-            IsDeleted = comment.IsDeleted;
-            Timestamp = comment.Timestamp;
+
         }
     }
 }
