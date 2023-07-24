@@ -1,8 +1,8 @@
-﻿using Syntax.Models.Base;
+﻿using Syntax.Core.Models.Base;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Syntax.Models
+namespace Syntax.Core.Models
 {
     public class Post : EntityWithId, IUserActivity
     {

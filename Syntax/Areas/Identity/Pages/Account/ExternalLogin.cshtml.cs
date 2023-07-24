@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Syntax.Models;
+using Syntax.Core.Models;
 
 namespace Syntax.Areas.Identity.Pages.Account
 {

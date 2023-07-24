@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Syntax.Models;
-using Syntax.Services;
-using Syntax.Wrappers;
+using Syntax.Core.Models;
+using Syntax.Core.Services;
+using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -7,11 +7,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Syntax.Data;
-using Syntax.Models;
-using Syntax.Services;
+using Syntax.Core.Data;
+using Syntax.Core.Models;
+using Syntax.Core.Services;
+using Syntax.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,12 +28,13 @@ namespace Syntax
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
+            // Database configuration
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            // Configure identity and required settings for each user
             services.AddDefaultIdentity<UserAccount>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
@@ -40,19 +43,19 @@ namespace Syntax
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 0;
-            })
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
 
+            // Add services to dependency injection to be injectable whenever needed
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, FileService>();
-            services.AddTransient<UserService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddDistributedMemoryCache();
             services.AddRazorPages().AddRazorRuntimeCompilation();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -63,9 +66,11 @@ namespace Syntax
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts
                 app.UseHsts();
             }
+
+            CreateFilesFolderIfDoesntExist(env);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -77,6 +82,14 @@ namespace Syntax
             {
                 endpoints.MapRazorPages();
             });
+        }
+
+        private void CreateFilesFolderIfDoesntExist(IWebHostEnvironment env)
+        {
+            var userFilesPath = Path.Combine(env.WebRootPath, "files");
+
+            if(Directory.Exists(userFilesPath) == false)
+                Directory.CreateDirectory(userFilesPath);            
         }
     }
 }

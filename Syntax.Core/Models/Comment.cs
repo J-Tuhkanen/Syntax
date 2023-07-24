@@ -1,7 +1,7 @@
-﻿using Syntax.Models.Base;
+﻿using Syntax.Core.Models.Base;
 using System;
 
-namespace Syntax.Models
+namespace Syntax.Core.Models
 {
     public class Comment : EntityWithId, IUserActivity
     {

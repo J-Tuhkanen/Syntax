@@ -1,14 +1,15 @@
-using Syntax.Models;
-using Syntax.Services;
+using Syntax.Core.Models;
+using Syntax.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System;
-using Syntax.Data;
+using Syntax.Core.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using Syntax.Core.Services.Interfaces;
 
 namespace Syntax.Pages
 {
