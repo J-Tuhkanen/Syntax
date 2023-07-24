@@ -13,6 +13,7 @@ using Syntax.Core.Services;
 using Syntax.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -69,6 +70,8 @@ namespace Syntax
                 app.UseHsts();
             }
 
+            CreateFilesFolderIfDoesntExist(env);
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
@@ -79,6 +82,14 @@ namespace Syntax
             {
                 endpoints.MapRazorPages();
             });
+        }
+
+        private void CreateFilesFolderIfDoesntExist(IWebHostEnvironment env)
+        {
+            var userFilesPath = Path.Combine(env.WebRootPath, "files");
+
+            if(Directory.Exists(userFilesPath) == false)
+                Directory.CreateDirectory(userFilesPath);            
         }
     }
 }
