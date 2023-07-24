@@ -1,5 +1,7 @@
 ﻿@page
+@using Syntax.Core.Services.Interfaces;
 @inject ApplicationDbContext AppDBContext
+@inject IUserService userService;
 
 @model IndexModel
 
@@ -16,20 +18,20 @@
     
     @foreach(var post in Model.Posts)
     {
-        var postUrl = @Url.Page("post", new { id = post.Id });
+        var postUrl = @Url.Page("post", new { id = post.Model.Id });
+        var postAuthor = await userService.GetUserAccountAsync(post.Model.UserId);
 
         <div class="main-page-post" data-view-post-url="@postUrl">
             <div class="post-content">
                 <div class="post-sub-container header-container">
-                    <h3>@post.Title</h3>
+                    <h3>@post.Model.Title</h3>
                 </div>
-
                 <div class="post-sub-container">
                     <p class="post-body">@post.DisplayBody</p>
                 </div>
                      
                 <div class="post-sub-container author-container">
-                    <a class="post-author" href="@Url.Page("profile", new { id = post.UserId })">@AppDBContext.Users.FirstOrDefault(u => u.Id == post.UserId).UserName</a>
+                    <a class="post-author" href="@Url.Page("profile", new { id = post.Model.UserId })">@postAuthor.UserName</a>
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@
 
 using System;
 using System.Threading.Tasks;
-using Syntax.Models;
+using Syntax.Core.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

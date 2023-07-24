@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Syntax.Models.Base
+namespace Syntax.Core.Models.Base
 {
     public interface IUserActivity
     {

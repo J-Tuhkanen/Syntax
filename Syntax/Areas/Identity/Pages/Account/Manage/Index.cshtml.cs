@@ -6,14 +6,15 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using Syntax.Models;
+using Syntax.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
-using Syntax.Services;
+using Syntax.Core.Services;
+using Syntax.Core.Services.Interfaces;
 
 namespace Syntax.Areas.Identity.Pages.Account.Manage
 {
@@ -22,13 +23,13 @@ namespace Syntax.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<UserAccount> _userManager;
         private readonly SignInManager<UserAccount> _signInManager;
         private readonly IFileService _fileService;
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
         public IndexModel(
             UserManager<UserAccount> userManager,
             SignInManager<UserAccount> signInManager, 
             IFileService fileService,
-            UserService userService)
+            IUserService userService)
         {
             _userManager = userManager;
             _signInManager = signInManager;

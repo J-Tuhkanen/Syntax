@@ -7,9 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Syntax.Data;
-using Syntax.Models;
-using Syntax.Services;
+using Syntax.Core.Data;
+using Syntax.Core.Models;
+using Syntax.Core.Services;
+using Syntax.Core.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +47,7 @@ namespace Syntax
             services.AddTransient<IPostService, PostService>();
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, FileService>();
-            services.AddTransient<UserService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddDistributedMemoryCache();
             services.AddRazorPages().AddRazorRuntimeCompilation();

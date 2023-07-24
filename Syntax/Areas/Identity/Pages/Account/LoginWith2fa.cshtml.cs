@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Identity;
-using Syntax.Models;
+using Syntax.Core.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
