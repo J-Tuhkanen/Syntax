@@ -10,7 +10,6 @@ function revokeObjectURL(url) {
         : window.webkitURL.revokeObjectURL(url);
 }
 
-
 $("#profile-picture-input").on('change', (e) => {
 
     // There should be only 1 file

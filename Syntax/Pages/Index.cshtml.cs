@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Syntax.Core.Models;
-using Syntax.Core.Services;
-using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Services.Base;
 using Syntax.Core.Wrappers;
 using System;
 using System.Collections.Generic;
@@ -16,23 +14,21 @@ namespace Syntax.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly IPostService _postService;
 
-        public IndexModel(ILogger<IndexModel> logger, IPostService postService)
+        public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
-            _postService = postService;
         }
+                
+        public string PostRequestUrl { get; private set; }
 
-        public IEnumerable<PostWrapper> Posts { get; private set; }
-
-        public async Task OnGetAsync()
+        public void OnGet()
         {
-            IEnumerable<Post> postQueryResult = await _postService.GetPostsAsync();
-
-            IEnumerable<PostWrapper> postWrapper = postQueryResult.Select(p => new PostWrapper(p));
-
-            Posts = postWrapper;
+            PostRequestUrl = Url.Action(new UrlActionContext 
+            { 
+                Controller = "post",
+                Action = "getposts"
+            });
         }
     }
 }

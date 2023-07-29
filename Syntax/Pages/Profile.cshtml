@@ -17,7 +17,7 @@
     <div class="col-9">
         <h1>Overview</h1>
         <div>
-            @foreach(IUserActivity item in Model.UserActivity)
+            @foreach(IUserActivity item in Model.UserComments)
             {
                 var itemType = item.GetType();
 
@@ -25,7 +25,7 @@
                 {
                     var post = item as Post;
 
-                    <a href="/post/@post.Id" style="text-decoration: none; color: black;">
+                    <a href="/post/@post.Id" style="text-decoration: none; color: white;">
                         <div class="post">
                             <h3>@post.Title</h3>
                             <p class="post-content">@post.Body</p>
@@ -37,7 +37,7 @@
                 {
                     var comment = item as Comment;
 
-                    <a href="/post/@comment.PostId" style="text-decoration: none; color: black;">
+                    <a href="/post/@comment.PostId" style="text-decoration: none; color: white;">
                         <div class="post">
                             <p class="post-content">@comment.Content</p>
                         </div>

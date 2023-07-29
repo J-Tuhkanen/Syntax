@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Syntax.Core.Data;
 using Syntax.Core.Models;
 using Syntax.Core.Services;
-using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Services.Base;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,7 +61,7 @@ namespace Syntax.Pages
             {
                 Post = post;
                 
-                Comments = await _commentService.GetCommentsAsync(Post.Id);
+                Comments = await _commentService.GetCommentsAsync(Post.Id, new List<string>());
                 PostCreator = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == Post.UserId);
                 PostCreatorProfilePicBlob = await _appDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == PostCreator.ProfilePictureFileId);
 

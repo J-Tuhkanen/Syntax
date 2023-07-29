@@ -81,6 +81,39 @@ html {
   }
 }
 
+.loader {
+    border: 8px solid #cf7500;
+    border-radius: 50%;
+    border-top: 8px solid #0d70a1;
+    width: 5vw;
+    height: 5vw;
+    caret-color: transparent;
+    margin: 20vh auto;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .border-top {
   border-top: 1px solid #e5e5e5;
 }

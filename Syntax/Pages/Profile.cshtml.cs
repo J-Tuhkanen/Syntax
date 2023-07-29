@@ -6,7 +6,7 @@ using Syntax.Core.Data;
 using Syntax.Core.Models;
 using Syntax.Core.Models.Base;
 using Syntax.Core.Services;
-using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Services.Base;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,8 +48,8 @@ namespace Syntax.Pages
             ViewedUser = await _userManager.FindByIdAsync(id);
             ProfilePictureBlob = await _dbContext.Blobs.FirstOrDefaultAsync(b => b.Id == ViewedUser.ProfilePictureFileId);
 
-            UserPosts = await _postService.GetPostsByUserAsync(id, 5);
-            UserComments = await _commentService.GetCommentsByUserAsync(id, 5);
+            UserPosts = await _postService.GetPostsByUserAsync(id, new List<string>(), 5);
+            UserComments = await _commentService.GetCommentsByUserAsync(id, new List<string>(), 5);
 
             UserActivity = ((IEnumerable<IUserActivity>)UserPosts).Concat(UserComments).OrderBy(a => a.Timestamp);
         }

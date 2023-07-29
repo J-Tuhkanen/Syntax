@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syntax.Core.Data;
 using Syntax.Core.Models;
-using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Repositories;
+using Syntax.Core.Repositories.Base;
+using Syntax.Core.Services.Base;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,52 +12,36 @@ namespace Syntax.Core.Services
 {
     public class PostService : IPostService
     {
+        private readonly IPostRepository _postRepository;
         private ApplicationDbContext _appDbContext;
 
-        public PostService(ApplicationDbContext appDbContext)
+        public PostService(ApplicationDbContext appDbContext, IPostRepository postRepository)
         {
+            _postRepository = postRepository;
             _appDbContext = appDbContext;
-
         }
 
         public async Task<Post> CreatePostAsync(Post post)
         {
-            try
-            {
-                await _appDbContext.Posts.AddAsync(post);
-                await _appDbContext.SaveChangesAsync();
+            Post createdPost = await _postRepository.CreatePostAsync(post);
 
-                return post;
-            }
-            catch
-            {
-                // Add logging
-                return null;
-            }
+            await _postRepository.SaveChangesAsync();
+
+            return createdPost;
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, int amount)
+        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<string> excludedPosts, int amount)
         {
-            var postsByUser = _appDbContext.Posts.Where(p => p.UserId == userId);
-
-            return amount > 0
-                ? await postsByUser.Take(amount).ToListAsync()
-                : await postsByUser.ToListAsync();
+            return await _postRepository.GetPostsByUserAsync(userId, excludedPosts, amount);
         }
 
-        public async Task<IEnumerable<Post>> GetPostsAsync(int skipAmount, int amount)
+        public async Task<IEnumerable<Post>> GetPostsAsync(IEnumerable<string> excludedPosts, int amount)
         {
-            var notDeletedPosts = _appDbContext.Posts.Where(p => p.IsDeleted == false);
-
-            return amount > 0
-                ? await notDeletedPosts.ToListAsync()
-                : await notDeletedPosts.Skip(skipAmount).Take(amount).ToListAsync();
+            return await _postRepository.GetPostsAsync(excludedPosts, amount);
         }
 
-        public async Task<Post> GetPostById(string id)
-        {
-            return await _appDbContext.Posts.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
-        }
+        public async Task<Post> GetPostById(string id) => await _postRepository.GetPostById(id);
+        
 
         /// <summary>
         /// Mark post as deleted by post id

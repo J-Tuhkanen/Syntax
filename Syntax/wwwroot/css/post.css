@@ -31,22 +31,22 @@
         }
 
 /*Main Page Hover CSS*/
-.main-page-post-hover {
+.main-page-post:hover {
     background: #ffffff20;
     cursor: pointer;
 }
 
-    .main-page-post-hover > .post-content > .header-container {
+    .main-page-post:hover > .post-content > .header-container {
         border-bottom: 1px solid #cf7500;
     }
 
-    .main-page-post-hover > .post-content > .author-container {
+    .main-page-post:hover > .post-content > .author-container {
         color: #cf7500;
     }
 
-        .main-page-post-hover > .post-content > .header-container > .post-author {
-            color: #cf7500;
-        }
+    .main-page-post:hover > .post-content > .header-container > .post-author {
+        color: #cf7500;
+    }
 
 /*Post Page CSS*/
 .post-page-post {

@@ -1,11 +1,12 @@
 ﻿using Syntax.Core.Models;
 
-namespace Syntax.Core.Services.Base
+namespace Syntax.Core.Repositories.Base
 {
-    public interface IUserService
+    public interface IUserRepository
     {
-        Task<UserAccount> GetUserByIdAsync(string id);
+        Task<UserAccount> GetUserById(string id);
         Task<Blob> GetUserProfilePictureAsync(string userId);
         Task SetUserProfilePictureAsync(string userId, Blob blob);
+        Task SaveChangesAsync();
     }
 }
