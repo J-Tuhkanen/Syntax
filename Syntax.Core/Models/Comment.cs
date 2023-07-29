@@ -7,9 +7,15 @@ namespace Syntax.Core.Models
     {
         // Showcase of pull request
         public string PostId { get; set; }
+
         public string UserId { get; set; }
+
+        public virtual UserAccount User { get; set; }
+
         public string Content { get; set; }
+
         public bool IsDeleted { get; set; }
+
         public DateTime Timestamp { get; set; }
     }
 }
