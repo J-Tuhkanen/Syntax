@@ -1,9 +1,9 @@
 class PostContentComponent {
 
-    loadAmount = 20;
-    excludedPosts = [];
+    loadAmount = 5;
+    childElementIdCollection = [];
     containerElement = null;
-    requestUrl;
+    requestUrl = null;
 
     Initialize(elementId) {
 
@@ -11,16 +11,17 @@ class PostContentComponent {
         this.requestUrl = this.containerElement.data("post-request-url");
     }
 
-    requestForPosts() {
+    requestForPosts(clearExistingChildren = false) {
 
         $.ajax({
+            async: true,
             "type": "POST",
             "dataType": "json",
             "content-type": "application/json",
             "url": this.requestUrl,
             "data": JSON.stringify({
 
-                ExcludedPosts: this.excludedPosts,
+                ExcludedPosts: this.childElementIdCollection,
                 Amount: this.loadAmount
             }),
             "headers": {
@@ -32,21 +33,35 @@ class PostContentComponent {
         })
             .done((data) => {
 
-                $(this.containerElement).empty();
-                this.buildPostElements(data);
-            })
-            .fail((data) => {
+                if (clearExistingChildren) {
 
-                console.log(data);
-                alert("Failed to connect to API.");
+                    this.clearElements();
+                }
+                this.buildPostElements(data);
+
+                if (data.length > 0 && $(window).height() > this.containerElement.height()) {
+
+                    this.requestForPosts();
+                }
+            })
+            .fail(() => {
+
+
+                alert("Server error.")
             });
+    }
+
+    clearElements() {
+
+        this.containerElement.empty();
+        this.childElementIdCollection = [];
     }
 
     buildPostElements(data) {
 
         $.each(data, (index, value) => {
 
-            this.excludedPosts.push(value.id);
+            this.childElementIdCollection.push(value.id);
 
             var postTitle = value.title;
             var postBody = value.body;
@@ -69,14 +84,30 @@ class PostContentComponent {
                 window.location.href = target.data('view-post-url');
             });
 
-            $(this.containerElement).append(postElement);
+            this.containerElement.append(postElement);
         });
     }
 }
 
-$(function () {
+var postContentComponent = new PostContentComponent();
 
-    var postContentComponent = new PostContentComponent();
-    postContentComponent.Initialize("#index-page-posts-container");
-    postContentComponent.requestForPosts();
+$(function () {
+        
+    postContentComponent.Initialize("#index-page-posts-container"); 
+    postContentComponent.requestForPosts(true);
+});
+
+$(window).scroll(function () {
+    if ($(window).scrollTop() + $(window).height() == $(document).height()) {
+
+        var elementsBeforeRequest = postContentComponent.childElementIdCollection;
+
+        postContentComponent.requestForPosts();
+
+        var noMoreContentToLoad = postContentComponent.childElementIdCollection.length === elementsBeforeRequest.length;
+        if (noMoreContentToLoad) {
+
+            $(window).unbind("scroll");
+        }
+    }
 });
