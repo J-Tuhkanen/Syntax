@@ -2,7 +2,7 @@
 using Syntax.Core.Models;
 using System.Threading.Tasks;
 
-namespace Syntax.Core.Services.Interfaces
+namespace Syntax.Core.Services.Base
 {
     public interface IFileService
     {

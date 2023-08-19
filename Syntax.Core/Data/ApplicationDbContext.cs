@@ -15,6 +15,26 @@ namespace Syntax.Core.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            // Load the virtual user property to the model(s) using UserId property value
+            // https://learn.microsoft.com/en-us/ef/core/modeling/relationships/one-to-many
+            builder.Entity<Post>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
+
+            builder.Entity<Comment>()
+                .HasOne(e => e.User)
+                .WithMany()
+                .HasForeignKey(e => e.UserId)
+                .IsRequired();
         }
     }
 }

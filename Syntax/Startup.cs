@@ -9,8 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Syntax.Core.Data;
 using Syntax.Core.Models;
+using Syntax.Core.Repositories;
+using Syntax.Core.Repositories.Base;
 using Syntax.Core.Services;
-using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Services.Base;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,7 +34,11 @@ namespace Syntax
         public void ConfigureServices(IServiceCollection services)
         {
             // Database configuration
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseLazyLoadingProxies();            
+            });
 
             // Configure identity and required settings for each user
             services.AddDefaultIdentity<UserAccount>(options =>
@@ -50,6 +56,10 @@ namespace Syntax
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();
+
+            services.AddTransient<IPostRepository, PostRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
 
             services.AddDistributedMemoryCache();
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -81,6 +91,7 @@ namespace Syntax
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
 

@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Syntax.Core.Services;
-using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Services.Base;
 
 namespace Syntax.Areas.Identity.Pages.Account.Manage
 {

@@ -15,13 +15,13 @@ namespace Syntax.Core.Helpers
     public static class FileHelper
     {
         // see http://www.mikekunz.com/image_file_header.html  
-        private static byte[] bmp = Encoding.ASCII.GetBytes("BM");     // BMP
-        private static byte[] gif = Encoding.ASCII.GetBytes("GIF");    // GIF
-        private static byte[] png = new byte[] { 137, 80, 78, 71 };    // PNG
-        private static byte[] tiff = new byte[] { 73, 73, 42 };         // TIFF
-        private static byte[] tiff2 = new byte[] { 77, 77, 42 };         // TIFF
-        private static byte[] jpeg = new byte[] { 255, 216, 255, 224 }; // jpeg
-        private static byte[] jpeg2 = new byte[] { 255, 216, 255, 225 }; // jpeg canon
+        private static readonly byte[] bmp = Encoding.ASCII.GetBytes("BM");     // BMP
+        private static readonly byte[] gif = Encoding.ASCII.GetBytes("GIF");    // GIF
+        private static readonly byte[] png = new byte[] { 137, 80, 78, 71 };    // PNG
+        private static readonly byte[] tiff = new byte[] { 73, 73, 42 };         // TIFF
+        private static readonly byte[] tiff2 = new byte[] { 77, 77, 42 };         // TIFF
+        private static readonly byte[] jpeg = new byte[] { 255, 216, 255, 224 }; // jpeg
+        private static readonly byte[] jpeg2 = new byte[] { 255, 216, 255, 225 }; // jpeg canon
 
         public static ImageFormat GetImageFormatFromBytes(byte[] bytes)
         {

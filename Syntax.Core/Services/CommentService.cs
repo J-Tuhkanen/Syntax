@@ -1,62 +1,38 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Syntax.Core.Data;
-using Syntax.Core.Models;
-using Syntax.Core.Services.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Syntax.Core.Models;
+using Syntax.Core.Repositories.Base;
+using Syntax.Core.Services.Base;
 
 namespace Syntax.Core.Services
 {
     public class CommentService : ICommentService
     {
-        private ApplicationDbContext _appDbContext;
+        private readonly ICommentRepository _commentRepository;
 
-        public CommentService(ApplicationDbContext appDbContext)
+        public CommentService(ICommentRepository commentRepository)
         {
-            _appDbContext = appDbContext;
+            _commentRepository = commentRepository;
         }
 
         public async Task<Comment> CreateCommentAsync(Comment comment)
         {
-            await _appDbContext.Comments.AddAsync(comment);
-            await _appDbContext.SaveChangesAsync();
+            await _commentRepository.CreateCommentAsync(comment);
+            await _commentRepository.SaveChangesAsync();            
 
             return comment;
         }
 
         public async Task<bool> DeleteComment(string id)
         {
-            var comment = await _appDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
+            var isSuccessful = await _commentRepository.DeleteComment(id);
+            await _commentRepository.SaveChangesAsync();
 
-            if (comment != null)
-            {
-                comment.IsDeleted = true;
-                await _appDbContext.SaveChangesAsync();
-
-                return true;
-            }
-
-            return false;
+            return isSuccessful;
         }
 
-        public async Task<Comment> GetCommentById(string id)
-        {
-            return await _appDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id && c.IsDeleted == false);
-        }
+        public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId, IEnumerable<string> ExcludedComments, int amount)
+            => await _commentRepository.GetCommentsAsync(postId, ExcludedComments, amount);
 
-        public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId)
-        {
-            return await _appDbContext.Comments.Where(c => c.PostId == postId && c.IsDeleted == false).ToListAsync();
-        }
-
-        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, int amount)
-        {
-            var userComments = _appDbContext.Comments.Where(c => c.UserId == userId);
-
-            return amount > 0
-                ? await userComments.Take(amount).ToListAsync()
-                : await userComments.ToListAsync();
-        }
+        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<string> ExcludedComments, int amount)
+            => await _commentRepository.GetCommentsByUserAsync(userId, ExcludedComments, amount);
     }
 }

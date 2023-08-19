@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Syntax.Core.Data;
 using Syntax.Core.Helpers;
 using Syntax.Core.Models;
-using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Services.Base;
 
 namespace Syntax.Core.Services
 {
@@ -17,7 +17,6 @@ namespace Syntax.Core.Services
             _environment = environment;
             _appDbContext = appDbContext;
         }
-
 
         /// <summary>
         /// TODO: Replace later with Azure Storage

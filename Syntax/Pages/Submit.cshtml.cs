@@ -9,7 +9,7 @@ using System;
 using Syntax.Core.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Syntax.Core.Services.Interfaces;
+using Syntax.Core.Services.Base;
 
 namespace Syntax.Pages
 {
