@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax", "Syntax\Syntax.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax.Core", "Syntax.Core\Syntax.Core.csproj", "{7033CACA-8540-47F1-95FD-7CE7F1F25CFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syntax.Tests", "Syntax.Tests\Syntax.Tests.csproj", "{19942800-6404-4FC6-B506-8B08F18A0863}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{7033CACA-8540-47F1-95FD-7CE7F1F25CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7033CACA-8540-47F1-95FD-7CE7F1F25CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7033CACA-8540-47F1-95FD-7CE7F1F25CFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19942800-6404-4FC6-B506-8B08F18A0863}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19942800-6404-4FC6-B506-8B08F18A0863}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19942800-6404-4FC6-B506-8B08F18A0863}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19942800-6404-4FC6-B506-8B08F18A0863}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
