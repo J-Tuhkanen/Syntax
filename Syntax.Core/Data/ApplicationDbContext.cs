@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Syntax.Core.Models;
 
 namespace Syntax.Core.Data
@@ -15,7 +16,6 @@ namespace Syntax.Core.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

@@ -10,6 +10,7 @@ using Syntax.Core.Data;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Syntax.Core.Services.Base;
+using System.Text.Encodings.Web;
 
 namespace Syntax.Pages
 {
@@ -18,9 +19,7 @@ namespace Syntax.Pages
     {
         private UserManager<UserAccount> _userManager;
         private IPostService _postService;
-        public SubmitModel(
-            UserManager<UserAccount> userManager,
-            IPostService postService)
+        public SubmitModel(UserManager<UserAccount> userManager, IPostService postService)
         {
             _userManager = userManager;
             _postService = postService;
@@ -31,13 +30,24 @@ namespace Syntax.Pages
 
         public class InputModel
         {
+            private string _title;
+            private string _submitBody;
+
             [Required]
             [Display(Name = "Title")]
             [MaxLength(80)]
-            public string Title { get; set; }
+            public string Title 
+            {
+                get => _title;
+                set => _title = HtmlEncoder.Default.Encode(value);
+            }
 
             [Required]
-            public string SubmitBody { get; set; }
+            public string SubmitBody 
+            {
+                get => _submitBody;
+                set => _submitBody = HtmlEncoder.Default.Encode(value);
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()

@@ -1,4 +1,6 @@
-﻿function createObjectURL(object) {
+﻿var existingImageUrl = null;
+
+function createObjectURL(object) {
     return (window.URL)
         ? window.URL.createObjectURL(object)
         : window.webkitURL.createObjectURL(object);
@@ -15,9 +17,14 @@ $("#profile-picture-input").on('change', (e) => {
     // There should be only 1 file
     if (e.target.files.length == 1) {
 
-        var file = e.target.files[0];
+        if (existingImageUrl) {
+            revokeObjectURL(existingImageUrl);
+        }
 
+        var file = e.target.files[0];
         var src = createObjectURL(file);
+
+        existingImageUrl = src;
         var image = new Image();
         image.src = src;
         $('#img').attr('src', src);

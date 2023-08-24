@@ -61,6 +61,7 @@ namespace Syntax
             services.AddTransient<ICommentRepository, CommentRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
 
+            services.AddWebEncoders();
             services.AddDistributedMemoryCache();
             services.AddRazorPages().AddRazorRuntimeCompilation();
         }

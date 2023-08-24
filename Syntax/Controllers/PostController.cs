@@ -6,6 +6,7 @@ using Syntax.Core.Wrappers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Syntax.Controllers
 {
@@ -26,7 +27,7 @@ namespace Syntax.Controllers
             IEnumerable<Post> posts = await _postService.GetPostsAsync(request.ExcludedPosts, request.Amount);
             IEnumerable<PostWrapper> postWrappers = posts.Select(p => new PostWrapper(p));
 
-            return new ObjectResult(postWrappers.OrderByDescending(pw => pw.Timestamp.Ticks));
+            return Content(JsonSerializer.Serialize(postWrappers.OrderByDescending(pw => pw.Timestamp.Ticks)));
         }
     }
 }

@@ -61,13 +61,13 @@ class PostContentComponent {
 
         $.each(data, (index, value) => {
 
-            this.childElementIdCollection.push(value.id);
+            this.childElementIdCollection.push(value.Id);
 
-            var postTitle = value.title;
-            var postBody = value.body;
-            var postId = value.id;
-            var postAuthorId = value.userId;
-            var postAuthor = value.userName;
+            var postTitle = value.Title;
+            var postBody = value.Body;
+            var postId = value.Id;
+            var postAuthorId = value.UserId;
+            var postAuthor = value.UserName;
 
             var postElement = $("<div class='main-page-post' data-view-post-url='post/" + postId + "'></div>");
 
@@ -92,7 +92,7 @@ class PostContentComponent {
 var postContentComponent = new PostContentComponent();
 
 $(function () {
-        
+    
     postContentComponent.Initialize("#index-page-posts-container"); 
     postContentComponent.requestForPosts(true);
 });
