@@ -23,6 +23,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Newtonsoft.Json;
 using Syntax.Core.Extensions;
+using Syntax.Core.Services.Base;
 
 namespace Syntax.Areas.Identity.Pages.Account
 {
@@ -32,6 +33,7 @@ namespace Syntax.Areas.Identity.Pages.Account
         private readonly SignInManager<UserAccount> _signInManager;
         private readonly UserManager<UserAccount> _userManager;
         private readonly IUserStore<UserAccount> _userStore;
+        private readonly IUserService _userService;
         private readonly IUserEmailStore<UserAccount> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
@@ -39,13 +41,14 @@ namespace Syntax.Areas.Identity.Pages.Account
         public RegisterModel(
             UserManager<UserAccount> userManager,
             IUserStore<UserAccount> userStore,
+            IUserService userService,
             SignInManager<UserAccount> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = GetEmailStore();
+            _userService = userService;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
@@ -122,11 +125,8 @@ namespace Syntax.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                UserAccount user = CreateUser();
-
-                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                UserAccount user = CreateUserInstance();
+                var result = await _userService.CreateUser(user, Input.UserName, Input.Password, Input.Email);
 
                 if (result.Succeeded)
                 {
@@ -164,7 +164,7 @@ namespace Syntax.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private UserAccount CreateUser()
+        private UserAccount CreateUserInstance()
         {
             try
             {
@@ -176,14 +176,6 @@ namespace Syntax.Areas.Identity.Pages.Account
                     $"Ensure that '{nameof(UserAccount)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
-        }
-
-        private IUserEmailStore<UserAccount> GetEmailStore()
-        {
-            if (!_userManager.SupportsUserEmail)
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            
-            return (IUserEmailStore<UserAccount>)_userStore;
         }
     }
 }
