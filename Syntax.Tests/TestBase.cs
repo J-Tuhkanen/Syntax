@@ -35,7 +35,7 @@ namespace Syntax.Tests
             _services.AddDbContext<ApplicationDbContext>(options =>
             {
                 //options.UseSqlServer("Server=127.0.0.1,1433;Database=Syntax-Tests;User Id=sa;Password=SyntaxDatabase123;");
-                options.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Syntax-Tests;Trusted_Connection=True;MultipleActiveResultSets=true");
+                options.UseSqlServer("Server=localhost;Database=Syntax-Tests;Trusted_Connection=True;MultipleActiveResultSets=true");
                 options.UseLazyLoadingProxies();
             });
         }
@@ -62,6 +62,20 @@ namespace Syntax.Tests
             _services.AddTransient<IPostRepository, PostRepository>();
             _services.AddTransient<ICommentRepository, CommentRepository>();
             _services.AddTransient<IUserRepository, UserRepository>();
+        }
+
+        protected UserAccount CreateUserInstance()
+        {
+            try
+            {
+                return Activator.CreateInstance<UserAccount>();
+            }
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(UserAccount)}'. " +
+                    $"Ensure that '{nameof(UserAccount)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+            }
         }
     }
 }

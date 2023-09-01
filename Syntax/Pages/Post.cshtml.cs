@@ -55,7 +55,7 @@ namespace Syntax.Pages
 
             IsLoggedIn = currentUser != null;
 
-            var post = await _postService.GetPostById(id);
+            var post = await _postService.GetPostByIdAsync(id);
 
             if (post != null)
             {
@@ -75,16 +75,7 @@ namespace Syntax.Pages
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var newComment = new Comment
-            {
-                Content = Input.Comment,
-                IsDeleted = false,
-                PostId = id,
-                UserId = user.Id,
-                Timestamp = DateTime.Now
-            };
-
-            await _commentService.CreateCommentAsync(newComment);
+            var newComment = await _commentService.CreateCommentAsync(id, Input.Comment, user.Id);
 
             return Redirect(Url.Page("post", new { id = id }));
         }

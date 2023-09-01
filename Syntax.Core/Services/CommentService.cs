@@ -13,21 +13,26 @@ namespace Syntax.Core.Services
             _commentRepository = commentRepository;
         }
 
-        public async Task<Comment> CreateCommentAsync(Comment comment)
+        public async Task<Comment> CreateCommentAsync(string postId, string content, string userId)
         {
+            var comment = new Comment(postId, content, userId);
+
             await _commentRepository.CreateCommentAsync(comment);
             await _commentRepository.SaveChangesAsync();            
 
             return comment;
         }
 
-        public async Task<bool> DeleteComment(string id)
+        public async Task<bool> DeleteCommentAsync(string id)
         {
             var isSuccessful = await _commentRepository.DeleteComment(id);
             await _commentRepository.SaveChangesAsync();
 
             return isSuccessful;
         }
+
+        public async Task<Comment> GetCommentAsync(string id) 
+            => await _commentRepository.GetCommentAsync(id);
 
         public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId, IEnumerable<string> ExcludedComments, int amount)
             => await _commentRepository.GetCommentsAsync(postId, ExcludedComments, amount);

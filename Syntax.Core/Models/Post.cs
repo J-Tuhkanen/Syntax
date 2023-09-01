@@ -7,6 +7,14 @@ namespace Syntax.Core.Models
 {
     public class Post : EntityWithId, IUserActivity
     {
+        public Post(string title, string body, string userId) 
+        {
+            Title = title;
+            Body = body;
+            UserId = userId;
+            Timestamp = DateTime.UtcNow;
+        }
+
         public string UserId { get; set; }        
 
         public virtual UserAccount User { get; set; }

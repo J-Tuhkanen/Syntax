@@ -2,6 +2,7 @@
 using Syntax.Core.Data;
 using Syntax.Core.Models;
 using Syntax.Core.Repositories.Base;
+using System.ComponentModel.Design;
 
 namespace Syntax.Core.Repositories
 {
@@ -28,6 +29,9 @@ namespace Syntax.Core.Repositories
 
             return comment?.IsDeleted ?? false;
         }
+
+        public async Task<Comment> GetCommentAsync(string id) 
+            => await applicationDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
 
         public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId, IEnumerable<string> ExcludedComments, int amount)
         {
