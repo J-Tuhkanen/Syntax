@@ -19,7 +19,7 @@
                     <input asp-for="Input.ProfilePicture" id="profile-picture-input"  type="file" style="display:block" />
                 </div>
                 <div class="col-6">
-                    <img id="img" style="height:20vw; width:20vw; margin:auto" src="@Model.ProfilePictureBlob.Path" />
+                    <img id="img" style="height:20vw; width:20vw; margin:auto" src="@Model.ProfilePictureBlob?.Path" />
                 </div>
             </div>
 
