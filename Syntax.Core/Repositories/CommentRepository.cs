@@ -2,6 +2,7 @@
 using Syntax.Core.Data;
 using Syntax.Core.Models;
 using Syntax.Core.Repositories.Base;
+using System.ComponentModel.Design;
 
 namespace Syntax.Core.Repositories
 {
@@ -19,15 +20,23 @@ namespace Syntax.Core.Repositories
             return comment;
         }
 
-        public async Task<bool> DeleteComment(string commentId)
+        public async Task<Comment> DeleteCommentAsync(string id)
         {
-            Comment comment = await applicationDbContext.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+            var comment = applicationDbContext.Comments.FirstOrDefault(comment => comment.Id == id);
 
-            if (comment != null)
-                comment.IsDeleted = true;
+            if (comment == null)
+            {
+                throw new Exception($"Comment with id {id} was not found and could not be deleted.");
+            }
 
-            return comment?.IsDeleted ?? false;
+            comment.IsDeleted = true;
+            await applicationDbContext.SaveChangesAsync();
+
+            return comment;
         }
+
+        public async Task<Comment> GetCommentAsync(string id) 
+            => await applicationDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
 
         public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId, IEnumerable<string> ExcludedComments, int amount)
         {

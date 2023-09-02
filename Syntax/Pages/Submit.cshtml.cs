@@ -55,23 +55,17 @@ namespace Syntax.Pages
             if (ModelState.IsValid)
             {
                 var user = await _userManager.GetUserAsync(User);
-                var newPost = new Post()
+                try
                 {
-                    UserId = user.Id,
-                    IsDeleted = false,
-                    Title = Input.Title,
-                    Body = Input.SubmitBody,
-                    Timestamp = DateTime.Now
-                };
-                        
-                if(await _postService.CreatePostAsync(newPost) != null)
-                {
+                    var newPost = await _postService.CreatePostAsync(Input.Title, Input.SubmitBody, user.Id);
                     return Redirect(Url.Page("post", new { id = newPost.Id }));
                 }
-
-                return Redirect("/Error");
+                catch
+                {
+                    return Redirect("/Error");
+                }
             }
-
+            // TODO: Display invalid field error messages
             return Page();
         }
     }

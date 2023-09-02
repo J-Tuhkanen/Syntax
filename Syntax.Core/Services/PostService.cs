@@ -13,17 +13,15 @@ namespace Syntax.Core.Services
     public class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
-        private ApplicationDbContext _appDbContext;
 
-        public PostService(ApplicationDbContext appDbContext, IPostRepository postRepository)
+        public PostService(IPostRepository postRepository)
         {
             _postRepository = postRepository;
-            _appDbContext = appDbContext;
         }
 
-        public async Task<Post> CreatePostAsync(Post post)
+        public async Task<Post> CreatePostAsync(string title, string body, string userId)
         {
-            Post createdPost = await _postRepository.CreatePostAsync(post);
+            Post createdPost = await _postRepository.CreatePostAsync(new Post(title, body, userId));
 
             await _postRepository.SaveChangesAsync();
 
@@ -40,35 +38,15 @@ namespace Syntax.Core.Services
             return await _postRepository.GetPostsAsync(excludedPosts, amount);
         }
 
-        public async Task<Post> GetPostById(string id) => await _postRepository.GetPostById(id);
-        
+        public async Task<Post> GetPostByIdAsync(string id) => await _postRepository.GetPostById(id);
+
 
         /// <summary>
         /// Mark post as deleted by post id
         /// </summary>
-        public async Task<bool> DeletePost(string id)
+        public async Task<Post> DeletePostAsync(string id)
         {
-            try
-            {
-                // Get post from database
-                var post = _appDbContext.Posts.FirstOrDefault(p => p.Id == id);
-
-                // If post was found, mark it as deleted.
-                if (post != null)
-                {
-                    post.IsDeleted = true;
-                    await _appDbContext.SaveChangesAsync();
-
-                    return true;
-                }
-
-                return false;
-            }
-            catch
-            {
-                // TODO: Add logging.
-                return false;
-            }
+            return await _postRepository.DeletePostAsync(id);
         }
     }
 }

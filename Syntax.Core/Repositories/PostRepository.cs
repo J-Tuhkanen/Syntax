@@ -19,6 +19,23 @@ namespace Syntax.Core.Repositories
             return post;
         }
 
+        public async Task<Post> DeletePostAsync(string id)
+        {
+            // Get post from database
+            var post = applicationDbContext.Posts.FirstOrDefault(p => p.Id == id);
+
+            // If post was found, mark it as deleted.
+            if (post == null)
+            {
+                throw new Exception($"Post with id {id} was not found and could not be deleted.");
+            }
+
+            post.IsDeleted = true;
+            await applicationDbContext.SaveChangesAsync();
+
+            return post;
+        }
+
         public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<string> excludedPosts, int amount)
         {
             var validPosts = applicationDbContext.Posts.Where(p =>
