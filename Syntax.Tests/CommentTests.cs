@@ -49,8 +49,28 @@
             Assert.IsNotNull(comment.Id);
         }
 
-        // TODO: Deletion flag test
+        [Test]
+        public async Task CheckCommentContainsDeletionFlag()
+        {
+            var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi poistuu kentältä", _user.Id);
+            var commentToBeDeleted = await _commentService.DeleteCommentAsync(newComment.Id);
 
-        // TODO: Timestamp test
+            Assert.True(commentToBeDeleted.IsDeleted);
+        }
+
+        [Test]
+        public async Task CheckCreatedCommentContainsTimestamp()
+        {
+            var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Hei maailma!", _targetPost.User.Id);
+
+            var commentTimestamp = newComment.Timestamp;
+            var currentTimestamp = DateTime.UtcNow;
+
+            var isMatchingYear = currentTimestamp.Year.Equals(commentTimestamp.Year);
+            var isMatchingMonth = currentTimestamp.Month.Equals(commentTimestamp.Month);
+            var isMatchingDay = currentTimestamp.Day.Equals(commentTimestamp.Day);
+
+            Assert.True(isMatchingDay && isMatchingMonth && isMatchingYear);
+        }
     }
 }
