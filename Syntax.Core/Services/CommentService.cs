@@ -1,4 +1,5 @@
-﻿using Syntax.Core.Models;
+﻿using Syntax.Core.Data;
+using Syntax.Core.Models;
 using Syntax.Core.Repositories.Base;
 using Syntax.Core.Services.Base;
 
@@ -23,12 +24,9 @@ namespace Syntax.Core.Services
             return comment;
         }
 
-        public async Task<bool> DeleteCommentAsync(string id)
+        public async Task<Comment> DeleteCommentAsync(string id)
         {
-            var isSuccessful = await _commentRepository.DeleteComment(id);
-            await _commentRepository.SaveChangesAsync();
-
-            return isSuccessful;
+            return await _commentRepository.DeleteCommentAsync(id);
         }
 
         public async Task<Comment> GetCommentAsync(string id) 
