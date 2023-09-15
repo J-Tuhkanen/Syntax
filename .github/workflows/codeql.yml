@@ -20,8 +20,6 @@ on:
     - cron: '24 15 * * 1'
 
 jobs:
-
-  exit: 1
   analyze:    
     name: Analyze
     
