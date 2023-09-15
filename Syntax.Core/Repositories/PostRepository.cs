@@ -26,10 +26,8 @@ namespace Syntax.Core.Repositories
 
             // If post was found, mark it as deleted.
             if (post == null)
-            {
                 throw new Exception($"Post with id {id} was not found and could not be deleted.");
-            }
-
+            
             post.IsDeleted = true;
             await applicationDbContext.SaveChangesAsync();
 
