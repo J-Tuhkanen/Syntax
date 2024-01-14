@@ -5,12 +5,10 @@ using Syntax.Core.Repositories.Base;
 
 namespace Syntax.Core.Repositories
 {
-    public class UserRepository : RepositoryBase, IUserRepository
+    internal class UserRepository : RepositoryBase, IUserRepository
     {
-        public UserRepository(ApplicationDbContext applicationDbContext)
-            : base(applicationDbContext)
+        internal UserRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
-
         }
 
         public async Task SetUserProfilePictureAsync(string userId, Blob blob)

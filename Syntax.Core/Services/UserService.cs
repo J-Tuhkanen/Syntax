@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Syntax.Core.Models;
+using Syntax.Core.Repositories;
 using Syntax.Core.Repositories.Base;
 using Syntax.Core.Services.Base;
 
@@ -9,31 +10,28 @@ namespace Syntax.Core.Services
     {
         private readonly UserManager<UserAccount> _userManager;
         private readonly IUserStore<UserAccount> _userStore;
-        private readonly IUserRepository _userRepository;
+        private readonly UnitOfWork _unitOfWork;
         private readonly IUserEmailStore<UserAccount> _emailStore;
 
-        public UserService(
-            UserManager<UserAccount> userManager,
-            IUserStore<UserAccount> userStore, 
-            IUserRepository userRepository)
+        public UserService(UserManager<UserAccount> userManager, IUserStore<UserAccount> userStore, UnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _userStore = userStore;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
             _emailStore = GetEmailStore();
         }
 
         public async Task SetUserProfilePictureAsync(string userId, Blob blob)
         {
-            await _userRepository.SetUserProfilePictureAsync(userId, blob);
-            await _userRepository.SaveChangesAsync();
+            await _unitOfWork.User.SetUserProfilePictureAsync(userId, blob);
+            await _unitOfWork.User.SaveChangesAsync();
         }
 
         public async Task<Blob> GetUserProfilePictureAsync(string userId)
-            => await _userRepository.GetUserProfilePictureAsync(userId);
+            => await _unitOfWork.User.GetUserProfilePictureAsync(userId);
 
         public async Task<UserAccount> GetUserByIdAsync(string id)
-            => await _userRepository.GetUserById(id);
+            => await _unitOfWork.User.GetUserById(id);
 
         public async Task<IdentityResult> CreateUser(UserAccount user, string username, string password, string email)
         {

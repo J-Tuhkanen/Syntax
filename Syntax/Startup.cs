@@ -37,7 +37,7 @@ namespace Syntax
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                options.UseLazyLoadingProxies();            
+                options.UseLazyLoadingProxies();
             });
 
             // Configure identity and required settings for each user
@@ -57,13 +57,7 @@ namespace Syntax
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();
 
-            services.AddTransient<IPostRepository, PostRepository>();
-            services.AddTransient<ICommentRepository, CommentRepository>();
-            services.AddTransient<IUserRepository, UserRepository>();
-
-            services.AddWebEncoders();
-            services.AddDistributedMemoryCache();
-            services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddTransient<UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

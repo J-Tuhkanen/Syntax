@@ -2,18 +2,20 @@
 
 namespace Syntax.Core.Repositories.Base
 {
-    public abstract class RepositoryBase : IDisposable
+    internal abstract class RepositoryBase : IDisposable
     {
         private bool isDisposed = false;
         protected readonly ApplicationDbContext applicationDbContext;
 
-        public RepositoryBase(ApplicationDbContext applicationDbContext) 
+        internal RepositoryBase(ApplicationDbContext applicationDbContext) 
         {
             this.applicationDbContext = applicationDbContext;
         }
 
-        public async Task SaveChangesAsync() 
-            => await applicationDbContext.SaveChangesAsync();
+        public async Task SaveChangesAsync()
+        {
+            await applicationDbContext.SaveChangesAsync();
+        }
 
         public async void Dispose()
         {

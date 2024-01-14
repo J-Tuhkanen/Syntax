@@ -6,10 +6,9 @@ using System.ComponentModel.Design;
 
 namespace Syntax.Core.Repositories
 {
-    public class CommentRepository : RepositoryBase, ICommentRepository
+    internal class CommentRepository : RepositoryBase, ICommentRepository
     {
-        public CommentRepository(ApplicationDbContext applicationDbContext) 
-            : base(applicationDbContext) 
+        internal CommentRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext) 
         { 
         }
     
@@ -35,27 +34,29 @@ namespace Syntax.Core.Repositories
             return comment;
         }
 
-        public async Task<Comment> GetCommentAsync(string id) 
-            => await applicationDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
+        public async Task<Comment> GetCommentAsync(string id)
+        {
+            return await applicationDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
+        }
 
         public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId, IEnumerable<string> ExcludedComments, int amount)
         {
-            var validComments = applicationDbContext.Comments.Where(c =>
+            IQueryable<Comment> query = applicationDbContext.Comments.Where(c =>
                 c.PostId == postId &&
                 c.IsDeleted == false &&
                 ExcludedComments.Contains(c.Id) == false);
 
-            return await validComments.Take(amount).ToListAsync();
+            return await query.Take(amount).ToListAsync();
         }
 
         public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<string> ExcludedComments, int amount)
         {
-            var validComments = applicationDbContext.Comments.Where(c =>
+            IQueryable<Comment> query = applicationDbContext.Comments.Where(c =>
                 c.UserId == userId &&
                 c.IsDeleted == false &&
                 ExcludedComments.Contains(c.Id) == false);
 
-            return await validComments.Take(amount).ToListAsync();
+            return await query.Take(amount).ToListAsync();
         }
     }
 }

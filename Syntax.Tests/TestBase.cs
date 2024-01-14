@@ -35,7 +35,7 @@ namespace Syntax.Tests
             _services.AddDbContext<ApplicationDbContext>(options =>
             {
                 //options.UseSqlServer("Server=127.0.0.1,1433;Database=Syntax-Tests;User Id=sa;Password=SyntaxDatabase123;");
-                options.UseSqlServer("Server=localhost;Database=Syntax-Tests;Trusted_Connection=True;MultipleActiveResultSets=true");
+                options.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Syntax-Tests;Trusted_Connection=True;MultipleActiveResultSets=true");
                 options.UseLazyLoadingProxies();
             });
         }
@@ -59,9 +59,7 @@ namespace Syntax.Tests
             _services.AddTransient<ICommentService, CommentService>();
             _services.AddTransient<IFileService, FileService>();
             _services.AddTransient<IUserService, UserService>();
-            _services.AddTransient<IPostRepository, PostRepository>();
-            _services.AddTransient<ICommentRepository, CommentRepository>();
-            _services.AddTransient<IUserRepository, UserRepository>();
+            _services.AddTransient<UnitOfWork>();
         }
 
         protected UserAccount CreateUserInstance()

@@ -5,10 +5,9 @@ using Syntax.Core.Repositories.Base;
 
 namespace Syntax.Core.Repositories
 {
-    public class PostRepository : RepositoryBase, IPostRepository
+    internal class PostRepository : RepositoryBase, IPostRepository
     {
-        public PostRepository(ApplicationDbContext applicationDbContext)
-            : base(applicationDbContext)
+        internal PostRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
         }
 
