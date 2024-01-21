@@ -4,7 +4,7 @@
 @model ProfileModel
 
 @{
-    IEnumerable<EntityWithId> UserActivity = ((IEnumerable<EntityWithId>)Model.UserComments).Concat(Model.UserPosts);    
+    IEnumerable<EntityBase> UserActivity = ((IEnumerable<EntityBase>)Model.UserComments).Concat(Model.UserPosts);    
 }
 
 <div class="row">

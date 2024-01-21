@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Syntax.Core.Models
 {
-    public class Post : EntityWithId, IUserActivity
+    public class Post : EntityBase, IUserActivity
     {
         public Post(string title, string body, string userId) 
         {
@@ -14,18 +14,12 @@ namespace Syntax.Core.Models
             UserId = userId;
             Timestamp = DateTime.UtcNow;
         }
-
-        public string UserId { get; set; }        
-
+        
         public virtual UserAccount User { get; set; }
 
         [MaxLength(80)]
         public string Title { get; set; }
-
+        
         public string Body { get; set; }
-
-        public bool IsDeleted { get; set; }
-
-        public DateTime Timestamp { get; set; }
     }
 }

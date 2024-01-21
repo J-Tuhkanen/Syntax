@@ -1,26 +1,11 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.EntityFrameworkCore;
 using Syntax.Core.Data;
 using Syntax.Core.Models;
 using Syntax.Core.Repositories;
-using Syntax.Core.Repositories.Base;
-using Syntax.Core.Services;
 using Syntax.Core.Services.Base;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using Syntax.Core.Services;
 
-
-namespace Syntax
+namespace Syntax.API
 {
     public class Startup
     {
@@ -38,7 +23,6 @@ namespace Syntax
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-                options.UseLazyLoadingProxies();
             });
 
             // Configure identity and required settings for each user
@@ -67,7 +51,6 @@ namespace Syntax
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
             }
             else
             {
@@ -86,7 +69,6 @@ namespace Syntax
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
                 endpoints.MapControllers();
             });
         }
@@ -95,8 +77,8 @@ namespace Syntax
         {
             var userFilesPath = Path.Combine(env.WebRootPath, "files");
 
-            if(Directory.Exists(userFilesPath) == false)
-                Directory.CreateDirectory(userFilesPath);            
+            if (Directory.Exists(userFilesPath) == false)
+                Directory.CreateDirectory(userFilesPath);
         }
     }
 }

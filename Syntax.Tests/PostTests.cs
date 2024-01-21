@@ -40,7 +40,7 @@ namespace Syntax.Tests
         public async Task IsPostCreationSuccessful()
         {
             var newPost = await _postService.CreatePostAsync("Jotain", "Työmaa", _user.Id);
-            var post = await _postService.GetPostByIdAsync(newPost.Id);
+            var post = await _postService.GetTopicAsync(newPost.Id);
 
             Assert.IsNotNull(post);
         }

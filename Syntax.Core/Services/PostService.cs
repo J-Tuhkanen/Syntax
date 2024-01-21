@@ -39,7 +39,7 @@ namespace Syntax.Core.Services
             return await _unitOfWork.Post.GetPostsAsync(excludedPosts, amount);
         }
 
-        public async Task<Post> GetPostByIdAsync(string id) => await _unitOfWork.Post.GetPostById(id);
+        public async Task<Post> GetTopicAsync(string id) => await _unitOfWork.Post.GetPostById(id);
 
         public async Task<Post> DeletePostAsync(string id)
         {

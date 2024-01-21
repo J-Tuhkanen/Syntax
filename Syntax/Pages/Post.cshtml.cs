@@ -55,7 +55,7 @@ namespace Syntax.Pages
 
             IsLoggedIn = currentUser != null;
 
-            var post = await _postService.GetPostByIdAsync(id);
+            var post = await _postService.GetTopicAsync(id);
 
             if (post != null)
             {
