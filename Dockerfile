@@ -8,6 +8,9 @@ ENV SA_PASSWORD=Pwd12345!
 # Expose the default SQL Server port
 EXPOSE 1433
 
+# Optional: Define a mount point for data persistence
+VOLUME [ "/var/opt/mssql/data" ]
+
 # Healthcheck to ensure SQL Server is running
 HEALTHCHECK --interval=10s \
             --timeout=3s \
