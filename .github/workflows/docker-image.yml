@@ -12,10 +12,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Start MSSQL Server
+    - name: Build docker image
       run: 
-        docker build -t your-mssql-image-name .
-        docker run 1433:1433 --name syntax-mssql-server your-mssql-image-name
+        docker build -t mssql-image .
+
+    - name: Run docker image
+      run:
+        docker run -d -p 1433:1433 --name syntax-mssql-server mssql-image
+        
       env:
         SA_PASSWORD: "Pwd12345!"
         ACCEPT_EULA: "Y"
