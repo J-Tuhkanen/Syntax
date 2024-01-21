@@ -7,12 +7,19 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - name: Start MSSQL Server
       run: docker run -d -p 1433:1433 --name syntax-mssql-server mcr.microsoft.com/mssql/server:2019-latest
+      env:
+        SA_PASSWORD: "Pwd12345!"
+        ACCEPT_EULA: "Y"
+
+    - name: Build the Test Project
+      run: dotnet build Syntax.Tests/Syntax.Tests.csproj --configuration Release
+
+    - name: Run tests
+      run: dotnet test Syntax.Tests/Syntax.Tests.csproj --configuration Release --no-build
