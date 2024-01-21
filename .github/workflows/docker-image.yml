@@ -14,8 +14,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
-      # run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
-      run: 
-        docker build -t mssql-2019-server .
-        docker run -d -p 1433:1433 --name syntax-mssql-server mssql-2019-server
+    - name: Start MSSQL Server
+      run: docker run -d -p 1433:1433 --name syntax-mssql-server mcr.microsoft.com/mssql/server:2019-latest
+
+      # docker build -t mssql-2019-server .
+      # docker run -d -p 1433:1433 --name syntax-mssql-server mssql-2019-server
