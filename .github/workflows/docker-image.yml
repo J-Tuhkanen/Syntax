@@ -15,7 +15,7 @@ jobs:
     - name: Start MSSQL Server
       run: 
         docker build -t your-mssql-image-name .
-        docker run -d -p 1433:1433 --name syntax-mssql-server your-mssql-image-name
+        docker run -p 1433:1433 --name syntax-mssql-server your-mssql-image-name
       env:
         SA_PASSWORD: "Pwd12345!"
         ACCEPT_EULA: "Y"
