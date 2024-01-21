@@ -34,7 +34,7 @@ namespace Syntax.Tests
         {
             _services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer("Server=localhost,1433;Database=Syntax;User Id=sa; Password=Pwd12345!");
+                options.UseSqlServer("Server=localhost,1433;Database=Syntax-Tests;User Id=sa; Password=Pwd12345!");
                 //options.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Syntax-Tests;Trusted_Connection=True;MultipleActiveResultSets=true");
                 options.UseLazyLoadingProxies();
             });

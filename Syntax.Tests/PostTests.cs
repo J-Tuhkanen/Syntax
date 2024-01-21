@@ -8,25 +8,17 @@ namespace Syntax.Tests
         [OneTimeSetUp]
         public async Task Setup()
         {
-            try
-            {
-                Debug.WriteLine("Setting up tests...");
-                var dbContext = GetService<ApplicationDbContext>();
-                IUserService userService = GetService<IUserService>();
-                _postService = GetService<IPostService>();
-                Debug.WriteLine("Ensuring database does not exist.");
-                await dbContext.Database.EnsureDeletedAsync();
-                await dbContext.Database.MigrateAsync();
+            Debug.WriteLine("Setting up tests...");
+            var dbContext = GetService<ApplicationDbContext>();
+            IUserService userService = GetService<IUserService>();
+            _postService = GetService<IPostService>();
+            Debug.WriteLine("Ensuring database does not exist.");
+            await dbContext.Database.EnsureDeletedAsync();
+            await dbContext.Database.MigrateAsync();
 
-                _user = CreateUserInstance();
+            _user = CreateUserInstance();
 
-                var result = await userService.CreateUser(_user, "TimoTest", "Testi123", "timo.testi@gmail.com");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Debug.WriteLine(ex.Message);
-            }
+            var result = await userService.CreateUser(_user, "TimoTest", "Testi123", "timo.testi@gmail.com");
         }
 
         [Test]
