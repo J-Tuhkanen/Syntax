@@ -26,7 +26,7 @@ jobs:
     
     # Optional: Add a delay for SQL Server readiness
     - name: Wait for SQL Server to be ready
-      run: sleep 20
+      run: sleep 120
     
     - name: Build the Test Project
       run: dotnet build Syntax.Tests/Syntax.Tests.csproj --configuration Release
