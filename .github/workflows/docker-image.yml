@@ -1,4 +1,7 @@
-name: Docker Image CI
+name: Application tests
+env:
+  DB_DATABASE: syntax_tests
+  DB_PASSWORD: "Pwd12345!"
 
 on:
   push:
@@ -7,9 +10,8 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  ci:
     runs-on: ubuntu-latest
-
     services:
       mssql:
         image: mcr.microsoft.com/mssql/server:2019-latest
@@ -19,16 +21,14 @@ jobs:
         ports:
           - 1433:1433
         options: >-
-          --health-cmd='[ "$(sqlcmd -S localhost -U SA -P "Pwd12345!" -Q "SELECT 1" | wc -l)" -ge 1 ]'
+          --health-cmd='[ "$(sqlcmd -S localhost -U SA -P ${{env.DB_PASSWORD}} -Q "SELECT 1" | wc -l)" -ge 1 ]'
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
     
-    # Additional steps to build your Docker image, if necessary
-
     - name: Build the Test Project
       run: dotnet build Syntax.Tests/Syntax.Tests.csproj --configuration Release
 
