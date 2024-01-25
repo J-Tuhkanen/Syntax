@@ -33,4 +33,4 @@ RUN dotnet publish "Syntax.Tests.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Syntax.Tests.dll"]
+ENTRYPOINT ["dotnet", "Syntax.Core.dll"]
