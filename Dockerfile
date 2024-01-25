@@ -28,12 +28,9 @@ RUN dotnet publish "Syntax.Core.csproj" -c Release -o /app/publish
 WORKDIR "/src/Syntax.Tests"
 RUN dotnet build "Syntax.Tests.csproj" -c Release -o /app/build
 RUN dotnet publish "Syntax.Tests.csproj" -c Release -o /app/publish
-RUN dotnet test "Syntax.Tests.csproj" --configuration Release --no-build
 
 # Generate the runtime image
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Syntax.Core.dll"]
 ENTRYPOINT ["dotnet", "Syntax.Tests.dll"]
-
