@@ -1,22 +1,27 @@
-# Use the official Microsoft SQL Server image
-FROM mcr.microsoft.com/mssql/server:2019-latest
+# Use the ASP.NET 6.0 image as the base image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
 
-# Set required environment variables
-ENV ACCEPT_EULA=Y
-ENV SA_PASSWORD=Pwd12345!
+# Use the .NET 6.0 SDK image to build the project
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
 
-# Expose the default SQL Server port
-EXPOSE 1433
+# Copy the CSPROJ file and restore any dependencies (via NuGet)
+COPY ["Syntax.Core/Syntax.Core.csproj", "Syntax.Core/"]
+RUN dotnet restore "Syntax.Core/Syntax.Core.csproj"
 
-# Optional: Define a mount point for data persistence
-VOLUME [ "/var/opt/mssql/data" ]
+# Copy the project files and build the release
+COPY Syntax.Core/ Syntax.Core/
+WORKDIR "/src/Syntax.Core"
+RUN dotnet build "Syntax.Core.csproj" -c Release -o /app/build
 
-# Healthcheck to ensure SQL Server is running
-HEALTHCHECK --interval=10s \
-            --timeout=3s \
-            --start-period=10s \
-            --retries=3 \
-            CMD /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "Pwd12345!" -Q "SELECT 1" || exit 1
+# Publish the application
+FROM build AS publish
+RUN dotnet publish "Syntax.Core.csproj" -c Release -o /app/publish
 
-# Run SQL Server process
-CMD [ "/opt/mssql/bin/sqlservr" ]
+# Generate the runtime image
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Syntax.Core.dll"]
