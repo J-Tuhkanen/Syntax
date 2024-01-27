@@ -1,36 +1,37 @@
-name: Application tests
-env:
-  DB_DATABASE: syntax_tests
-  DB_PASSWORD: "Pwd12345!"
+name: ASP.NET CI/CD Pipeline 
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ main ]
 
 jobs:
-  ci:
+  build-and-test:
     runs-on: ubuntu-latest
+
     services:
-      mssql:
-        image: mcr.microsoft.com/mssql/server:2019-latest
+      sql:
+        image: "mcr.microsoft.com/mssql/server:2022-latest"
+        container_name: sql_server2022
+        ports: # not actually needed, because the two services are on the same network
+          - "1433:1433" 
         env:
-          SA_PASSWORD: "Pwd12345!"
-          ACCEPT_EULA: "Y"
-        ports:
-          - 1433:1433
-        options: >-
-          --health-cmd='[ "$(sqlcmd -S localhost -U SA -P ${{env.DB_PASSWORD}} -Q "SELECT 1" | wc -l)" -ge 1 ]'
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+          - ACCEPT_EULA=y
+          - SA_PASSWORD=Pwd12345!
 
     steps:
     - uses: actions/checkout@v2
-    
-    - name: Build the Test Project
-      run: dotnet build Syntax.Tests/Syntax.Tests.csproj --configuration Release
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1'  # replace with your .NET version
 
-    - name: Run tests
-      run: dotnet test Syntax.Tests/Syntax.Tests.csproj --configuration Release --no-build
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --no-restore
+
+    - name: Test
+      run: dotnet test --no-build
