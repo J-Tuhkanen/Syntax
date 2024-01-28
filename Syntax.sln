@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax", "Syntax\Syntax.csproj", "{BE25C595-93E0-4C2E-BC8C-679F82AB17DA}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax.Core", "Syntax.Core\Syntax.Core.csproj", "{7033CACA-8540-47F1-95FD-7CE7F1F25CFA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax.Tests", "Syntax.Tests\Syntax.Tests.csproj", "{E4C12954-31A2-46F1-B43A-4B20CA5F8994}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syntax.API", "Syntax.API\Syntax.API.csproj", "{DD3EE73F-E512-4EE0-8A68-9326C0F0F60D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax.API", "Syntax.API\Syntax.API.csproj", "{DD3EE73F-E512-4EE0-8A68-9326C0F0F60D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BE25C595-93E0-4C2E-BC8C-679F82AB17DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE25C595-93E0-4C2E-BC8C-679F82AB17DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE25C595-93E0-4C2E-BC8C-679F82AB17DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE25C595-93E0-4C2E-BC8C-679F82AB17DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7033CACA-8540-47F1-95FD-7CE7F1F25CFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7033CACA-8540-47F1-95FD-7CE7F1F25CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7033CACA-8540-47F1-95FD-7CE7F1F25CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU

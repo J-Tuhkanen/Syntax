@@ -59,8 +59,6 @@ namespace Syntax.API
                 app.UseHsts();
             }
 
-            CreateFilesFolderIfDoesntExist(env);
-
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
@@ -71,14 +69,6 @@ namespace Syntax.API
             {
                 endpoints.MapControllers();
             });
-        }
-
-        private void CreateFilesFolderIfDoesntExist(IWebHostEnvironment env)
-        {
-            var userFilesPath = Path.Combine(env.WebRootPath, "files");
-
-            if (Directory.Exists(userFilesPath) == false)
-                Directory.CreateDirectory(userFilesPath);
         }
     }
 }
