@@ -7,7 +7,7 @@ namespace Syntax.Core.Data
 {
     public class ApplicationDbContext : IdentityDbContext<UserAccount>
     {
-        public DbSet<Post> Posts { get; set; }
+        public DbSet<Topic> Topics { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
 
@@ -24,7 +24,7 @@ namespace Syntax.Core.Data
 
             // Load the virtual user property to the model(s) using UserId property value
             // https://learn.microsoft.com/en-us/ef/core/modeling/relationships/one-to-many
-            builder.Entity<Post>()
+            builder.Entity<Topic>()
                 .HasOne(e => e.User)
                 .WithMany()
                 .HasForeignKey(e => e.UserId)
@@ -37,9 +37,9 @@ namespace Syntax.Core.Data
                 .IsRequired();
 
             builder.Entity<Comment>()
-                .HasOne(e => e.Post)
+                .HasOne(e => e.Topic)
                 .WithMany()
-                .HasForeignKey(e => e.PostId)
+                .HasForeignKey(e => e.TopicId)
                 .IsRequired();
         }
     }

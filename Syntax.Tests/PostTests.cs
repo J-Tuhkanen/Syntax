@@ -3,7 +3,7 @@ namespace Syntax.Tests
     public class PostTests : TestBase
     {
         private UserAccount _user;
-        private IPostService _postService;
+        private ITopicService _postService;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -11,7 +11,7 @@ namespace Syntax.Tests
             Debug.WriteLine("Setting up tests...");
             var dbContext = GetService<ApplicationDbContext>();
             IUserService userService = GetService<IUserService>();
-            _postService = GetService<IPostService>();
+            _postService = GetService<ITopicService>();
             Debug.WriteLine("Ensuring database does not exist.");
             await dbContext.Database.EnsureDeletedAsync();
             await dbContext.Database.MigrateAsync();

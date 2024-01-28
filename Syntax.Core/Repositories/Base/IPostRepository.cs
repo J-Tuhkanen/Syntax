@@ -4,11 +4,11 @@ namespace Syntax.Core.Repositories.Base
 {
     public interface IPostRepository
     {
-        Task<Post> CreatePostAsync(Post post);
-        Task<Post> DeletePostAsync(Guid id);
-        Task<Post> GetPostById(Guid id);
-        Task<IEnumerable<Post>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount);
-        Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount);
+        Task<Topic> CreatePostAsync(Topic post);
+        Task<Topic> DeletePostAsync(Guid id);
+        Task<Topic> GetPostById(Guid id);
+        Task<IEnumerable<Topic>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount);
+        Task<IEnumerable<Topic>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount);
         Task SaveChangesAsync();
     }
 }

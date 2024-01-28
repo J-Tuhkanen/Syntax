@@ -42,7 +42,7 @@ namespace Syntax.Core.Repositories
         public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)
         {
             IQueryable<Comment> query = applicationDbContext.Comments.Where(c =>
-                c.Post.Id == postId &&
+                c.Topic.Id == postId &&
                 c.IsDeleted == false &&
                 ExcludedComments.Contains(c.Id) == false);
 

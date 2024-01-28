@@ -3,8 +3,8 @@
     public class CommentTests : TestBase
     {
         private UserAccount _user;
-        private Post _targetPost;
-        private IPostService _postService;
+        private Topic _targetPost;
+        private ITopicService _postService;
         private ICommentService _commentService;
 
         [OneTimeSetUp]
@@ -13,7 +13,7 @@
             Debug.WriteLine("Setting up tests...");
             var dbContext = GetService<ApplicationDbContext>();
             IUserService userService = GetService<IUserService>();
-            _postService = GetService<IPostService>();
+            _postService = GetService<ITopicService>();
             _commentService = GetService<ICommentService>();
             Debug.WriteLine("Ensuring database does not exist.");
             await dbContext.Database.EnsureDeletedAsync();

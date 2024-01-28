@@ -10,8 +10,8 @@ namespace Syntax.Core.Models
             Timestamp = DateTime.UtcNow;
         }
 
-        public Guid PostId { get; set; }
-        public virtual Post Post { get; set; }
+        public Guid TopicId { get; set; }
+        public virtual Topic Topic { get; set; }
         public virtual UserAccount User { get; set; }
         public string Content { get; set; }
     }

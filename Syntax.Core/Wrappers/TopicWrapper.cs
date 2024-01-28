@@ -7,7 +7,7 @@ namespace Syntax.Core.Wrappers
     /// <summary>
     /// Read-only wrapper for post-object.
     /// </summary>
-    public class PostWrapper
+    public class TopicWrapper
     {
         private int _maxBodyLengthAsShortened = 140;
         public Guid Id { get; }
@@ -17,7 +17,7 @@ namespace Syntax.Core.Wrappers
         public string UserName { get; }
         public string UserId { get; }
 
-        public PostWrapper(Post post)
+        public TopicWrapper(Topic post)
         {
             Id = post.Id;
             UserId = post.User.Id;

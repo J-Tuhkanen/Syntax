@@ -37,7 +37,7 @@ namespace Syntax.API
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Add services to dependency injection to be injectable whenever needed
-            services.AddTransient<IPostService, PostService>();
+            services.AddTransient<ITopicService, TopicService>();
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();

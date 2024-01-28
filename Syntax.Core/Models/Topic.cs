@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Syntax.Core.Models
 {
-    public class Post : EntityBase, IUserActivity
+    public class Topic : EntityBase, IUserActivity
     {
-        public Post() 
+        public Topic() 
         {
             Timestamp = DateTime.UtcNow;
         }

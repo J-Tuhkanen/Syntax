@@ -11,37 +11,37 @@ using System.Threading.Tasks;
 
 namespace Syntax.Core.Services
 {
-    public class PostService : IPostService
+    public class TopicService : ITopicService
     {
         private readonly UnitOfWork _unitOfWork;
 
-        public PostService(UnitOfWork unitOfWork)
+        public TopicService(UnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Post> CreatePostAsync(string title, string body, string userId)
+        public async Task<Topic> CreatePostAsync(string title, string body, string userId)
         {
-            Post createdPost = await _unitOfWork.Post.CreatePostAsync(new Post { Title = title, Body = body, UserId = userId });
+            Topic createdPost = await _unitOfWork.Post.CreatePostAsync(new Topic { Title = title, Body = body, UserId = userId });
 
             await _unitOfWork.SaveChangesAsync();
 
             return createdPost;
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
+        public async Task<IEnumerable<Topic>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
         {
             return await _unitOfWork.Post.GetPostsByUserAsync(userId, excludedPosts, amount);
         }
 
-        public async Task<IEnumerable<Post>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount)
+        public async Task<IEnumerable<Topic>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount)
         {
             return await _unitOfWork.Post.GetPostsAsync(excludedPosts, amount);
         }
 
-        public async Task<Post> GetTopicAsync(Guid id) => await _unitOfWork.Post.GetPostById(id);
+        public async Task<Topic> GetTopicAsync(Guid id) => await _unitOfWork.Post.GetPostById(id);
 
-        public async Task<Post> DeletePostAsync(Guid id)
+        public async Task<Topic> DeletePostAsync(Guid id)
         {
             return await _unitOfWork.Post.DeletePostAsync(id);
         }

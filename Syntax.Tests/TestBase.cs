@@ -54,7 +54,7 @@ namespace Syntax.Tests
 
         protected void InjectServiceDependencies()
         {
-            _services.AddTransient<IPostService, PostService>();
+            _services.AddTransient<ITopicService, TopicService>();
             _services.AddTransient<ICommentService, CommentService>();
             _services.AddTransient<IFileService, FileService>();
             _services.AddTransient<IUserService, UserService>();

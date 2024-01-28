@@ -11,17 +11,17 @@ namespace Syntax.Core.Repositories
         {
         }
 
-        public async Task<Post> CreatePostAsync(Post post)
+        public async Task<Topic> CreatePostAsync(Topic post)
         {
-            await applicationDbContext.Posts.AddAsync(post);
+            await applicationDbContext.Topics.AddAsync(post);
 
             return post;
         }
 
-        public async Task<Post> DeletePostAsync(Guid id)
+        public async Task<Topic> DeletePostAsync(Guid id)
         {
             // Get post from database
-            var post = applicationDbContext.Posts.FirstOrDefault(p => p.Id == id);
+            var post = applicationDbContext.Topics.FirstOrDefault(p => p.Id == id);
 
             // If post was found, mark it as deleted.
             if (post == null)
@@ -33,9 +33,9 @@ namespace Syntax.Core.Repositories
             return post;
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
+        public async Task<IEnumerable<Topic>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
         {
-            var validPosts = applicationDbContext.Posts.Where(p =>
+            var validPosts = applicationDbContext.Topics.Where(p =>
                 p.IsDeleted == false &&
                 p.UserId == userId &&
                 excludedPosts.Contains(p.Id) == false).Take(amount);
@@ -43,16 +43,16 @@ namespace Syntax.Core.Repositories
             return await validPosts.ToListAsync();
         }
 
-        public async Task<IEnumerable<Post>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount)
+        public async Task<IEnumerable<Topic>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount)
         {
-            var validPosts = await applicationDbContext.Posts.Where(p =>
+            var validPosts = await applicationDbContext.Topics.Where(p =>
                 p.IsDeleted == false &&
                 excludedPosts.Contains(p.Id) == false).Take(amount).ToListAsync();
             
             return validPosts;
         }
 
-        public async Task<Post> GetPostById(Guid id) => await applicationDbContext.Posts.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
+        public async Task<Topic> GetPostById(Guid id) => await applicationDbContext.Topics.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
 
     }
 }

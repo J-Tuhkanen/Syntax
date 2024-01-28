@@ -17,11 +17,11 @@ namespace Syntax.Core.Services
 
         public async Task<Comment> CreateCommentAsync(Guid postId, string content, string userId)
         {
-            Post post = await _unitOfWork.Post.GetPostById(postId);
+            Topic post = await _unitOfWork.Post.GetPostById(postId);
 
             var comment = new Comment
             {
-                Post = post,
+                Topic = post,
                 Content = content,
                 UserId = userId
             };
