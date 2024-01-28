@@ -20,14 +20,13 @@
             await dbContext.Database.MigrateAsync();
 
             _user = CreateUserInstance();
-            _targetPost = await _postService.CreatePostAsync("Janne", "Työmies", _user.Id);
-
-            var result = await userService.CreateUser(_user, "TimoTest", "Testi123", "timo.testi@gmail.com");
+            await userService.CreateUser(_user, "TimoTest", "Testi123", "timo.testi@gmail.com");
         }
 
         [Test]
         public async Task EnsureCommentHasId()
         {
+            _targetPost = await _postService.CreatePostAsync("Janne", "Työmies", _user.Id);
             var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi on hieno mies", _user.Id);
 
             Assert.IsNotNull(newComment.Id);
@@ -36,6 +35,7 @@
         [Test]
         public async Task IsCommentCreationSuccessful()
         {
+            _targetPost = await _postService.CreatePostAsync("Janne", "Työmies", _user.Id);
             Comment newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi on hieno mies", _user.Id);
             var comment = await _commentService.GetCommentAsync(newComment.Id);
             Assert.IsNotNull(comment.Id);
@@ -44,6 +44,7 @@
         [Test]
         public async Task CheckCommentContainsDeletionFlag()
         {
+            _targetPost = await _postService.CreatePostAsync("Janne", "Työmies", _user.Id);
             var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi poistuu kentältä", _user.Id);
             var commentToBeDeleted = await _commentService.DeleteCommentAsync(newComment.Id);
 
@@ -53,6 +54,7 @@
         [Test]
         public async Task CheckCreatedCommentContainsTimestamp()
         {
+            _targetPost = await _postService.CreatePostAsync("Janne", "Työmies", _user.Id);
             var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Hei maailma!", _targetPost.User.Id);
 
             var commentTimestamp = newComment.Timestamp;
