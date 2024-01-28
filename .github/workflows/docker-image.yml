@@ -13,14 +13,15 @@ jobs:
         # Docker Hub image
         image: postgres
         env:
-          POSTGRES_PASSWORD: Pwd12345!
-          POSTGRES_HOST: localhost
-          POSTGRES_PORT: 5432
+          POSTGRES_PASSWORD: poastgres
+          POSTGRES_HOST: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        ports:
+          - 5432:5432
           
     steps:
     - uses: actions/checkout@v2
