@@ -10,8 +10,7 @@ namespace Syntax.Core.Wrappers
     public class PostWrapper
     {
         private int _maxBodyLengthAsShortened = 140;
-
-        public string Id { get; }
+        public Guid Id { get; }
         public string Body { get; }
         public string Title { get; }
         public DateTime Timestamp { get; }

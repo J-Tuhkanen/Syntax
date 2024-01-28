@@ -6,10 +6,10 @@ namespace Syntax.Core.Services.Base
 {
     public interface ICommentService
     {
-        Task<Comment> CreateCommentAsync(string postId, string content, string userId);
-        Task<Comment> DeleteCommentAsync(string id);
-        Task<Comment> GetCommentAsync(string id);
-        Task<IEnumerable<Comment>> GetCommentsAsync(string postId, IEnumerable<string> ExcludedComments, int amount = 5);
-        Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<string> ExcludedComments, int amount = 5);
+        Task<Comment> CreateCommentAsync(Guid postId, string content, string userId);
+        Task<Comment> DeleteCommentAsync(Guid id);
+        Task<Comment> GetCommentAsync(Guid id);
+        Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount = 5);
+        Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<Guid> ExcludedComments, int amount = 5);
     }
 }

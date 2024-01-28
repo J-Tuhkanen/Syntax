@@ -6,6 +6,6 @@ namespace Syntax.Core.Models.Base
     {
         public string UserId { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime Timestamp { get; set; }        
     }
 }

@@ -36,7 +36,7 @@
         [Test]
         public async Task IsCommentCreationSuccessful()
         {
-            var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi on hieno mies", _user.Id);
+            Comment newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi on hieno mies", _user.Id);
             var comment = await _commentService.GetCommentAsync(newComment.Id);
             Assert.IsNotNull(comment.Id);
         }

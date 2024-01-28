@@ -19,7 +19,7 @@ namespace Syntax.Core.Repositories
             return comment;
         }
 
-        public async Task<Comment> DeleteCommentAsync(string id)
+        public async Task<Comment> DeleteCommentAsync(Guid id)
         {
             var comment = applicationDbContext.Comments.FirstOrDefault(comment => comment.Id == id);
 
@@ -34,22 +34,22 @@ namespace Syntax.Core.Repositories
             return comment;
         }
 
-        public async Task<Comment> GetCommentAsync(string id)
+        public async Task<Comment> GetCommentAsync(Guid id)
         {
             return await applicationDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId, IEnumerable<string> ExcludedComments, int amount)
+        public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)
         {
             IQueryable<Comment> query = applicationDbContext.Comments.Where(c =>
-                c.PostId == postId &&
+                c.Post.Id == postId &&
                 c.IsDeleted == false &&
                 ExcludedComments.Contains(c.Id) == false);
 
             return await query.Take(amount).ToListAsync();
         }
 
-        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<string> ExcludedComments, int amount)
+        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<Guid> ExcludedComments, int amount)
         {
             IQueryable<Comment> query = applicationDbContext.Comments.Where(c =>
                 c.UserId == userId &&

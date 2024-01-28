@@ -7,9 +7,9 @@ namespace Syntax.Core.Services.Base
     public interface IPostService
     {
         Task<Post> CreatePostAsync(string title, string body, string userId);
-        Task<Post> DeletePostAsync(string id);
-        Task<Post> GetTopicAsync(string id);
-        Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<string> excludedPosts, int amount);
-        Task<IEnumerable<Post>> GetPostsAsync(IEnumerable<string> excludedPosts, int amount);
+        Task<Post> DeletePostAsync(Guid id);
+        Task<Post> GetTopicAsync(Guid id);
+        Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount);
+        Task<IEnumerable<Post>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount);
     }
 }

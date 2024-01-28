@@ -49,7 +49,7 @@ namespace Syntax.Pages
 
         public bool IsLoggedIn { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string id)
+        public async Task<IActionResult> OnGetAsync(Guid id)
         {
             var currentUser = await _userManager.GetUserAsync(User);
 
@@ -61,7 +61,7 @@ namespace Syntax.Pages
             {
                 Post = post;
                 
-                Comments = await _commentService.GetCommentsAsync(Post.Id, new List<string>());
+                Comments = await _commentService.GetCommentsAsync(Post.Id, new List<Guid>());
                 PostCreator = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == Post.UserId);
                 PostCreatorProfilePicBlob = await _appDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == PostCreator.ProfilePictureFileId);
 
@@ -71,7 +71,7 @@ namespace Syntax.Pages
             return Redirect("Error");
         }
 
-        public async Task<IActionResult> OnPostAsync(string id)
+        public async Task<IActionResult> OnPostAsync(Guid id)
         {
             var user = await _userManager.GetUserAsync(User);
 

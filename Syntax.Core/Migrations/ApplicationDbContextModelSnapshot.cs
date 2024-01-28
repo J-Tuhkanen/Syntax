@@ -160,8 +160,9 @@ namespace Syntax.Core.Migrations
 
             modelBuilder.Entity("Syntax.Core.Models.Blob", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -182,8 +183,9 @@ namespace Syntax.Core.Migrations
 
             modelBuilder.Entity("Syntax.Core.Models.Comment", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Content")
                         .HasColumnType("text");
@@ -191,8 +193,8 @@ namespace Syntax.Core.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("PostId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
@@ -203,6 +205,8 @@ namespace Syntax.Core.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PostId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Comments");
@@ -210,8 +214,9 @@ namespace Syntax.Core.Migrations
 
             modelBuilder.Entity("Syntax.Core.Models.Post", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Body")
                         .HasColumnType("text");
@@ -285,8 +290,8 @@ namespace Syntax.Core.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<string>("ProfilePictureFileId")
-                        .HasColumnType("text");
+                    b.Property<Guid>("ProfilePictureFileId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -363,11 +368,19 @@ namespace Syntax.Core.Migrations
 
             modelBuilder.Entity("Syntax.Core.Models.Comment", b =>
                 {
+                    b.HasOne("Syntax.Core.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Syntax.Core.Models.UserAccount", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Post");
 
                     b.Navigation("User");
                 });

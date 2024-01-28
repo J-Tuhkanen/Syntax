@@ -18,7 +18,7 @@ namespace Syntax.API.Controllers
         }
 
         [HttpGet("{topicId}")]
-        public async Task<IActionResult> GetTopicAsync(string topicId)
+        public async Task<IActionResult> GetTopicAsync(Guid topicId)
         {
             Post post = await _postService.GetTopicAsync(topicId);
 

@@ -35,6 +35,12 @@ namespace Syntax.Core.Data
                 .WithMany()
                 .HasForeignKey(e => e.UserId)
                 .IsRequired();
+
+            builder.Entity<Comment>()
+                .HasOne(e => e.Post)
+                .WithMany()
+                .HasForeignKey(e => e.PostId)
+                .IsRequired();
         }
     }
 }

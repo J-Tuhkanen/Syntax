@@ -6,7 +6,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Syntax.Core.Migrations
 {
-    public partial class initialforpostgres : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,7 @@ namespace Syntax.Core.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    ProfilePictureFileId = table.Column<string>(type: "text", nullable: true),
+                    ProfilePictureFileId = table.Column<Guid>(type: "uuid", nullable: false),
                     JoinedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -56,7 +56,7 @@ namespace Syntax.Core.Migrations
                 name: "Blobs",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Path = table.Column<string>(type: "text", nullable: true),
                     UserId = table.Column<string>(type: "text", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
@@ -174,11 +174,33 @@ namespace Syntax.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Posts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: true),
+                    Body = table.Column<string>(type: "text", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Posts_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    PostId = table.Column<string>(type: "text", nullable: true),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    PostId = table.Column<Guid>(type: "uuid", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -193,26 +215,10 @@ namespace Syntax.Core.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Posts",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "text", nullable: false),
-                    Title = table.Column<string>(type: "character varying(80)", maxLength: 80, nullable: true),
-                    Body = table.Column<string>(type: "text", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UserId = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
+                        name: "FK_Comments_Posts_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Posts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -255,6 +261,11 @@ namespace Syntax.Core.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_PostId",
+                table: "Comments",
+                column: "PostId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
                 table: "Comments",
                 column: "UserId");
@@ -289,10 +300,10 @@ namespace Syntax.Core.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Posts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

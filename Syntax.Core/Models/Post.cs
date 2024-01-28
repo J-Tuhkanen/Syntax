@@ -7,11 +7,8 @@ namespace Syntax.Core.Models
 {
     public class Post : EntityBase, IUserActivity
     {
-        public Post(string title, string body, string userId) 
+        public Post() 
         {
-            Title = title;
-            Body = body;
-            UserId = userId;
             Timestamp = DateTime.UtcNow;
         }
         

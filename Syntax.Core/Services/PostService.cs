@@ -22,26 +22,26 @@ namespace Syntax.Core.Services
 
         public async Task<Post> CreatePostAsync(string title, string body, string userId)
         {
-            Post createdPost = await _unitOfWork.Post.CreatePostAsync(new Post(title, body, userId));
+            Post createdPost = await _unitOfWork.Post.CreatePostAsync(new Post { Title = title, Body = body, UserId = userId });
 
             await _unitOfWork.SaveChangesAsync();
 
             return createdPost;
         }
 
-        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<string> excludedPosts, int amount)
+        public async Task<IEnumerable<Post>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
         {
             return await _unitOfWork.Post.GetPostsByUserAsync(userId, excludedPosts, amount);
         }
 
-        public async Task<IEnumerable<Post>> GetPostsAsync(IEnumerable<string> excludedPosts, int amount)
+        public async Task<IEnumerable<Post>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount)
         {
             return await _unitOfWork.Post.GetPostsAsync(excludedPosts, amount);
         }
 
-        public async Task<Post> GetTopicAsync(string id) => await _unitOfWork.Post.GetPostById(id);
+        public async Task<Post> GetTopicAsync(Guid id) => await _unitOfWork.Post.GetPostById(id);
 
-        public async Task<Post> DeletePostAsync(string id)
+        public async Task<Post> DeletePostAsync(Guid id)
         {
             return await _unitOfWork.Post.DeletePostAsync(id);
         }

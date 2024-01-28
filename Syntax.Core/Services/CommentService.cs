@@ -15,9 +15,16 @@ namespace Syntax.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Comment> CreateCommentAsync(string postId, string content, string userId)
+        public async Task<Comment> CreateCommentAsync(Guid postId, string content, string userId)
         {
-            var comment = new Comment(postId, content, userId);
+            Post post = await _unitOfWork.Post.GetPostById(postId);
+
+            var comment = new Comment
+            {
+                Post = post,
+                Content = content,
+                UserId = userId
+            };
 
             await _unitOfWork.Comment.CreateCommentAsync(comment);
             await _unitOfWork.Comment.SaveChangesAsync();            
@@ -25,18 +32,18 @@ namespace Syntax.Core.Services
             return comment;
         }
 
-        public async Task<Comment> DeleteCommentAsync(string id)
+        public async Task<Comment> DeleteCommentAsync(Guid id)
         {
             return await _unitOfWork.Comment.DeleteCommentAsync(id);
         }
 
-        public async Task<Comment> GetCommentAsync(string id) 
+        public async Task<Comment> GetCommentAsync(Guid id) 
             => await _unitOfWork.Comment.GetCommentAsync(id);
 
-        public async Task<IEnumerable<Comment>> GetCommentsAsync(string postId, IEnumerable<string> ExcludedComments, int amount)
+        public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)
             => await _unitOfWork.Comment.GetCommentsAsync(postId, ExcludedComments, amount);
 
-        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<string> ExcludedComments, int amount)
+        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<Guid> ExcludedComments, int amount)
             => await _unitOfWork.Comment.GetCommentsByUserAsync(userId, ExcludedComments, amount);
     }
 }
