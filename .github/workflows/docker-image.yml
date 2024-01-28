@@ -2,30 +2,18 @@ name: ASP.NET CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
-
+  
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-
-    services:
-      sql:
-        image: "mcr.microsoft.com/mssql/server:2022-latest"
-        container_name: sql_server2022
-        ports: # not actually needed, because the two services are on the same network
-          - "1433:1433" 
-        env:
-          - ACCEPT_EULA=y
-          - SA_PASSWORD=Pwd12345!
-
+    
     steps:
     - uses: actions/checkout@v2
     - name: Set up .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1'  # replace with your .NET version
+        dotnet-version: 6.0.x
 
     - name: Restore dependencies
       run: dotnet restore
