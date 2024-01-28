@@ -22,7 +22,7 @@ namespace Syntax.API
             // Database configuration
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
             // Configure identity and required settings for each user
