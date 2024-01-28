@@ -41,7 +41,7 @@ namespace Syntax.Core.Services
 
         public async Task<Topic> GetTopicAsync(Guid id) => await _unitOfWork.Post.GetPostById(id);
 
-        public async Task<Topic> DeletePostAsync(Guid id)
+        public async Task<Topic> DeleteTopicAsync(Guid id)
         {
             return await _unitOfWork.Post.DeletePostAsync(id);
         }

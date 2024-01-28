@@ -42,7 +42,7 @@ namespace Syntax.Tests
         {
             var newPost = await _postService.CreatePostAsync("Janne", "Työmies", _user.Id);
 
-            var post = await _postService.DeletePostAsync(newPost.Id);
+            var post = await _postService.DeleteTopicAsync(newPost.Id);
 
             Assert.True(post.IsDeleted);
         }

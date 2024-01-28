@@ -28,7 +28,14 @@ namespace Syntax.API.Controllers
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopicAsync(Guid topicId)
         {
+            var topic = await _topicService.DeleteTopicAsync(topicId);
+            return Ok();
+        }
 
+        [HttpPut("{topicId}")]
+        public async Task<IActionResult> UpdateTopicAsync()
+        {
+            return Ok();
         }
     }
 }
