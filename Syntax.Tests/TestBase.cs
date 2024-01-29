@@ -6,6 +6,9 @@ using Syntax.Core.Repositories.Base;
 using Syntax.Core.Repositories;
 using Syntax.Core.Services.Base;
 using Syntax.Core.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace Syntax.Tests
 {
@@ -49,7 +52,23 @@ namespace Syntax.Tests
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 0;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            })
+                .AddSignInManager<SignInManager<UserAccount>>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            _services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+            {
+                options.Cookie.Name = "syntax.user";
+                options.Cookie.HttpOnly = true;
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = new TimeSpan(1, 0, 0);
+                options.Events.OnRedirectToLogin = (context) =>
+                {
+                    context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                    return Task.CompletedTask;
+                };
+            });
+
         }
 
         protected void InjectServiceDependencies()
