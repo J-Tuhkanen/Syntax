@@ -1,0 +1,39 @@
+trigger:
+- main
+
+pr:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  POSTGRES_PASSWORD: 'Pwd12345!'
+  POSTGRES_HOST: 'postgres'
+  POSTGRES_PORT: '5432'
+
+steps:
+- checkout: self
+
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    version: '6.0.x'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
+- script: |
+    docker run --name postgres \
+      -e POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
+      -e POSTGRES_HOST=$(POSTGRES_HOST) \
+      -e POSTGRES_PORT=$(POSTGRES_PORT) \
+      -d -p 5432:5432 postgres
+  displayName: 'Start PostgreSQL Service'
+
+- script: dotnet restore
+  displayName: 'Restore dependencies'
+
+- script: dotnet build --no-restore
+  displayName: 'Build'
+
+- script: dotnet test --no-build
+  displayName: 'Test'
