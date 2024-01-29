@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Syntax.Core.Models;
 
 namespace Syntax.Core.Services.Base
 {
     public interface IUserService
     {
-        Task<UserAccount> GetUserByIdAsync(string id);
-        Task<Blob> GetUserProfilePictureAsync(string userId);
-        Task SetUserProfilePictureAsync(string userId, Blob blob);
+        Task GenerateSignInCookie(HttpContext httpContext, UserAccount user);
+        Task<IdentityResult> Register(string email, string password, string username);
+        Task<SignInResult> SignInAsync(string email, string password);
+        Task<bool> AssignToRole(UserAccount user, string role);
         Task<IdentityResult> CreateUser(UserAccount user, string username, string password, string email);
     }
 }

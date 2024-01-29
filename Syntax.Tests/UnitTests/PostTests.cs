@@ -1,4 +1,4 @@
-namespace Syntax.Tests
+namespace Syntax.Tests.UnitTests
 {
     public class PostTests : TestBase
     {
@@ -24,14 +24,14 @@ namespace Syntax.Tests
         [Test]
         public async Task EnsurePostHasId()
         {
-            var newPost = await _postService.CreatePostAsync("Jotain", "Työmaa", _user.Id);
+            var newPost = await _postService.CreateTopicAsync("Jotain", "Työmaa", _user.Id);
             Assert.IsNotNull(newPost.Id);
         }
 
         [Test]
         public async Task IsPostCreationSuccessful()
         {
-            var newPost = await _postService.CreatePostAsync("Jotain", "Työmaa", _user.Id);
+            var newPost = await _postService.CreateTopicAsync("Jotain", "Työmaa", _user.Id);
             var post = await _postService.GetTopicAsync(newPost.Id);
 
             Assert.IsNotNull(post);
@@ -40,7 +40,7 @@ namespace Syntax.Tests
         [Test]
         public async Task CheckPostContainsDeletionFlag()
         {
-            var newPost = await _postService.CreatePostAsync("Janne", "Työmies", _user.Id);
+            var newPost = await _postService.CreateTopicAsync("Janne", "Työmies", _user.Id);
 
             var post = await _postService.DeleteTopicAsync(newPost.Id);
 
@@ -50,7 +50,7 @@ namespace Syntax.Tests
         [Test]
         public async Task CheckCreatedPostContainsTimestamp()
         {
-            var newPost = await _postService.CreatePostAsync("Janne", "Työmies", _user.Id);
+            var newPost = await _postService.CreateTopicAsync("Janne", "Työmies", _user.Id);
 
             var postTimeStamp = newPost.Timestamp;
             var currentTimestamp = DateTime.UtcNow;

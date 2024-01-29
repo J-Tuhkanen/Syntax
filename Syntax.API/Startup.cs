@@ -4,11 +4,16 @@ using Syntax.Core.Models;
 using Syntax.Core.Repositories;
 using Syntax.Core.Services.Base;
 using Syntax.Core.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Syntax.API
 {
     public class Startup
     {
+        private readonly string allowSpecificOrigin = "AllowSpecificOrigin";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -25,6 +30,17 @@ namespace Syntax.API
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: allowSpecificOrigin, policy => {
+
+                    policy.WithOrigins("https://localhost:5173");
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowCredentials();
+                });
+            });
+
             // Configure identity and required settings for each user
             services.AddDefaultIdentity<UserAccount>(options =>
             {
@@ -34,20 +50,41 @@ namespace Syntax.API
                 options.Password.RequiredUniqueChars = 0;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 0;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            })
+                .AddSignInManager<SignInManager<UserAccount>>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.Name = "syntax.user";
+                    options.Cookie.HttpOnly = true;
+                    options.SlidingExpiration = true;
+                    options.ExpireTimeSpan = new TimeSpan(1, 0, 0);
+                    options.Events.OnRedirectToLogin = (context) =>
+                    {
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        return Task.CompletedTask;
+                    };
+                });
 
             // Add services to dependency injection to be injectable whenever needed
             services.AddTransient<ITopicService, TopicService>();
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();
-
             services.AddTransient<UnitOfWork>();
+            services.AddWebEncoders();
+            services.AddDistributedMemoryCache();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
+            CreateRoles(serviceProvider).GetAwaiter().GetResult();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -62,13 +99,25 @@ namespace Syntax.API
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors(allowSpecificOrigin);
+            app.UseResponseCaching();
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            foreach (var roleName in ApplicationConstants.UserRoles.GetRoles())
+            {
+                if (await roleManager.RoleExistsAsync(roleName) == false)
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
         }
     }
 }
