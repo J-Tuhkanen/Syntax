@@ -106,6 +106,12 @@ namespace Syntax.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                Console.WriteLine("Avaible endpoints:");
+                foreach(var re in endpoints.DataSources.First().Endpoints.OfType<RouteEndpoint>())
+                {
+                    Console.WriteLine(re.RoutePattern.RawText);
+                }
             });
         }
 
