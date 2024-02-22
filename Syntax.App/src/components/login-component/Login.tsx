@@ -53,17 +53,19 @@ export const Login: React.FC<LoginProps> = ({ onRequestSignIn }) => {
     } 
 
     return (<>
-        <form className="login-form" onSubmit={onLoginSubmit}>
-            <div className="form-field-group">
-                
-            </div>
+        <form className="login-form " onSubmit={onLoginSubmit}>
+            <div className="row col-md-4 justify-content-md-center">
+                <div className="form-field-group col-md-10">
+                    <input type="text" onChange={onEmailchange}/>
+                </div>
 
-            <div className="form-field-group">
+                <div className="form-field-group col-md-10">
+                    <input type="password" onChange={onPasswordChange}/>
+                </div>
 
-            </div>
-
-            <div className="form-field-group">
-
+                <div className="form-field-group col-md-10">
+                    <button type="submit" className="btn btn-primary">Login</button>
+                </div>
             </div>
         </form>
     </>);

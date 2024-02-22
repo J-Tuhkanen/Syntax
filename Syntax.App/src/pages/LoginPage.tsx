@@ -33,10 +33,9 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             method: "POST",
             endpoint: "authentication/login",
             requestBody: {
-
-                email: props.email,
-                password: props.password
-            }
+                "username": "asdasd",
+                "password": "strasdasding"
+              }
         });
 
         if (response.status === 200) {
@@ -45,8 +44,9 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             navigate("/");
         }
 
-        else if (response.status === 401)
-            setErrorModel({ showError: true, message: "Authentication failed. Check email and password." })
+        else if (response.status === 401){
+            setErrorModel({ showError: true, message: "Authentication failed. Check email and password." });
+        }
 
         setIsAuthenticating(false);
 
@@ -57,11 +57,14 @@ const LoginPage: React.FC<LoginPageProps> = () => {
 
     return (
         <>
+            <div className='container container-sm'>
+                <Login onRequestSignIn={onRequestSignIn} />
+
             {/* {errorModel.showError
                 ? <InfoMessage infoMessageType={InfoMessageType.Error} message={errorModel.message} />
-                : null} */}
-
-            <Login onRequestSignIn={onRequestSignIn} />
+            : null} */}
+    
+            </div>
         </>
     );
 

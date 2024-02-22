@@ -10,8 +10,8 @@ using Syntax.Core.Services.Base;
 
 namespace Syntax.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthenticationController : Controller
     {
         private readonly IUserService _authService;

@@ -9,7 +9,7 @@ namespace Syntax.Core.Services.Base
         Task<Topic> CreateTopicAsync(string title, string body, string userId);
         Task<Topic> DeleteTopicAsync(Guid id);
         Task<Topic> GetTopicAsync(Guid id);
-        Task<IEnumerable<Topic>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount);
-        Task<IEnumerable<Topic>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount);
+        Task<IEnumerable<Topic>> GetTopicByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount);
+        Task<IEnumerable<Topic>> GetTopicsAsync(IEnumerable<Guid> excludedPosts, int amount);
     }
 }

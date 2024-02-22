@@ -9,12 +9,12 @@ type RequestArguments = {
 
 export const sendRequest = async(requestArgs: RequestArguments):  Promise<Response> => {
 
-    const requestUri = `${API_BASE_URI}/${requestArgs.endpoint}`;
+    const requestUri = `${API_BASE_URI}${requestArgs.endpoint}`;
     const requestCredentials: RequestCredentials = 'include';
     const requestData = {
         method: requestArgs.method,
         credentials: requestCredentials,
-        headers: { 'Context-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json' },
         body: requestArgs.requestBody ? JSON.stringify(requestArgs.requestBody) : null
     };
 
