@@ -5,6 +5,7 @@ namespace Syntax.API.Requests
     public class SignupRequest
     {
         [Required]
+        [EmailAddress]
         public string Email { get; set; } = null!;
 
         [Required]
