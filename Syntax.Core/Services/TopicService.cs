@@ -29,12 +29,12 @@ namespace Syntax.Core.Services
             return createdPost;
         }
 
-        public async Task<IEnumerable<Topic>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
+        public async Task<IEnumerable<Topic>> GetTopicByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
         {
             return await _unitOfWork.Post.GetPostsByUserAsync(userId, excludedPosts, amount);
         }
 
-        public async Task<IEnumerable<Topic>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount)
+        public async Task<IEnumerable<Topic>> GetTopicsAsync(IEnumerable<Guid> excludedPosts, int amount)
         {
             return await _unitOfWork.Post.GetPostsAsync(excludedPosts, amount);
         }

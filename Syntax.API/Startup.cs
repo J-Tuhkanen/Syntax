@@ -5,7 +5,6 @@ using Syntax.Core.Repositories;
 using Syntax.Core.Services.Base;
 using Syntax.Core.Services;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Syntax.API
@@ -26,15 +25,12 @@ namespace Syntax.API
         {
             // Database configuration
             services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
-            });
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddCors(options =>
             {
                 options.AddPolicy(name: allowSpecificOrigin, policy => {
-
-                    policy.WithOrigins("https://localhost:5173");
+                    policy.WithOrigins("https://localhost:3000");
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();
                     policy.AllowCredentials();
@@ -78,16 +74,20 @@ namespace Syntax.API
             services.AddTransient<UnitOfWork>();
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
-            CreateRoles(serviceProvider).GetAwaiter().GetResult();
+            //CreateRoles(serviceProvider).GetAwaiter().GetResult();
 
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
             else
             {
@@ -100,7 +100,6 @@ namespace Syntax.API
             app.UseStaticFiles();
             app.UseRouting();
             app.UseCors(allowSpecificOrigin);
-            app.UseResponseCaching();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
@@ -113,8 +112,8 @@ namespace Syntax.API
                     Console.WriteLine(re.RoutePattern.RawText);
                 }
             });
+            app.UseResponseCaching();  
         }
-
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();

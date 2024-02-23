@@ -23,12 +23,19 @@ namespace Syntax.API.Controllers
             _userManager = userManager;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetTopicsAsync()
+        {
+            var topics = await _topicService.GetTopicsAsync(new List<Guid>(), 100);
+            return new JsonResult(topics);
+        }
+
         [HttpGet("{topicId}")]
         public async Task<IActionResult> GetTopicAsync(Guid topicId)
         {
             Topic topic = await _topicService.GetTopicAsync(topicId);
 
-            return Content(JsonSerializer.Serialize(new TopicWrapper(topic)));
+            return new JsonResult(topic);
         }
 
         [HttpPost]
@@ -37,7 +44,7 @@ namespace Syntax.API.Controllers
             var user = await _userManager.GetUserAsync(User);
             var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user.Id);
 
-            return Content(JsonSerializer.Serialize(new TopicWrapper(topic)));
+            return new JsonResult(topic);
         }
 
         [HttpDelete("{topicId}")]
