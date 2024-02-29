@@ -22,7 +22,7 @@ namespace Syntax.Core.Services
 
         public async Task<Topic> CreateTopicAsync(string title, string body, string userId)
         {
-            Topic createdPost = await _unitOfWork.Topics.CreatePostAsync(new Topic { Title = title, Body = body, UserId = userId });
+            Topic createdPost = await _unitOfWork.Topic.CreateTopicAsync(new Topic { Title = title, Body = body, UserId = userId });
 
             await _unitOfWork.SaveChangesAsync();
 
@@ -31,19 +31,19 @@ namespace Syntax.Core.Services
 
         public async Task<IEnumerable<Topic>> GetTopicByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
         {
-            return await _unitOfWork.Topics.GetPostsByUserAsync(userId, excludedPosts, amount);
+            return await _unitOfWork.Topic.GetTopicsByUserAsync(userId, excludedPosts, amount);
         }
 
         public async Task<IEnumerable<Topic>> GetTopicsAsync(IEnumerable<Guid> excludedPosts, int amount)
         {
-            return await _unitOfWork.Topics.GetPostsAsync(excludedPosts, amount);
+            return await _unitOfWork.Topic.GetTopicsAsync(excludedPosts, amount);
         }
 
         public async Task<Topic> GetTopicAsync(Guid id) => await _unitOfWork.Topics.GetPostById(id);
 
         public async Task<Topic> DeleteTopicAsync(Guid id)
         {
-            return await _unitOfWork.Topics.DeletePostAsync(id);
+            return await _unitOfWork.Topic.DeleteTopicAsync(id);
         }
     }
 }

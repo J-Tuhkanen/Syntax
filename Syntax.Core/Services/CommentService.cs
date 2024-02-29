@@ -17,7 +17,7 @@ namespace Syntax.Core.Services
 
         public async Task<Comment> CreateCommentAsync(Guid postId, string content, string userId)
         {
-            Topic post = await _unitOfWork.Topics.GetPostById(postId);
+            Topic post = await _unitOfWork.Topic.GetTopicById(postId);
 
             var comment = new Comment
             {

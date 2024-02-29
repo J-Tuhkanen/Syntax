@@ -5,7 +5,7 @@ using Syntax.Core.Wrappers.Base;
 namespace Syntax.Core.Wrappers
 {
     /// <summary>
-    /// Read-only wrapper for post-object.
+    /// Read-only wrapper for topic-object.
     /// </summary>
     public class TopicWrapper
     {
@@ -17,16 +17,16 @@ namespace Syntax.Core.Wrappers
         public string UserName { get; }
         public string UserId { get; }
 
-        public TopicWrapper(Topic post)
+        public TopicWrapper(Topic topic)
         {
-            Id = post.Id;
-            UserId = post.User.Id;
-            UserName = post.User.UserName;
-            Title = post.Title;
-            Body = post.Body.Length > _maxBodyLengthAsShortened + 3
-                ? post.Body.Substring(0, _maxBodyLengthAsShortened) + "..."
-                : post.Body;
-            Timestamp = post.Timestamp;
+            Id = topic.Id;
+            UserId = topic.User.Id;
+            UserName = topic.User.UserName;
+            Title = topic.Title;
+            Body = topic.Body.Length > _maxBodyLengthAsShortened + 3
+                ? topic.Body.Substring(0, _maxBodyLengthAsShortened) + "..."
+                : topic.Body;
+            Timestamp = topic.Timestamp;
         }
     }
 }

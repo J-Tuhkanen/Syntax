@@ -11,14 +11,14 @@ namespace Syntax.Core.Repositories
         {
         }
 
-        public async Task<Topic> CreatePostAsync(Topic post)
+        public async Task<Topic> CreateTopicAsync(Topic post)
         {
             await applicationDbContext.Topics.AddAsync(post);
 
             return post;
         }
 
-        public async Task<Topic> DeletePostAsync(Guid id)
+        public async Task<Topic> DeleteTopicAsync(Guid id)
         {
             // Get post from database
             var post = applicationDbContext.Topics.FirstOrDefault(p => p.Id == id);
@@ -33,7 +33,7 @@ namespace Syntax.Core.Repositories
             return post;
         }
 
-        public async Task<IEnumerable<Topic>> GetPostsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
+        public async Task<IEnumerable<Topic>> GetTopicsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
         {
             var validPosts = applicationDbContext.Topics.Where(p =>
                 p.IsDeleted == false &&
@@ -43,7 +43,7 @@ namespace Syntax.Core.Repositories
             return await validPosts.ToListAsync();
         }
 
-        public async Task<IEnumerable<Topic>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount)
+        public async Task<IEnumerable<Topic>> GetTopicsAsync(IEnumerable<Guid> excludedPosts, int amount)
         {
             var validPosts = await applicationDbContext.Topics
                 .Where(p => p.IsDeleted == false && excludedPosts.Contains(p.Id) == false)
@@ -54,7 +54,7 @@ namespace Syntax.Core.Repositories
             return validPosts;
         }
 
-        public async Task<Topic> GetPostById(Guid id) => await applicationDbContext.Topics.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
+        public async Task<Topic> GetTopicById(Guid id) => await applicationDbContext.Topics.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
 
     }
 }
