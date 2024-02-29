@@ -114,5 +114,15 @@ namespace Syntax.API
             });
             app.UseResponseCaching();  
         }
+        private async Task CreateRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+            foreach (var roleName in ApplicationConstants.UserRoles.GetRoles())
+            {
+                if (await roleManager.RoleExistsAsync(roleName) == false)
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
     }
 }
