@@ -7,17 +7,17 @@ namespace Syntax.Core.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public IPostRepository Topic { get; }
-        public ICommentRepository Comment { get; }
-        public IUserRepository User { get; }
+        public ITopicRepository Topics { get; }
+        public ICommentRepository Comments { get; }
+        public IUserRepository Users { get; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
 
-            Topic = new TopicRepository(_dbContext);
-            Comment = new CommentRepository(_dbContext);
-            User = new UserRepository(_dbContext);
+            Topics = new TopicRepository(_dbContext);
+            Comments = new CommentRepository(_dbContext);
+            Users = new UserRepository(_dbContext);
         }
 
         public async Task SaveChangesAsync()
