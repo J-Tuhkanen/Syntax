@@ -26,24 +26,24 @@ namespace Syntax.Core.Services
                 UserId = userId
             };
 
-            await _unitOfWork.Comment.CreateCommentAsync(comment);
-            await _unitOfWork.Comment.SaveChangesAsync();            
+            await _unitOfWork.Comments.CreateCommentAsync(comment);
+            await _unitOfWork.Comments.SaveChangesAsync();            
 
             return comment;
         }
 
         public async Task<Comment> DeleteCommentAsync(Guid id)
         {
-            return await _unitOfWork.Comment.DeleteCommentAsync(id);
+            return await _unitOfWork.Comments.DeleteCommentAsync(id);
         }
 
         public async Task<Comment> GetCommentAsync(Guid id) 
-            => await _unitOfWork.Comment.GetCommentAsync(id);
+            => await _unitOfWork.Comments.GetCommentAsync(id);
 
         public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)
-            => await _unitOfWork.Comment.GetCommentsAsync(postId, ExcludedComments, amount);
+            => await _unitOfWork.Comments.GetCommentsAsync(postId, ExcludedComments, amount);
 
         public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<Guid> ExcludedComments, int amount)
-            => await _unitOfWork.Comment.GetCommentsByUserAsync(userId, ExcludedComments, amount);
+            => await _unitOfWork.Comments.GetCommentsByUserAsync(userId, ExcludedComments, amount);
     }
 }
