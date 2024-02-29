@@ -3,8 +3,8 @@
     public class CommentTests : TestBase
     {
         private UserAccount _user;
-        private Topic _targetPost;
-        private ITopicService _postService;
+        private Topic _targetTopic;
+        private ITopicService _topicService;
         private ICommentService _commentService;
 
         [OneTimeSetUp]
@@ -13,7 +13,7 @@
             Debug.WriteLine("Setting up tests...");
             var dbContext = GetService<ApplicationDbContext>();
             IUserService userService = GetService<IUserService>();
-            _postService = GetService<ITopicService>();
+            _topicService = GetService<ITopicService>();
             _commentService = GetService<ICommentService>();
             Debug.WriteLine("Ensuring database does not exist.");
             await dbContext.Database.EnsureDeletedAsync();
@@ -26,8 +26,8 @@
         [Test]
         public async Task EnsureCommentHasId()
         {
-            _targetPost = await _postService.CreateTopicAsync("Janne", "Työmies", _user.Id);
-            var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi on hieno mies", _user.Id);
+            _targetTopic = await _topicService.CreateTopicAsync("Janne", "Työmies", _user.Id);
+            var newComment = await _commentService.CreateCommentAsync(_targetTopic.Id, "Timo Testi on hieno mies", _user.Id);
 
             Assert.IsNotNull(newComment.Id);
         }
@@ -35,8 +35,8 @@
         [Test]
         public async Task IsCommentCreationSuccessful()
         {
-            _targetPost = await _postService.CreateTopicAsync("Janne", "Työmies", _user.Id);
-            Comment newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi on hieno mies", _user.Id);
+            _targetTopic = await _topicService.CreateTopicAsync("Janne", "Työmies", _user.Id);
+            Comment newComment = await _commentService.CreateCommentAsync(_targetTopic.Id, "Timo Testi on hieno mies", _user.Id);
             var comment = await _commentService.GetCommentAsync(newComment.Id);
             Assert.IsNotNull(comment.Id);
         }
@@ -44,8 +44,8 @@
         [Test]
         public async Task CheckCommentContainsDeletionFlag()
         {
-            _targetPost = await _postService.CreateTopicAsync("Janne", "Työmies", _user.Id);
-            var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Timo Testi poistuu kentältä", _user.Id);
+            _targetTopic = await _topicService.CreateTopicAsync("Janne", "Työmies", _user.Id);
+            var newComment = await _commentService.CreateCommentAsync(_targetTopic.Id, "Timo Testi poistuu kentältä", _user.Id);
             var commentToBeDeleted = await _commentService.DeleteCommentAsync(newComment.Id);
 
             Assert.True(commentToBeDeleted.IsDeleted);
@@ -54,8 +54,8 @@
         [Test]
         public async Task CheckCreatedCommentContainsTimestamp()
         {
-            _targetPost = await _postService.CreateTopicAsync("Janne", "Työmies", _user.Id);
-            var newComment = await _commentService.CreateCommentAsync(_targetPost.Id, "Hei maailma!", _targetPost.User.Id);
+            _targetTopic = await _topicService.CreateTopicAsync("Janne", "Työmies", _user.Id);
+            var newComment = await _commentService.CreateCommentAsync(_targetTopic.Id, "Hei maailma!", _targetTopic.User.Id);
 
             var commentTimestamp = newComment.Timestamp;
             var currentTimestamp = DateTime.UtcNow;
