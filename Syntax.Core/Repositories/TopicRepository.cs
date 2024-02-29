@@ -5,9 +5,9 @@ using Syntax.Core.Repositories.Base;
 
 namespace Syntax.Core.Repositories
 {
-    internal class PostRepository : RepositoryBase, IPostRepository
+    internal class TopicRepository : RepositoryBase, ITopicRepository
     {
-        internal PostRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
+        internal TopicRepository(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
         }
 
@@ -45,9 +45,11 @@ namespace Syntax.Core.Repositories
 
         public async Task<IEnumerable<Topic>> GetPostsAsync(IEnumerable<Guid> excludedPosts, int amount)
         {
-            var validPosts = await applicationDbContext.Topics.Where(p =>
-                p.IsDeleted == false &&
-                excludedPosts.Contains(p.Id) == false).Take(amount).ToListAsync();
+            var validPosts = await applicationDbContext.Topics
+                .Where(p => p.IsDeleted == false && excludedPosts.Contains(p.Id) == false)
+                .Take(amount)
+                .Include(t => t.User)
+                .ToListAsync();
             
             return validPosts;
         }

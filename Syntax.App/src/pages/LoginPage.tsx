@@ -33,8 +33,8 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             method: "POST",
             endpoint: "authentication/login",
             requestBody: {
-                "username": "asdasd",
-                "password": "strasdasding"
+                "username": props.email,
+                "password": props.password
               }
         });
 

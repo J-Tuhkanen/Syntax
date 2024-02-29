@@ -2,7 +2,7 @@
 
 namespace Syntax.Core.Repositories.Base
 {
-    public interface IPostRepository
+    public interface ITopicRepository
     {
         Task<Topic> CreatePostAsync(Topic post);
         Task<Topic> DeletePostAsync(Guid id);
