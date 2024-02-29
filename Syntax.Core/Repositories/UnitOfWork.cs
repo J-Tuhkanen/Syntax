@@ -7,7 +7,7 @@ namespace Syntax.Core.Repositories
     {
         private readonly ApplicationDbContext _dbContext;
 
-        public IPostRepository Post { get; }
+        public IPostRepository Topic { get; }
         public ICommentRepository Comment { get; }
         public IUserRepository User { get; }
 
@@ -15,7 +15,7 @@ namespace Syntax.Core.Repositories
         {
             _dbContext = dbContext;
 
-            Post = new PostRepository(_dbContext);
+            Topic = new TopicRepository(_dbContext);
             Comment = new CommentRepository(_dbContext);
             User = new UserRepository(_dbContext);
         }

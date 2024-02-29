@@ -33,7 +33,7 @@ namespace Syntax.API.Controllers
         [HttpGet("{topicId}")]
         public async Task<IActionResult> GetTopicAsync(Guid topicId)
         {
-            Topic topic = await _topicService.GetTopicAsync(topicId);
+            var topic = await _topicService.GetTopicAsync(topicId);
 
             return new JsonResult(topic);
         }

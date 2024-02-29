@@ -1,9 +1,9 @@
 namespace Syntax.Tests.UnitTests
 {
-    public class PostTests : TestBase
+    public class TopicTests : TestBase
     {
         private UserAccount _user;
-        private ITopicService _postService;
+        private ITopicService _topicService;
 
         [OneTimeSetUp]
         public async Task Setup()
@@ -11,7 +11,7 @@ namespace Syntax.Tests.UnitTests
             Debug.WriteLine("Setting up tests...");
             var dbContext = GetService<ApplicationDbContext>();
             IUserService userService = GetService<IUserService>();
-            _postService = GetService<ITopicService>();
+            _topicService = GetService<ITopicService>();
             Debug.WriteLine("Ensuring database does not exist.");
             await dbContext.Database.EnsureDeletedAsync();
             await dbContext.Database.MigrateAsync();
@@ -22,42 +22,42 @@ namespace Syntax.Tests.UnitTests
         }
 
         [Test]
-        public async Task EnsurePostHasId()
+        public async Task EnsureTopicHasId()
         {
-            var newPost = await _postService.CreateTopicAsync("Jotain", "Työmaa", _user.Id);
-            Assert.IsNotNull(newPost.Id);
+            var newTopic = await _topicService.CreateTopicAsync("Jotain", "Tyï¿½maa", _user.Id);
+            Assert.IsNotNull(newTopic.Id);
         }
 
         [Test]
-        public async Task IsPostCreationSuccessful()
+        public async Task IsTopicCreationSuccessful()
         {
-            var newPost = await _postService.CreateTopicAsync("Jotain", "Työmaa", _user.Id);
-            var post = await _postService.GetTopicAsync(newPost.Id);
+            var newTopic = await _topicService.CreateTopicAsync("Jotain", "Tyï¿½maa", _user.Id);
+            var topic = await _topicService.GetTopicAsync(newTopic.Id);
 
-            Assert.IsNotNull(post);
+            Assert.IsNotNull(topic);
         }
 
         [Test]
-        public async Task CheckPostContainsDeletionFlag()
+        public async Task CheckTopicContainsDeletionFlag()
         {
-            var newPost = await _postService.CreateTopicAsync("Janne", "Työmies", _user.Id);
+            var newTopic = await _topicService.CreateTopicAsync("Janne", "Tyï¿½mies", _user.Id);
 
-            var post = await _postService.DeleteTopicAsync(newPost.Id);
+            var topic = await _topicService.DeleteTopicAsync(newTopic.Id);
 
-            Assert.True(post.IsDeleted);
+            Assert.True(topic.IsDeleted);
         }
 
         [Test]
-        public async Task CheckCreatedPostContainsTimestamp()
+        public async Task CheckCreatedTopicContainsTimestamp()
         {
-            var newPost = await _postService.CreateTopicAsync("Janne", "Työmies", _user.Id);
+            var newTopic = await _topicService.CreateTopicAsync("Janne", "Tyï¿½mies", _user.Id);
 
-            var postTimeStamp = newPost.Timestamp;
+            var topicTimeStamp = newTopic.Timestamp;
             var currentTimestamp = DateTime.UtcNow;
 
-            var isMatchingYear = currentTimestamp.Year.Equals(postTimeStamp.Year);
-            var isMatchingMonth = currentTimestamp.Month.Equals(postTimeStamp.Month);
-            var isMatchingDay = currentTimestamp.Day.Equals(postTimeStamp.Day);
+            var isMatchingYear = currentTimestamp.Year.Equals(topicTimeStamp.Year);
+            var isMatchingMonth = currentTimestamp.Month.Equals(topicTimeStamp.Month);
+            var isMatchingDay = currentTimestamp.Day.Equals(topicTimeStamp.Day);
 
             Assert.True(isMatchingDay && isMatchingMonth && isMatchingYear);
         }
