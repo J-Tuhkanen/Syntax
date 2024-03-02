@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 type RequestSignInProps = {
 
-    email: string;
+    username: string;
     password: string;
 }
 type LoginPageProps = {
@@ -33,7 +33,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
             method: "POST",
             endpoint: "authentication/login",
             requestBody: {
-                "username": props.email,
+                "username": props.username,
                 "password": props.password
               }
         });
