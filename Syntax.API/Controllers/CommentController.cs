@@ -28,7 +28,7 @@ namespace Syntax.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCommentAsync([FromBody] Comment comment, [FromBody] Guid topicId)
+        public async Task<IActionResult> CreateCommentAsync([FromBody] Comment comment, Guid topicId)
         {
             var user = await _userManager.GetUserAsync(User);
             var newComment = await _commentService.CreateCommentAsync(topicId, comment.Content, user.Id);
