@@ -1,7 +1,5 @@
-﻿using Syntax.Core.Data;
-using Syntax.Core.Models;
+﻿using Syntax.Core.Models;
 using Syntax.Core.Repositories;
-using Syntax.Core.Repositories.Base;
 using Syntax.Core.Services.Base;
 
 namespace Syntax.Core.Services
@@ -40,10 +38,10 @@ namespace Syntax.Core.Services
         public async Task<Comment> GetCommentAsync(Guid id) 
             => await _unitOfWork.Comments.GetCommentAsync(id);
 
-        public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)
-            => await _unitOfWork.Comments.GetCommentsAsync(postId, ExcludedComments, amount);
+        public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId)
+            => await _unitOfWork.Comments.GetCommentsAsync(postId);
 
-        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<Guid> ExcludedComments, int amount)
-            => await _unitOfWork.Comments.GetCommentsByUserAsync(userId, ExcludedComments, amount);
+        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId)
+            => await _unitOfWork.Comments.GetCommentsByUserAsync(userId);
     }
 }

@@ -39,24 +39,22 @@ namespace Syntax.Core.Repositories
             return await applicationDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)
+        public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId)
         {
             IQueryable<Comment> query = applicationDbContext.Comments.Where(c =>
                 c.Topic.Id == postId &&
-                c.IsDeleted == false &&
-                ExcludedComments.Contains(c.Id) == false);
+                c.IsDeleted == false);
 
-            return await query.Take(amount).ToListAsync();
+            return await query.ToListAsync();
         }
 
-        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<Guid> ExcludedComments, int amount)
+        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId)
         {
             IQueryable<Comment> query = applicationDbContext.Comments.Where(c =>
                 c.UserId == userId &&
-                c.IsDeleted == false &&
-                ExcludedComments.Contains(c.Id) == false);
+                c.IsDeleted == false);
 
-            return await query.Take(amount).ToListAsync();
+            return await query.ToListAsync();
         }
     }
 }

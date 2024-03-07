@@ -1,5 +1,4 @@
 ﻿using Syntax.Core.Models.Base;
-using System;
 
 namespace Syntax.Core.Models
 {

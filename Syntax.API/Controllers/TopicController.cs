@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Requests;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Base;
-using Syntax.Core.Wrappers;
-using System.Text.Json;
 
 namespace Syntax.API.Controllers
 {
@@ -50,13 +48,7 @@ namespace Syntax.API.Controllers
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopicAsync(Guid topicId)
         {
-            var topic = await _topicService.DeleteTopicAsync(topicId);
-            return Ok();
-        }
-
-        [HttpPut("{topicId}")]
-        public async Task<IActionResult> UpdateTopicAsync()
-        {
+            await _topicService.DeleteTopicAsync(topicId);
             return Ok();
         }
     }
