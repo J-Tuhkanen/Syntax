@@ -1,6 +1,7 @@
 import { sendRequest } from '../helpers/apiRequestHelpers';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
+import { Topic } from '../components/topic-component/Topic';
 
 type TopicDto = {
 
@@ -31,13 +32,16 @@ const MainFeedPage: React.FC = () => {
 
     return(
         <div>
-            <div>
+            <div className="row justify-content-center">
+                <div className='col-6'>
+
                 {topics?.map((value, index) => 
-                    <div>
-                        <h1>{value.title}</h1>                        
-                        <h1>{value.body}</h1>
-                    </div>
-                )}
+                    <Topic 
+                    key={index} 
+                    content={value.body} 
+                    title={value.title}/>
+                    )}
+                </div>
             </div>
         </div>);
 }

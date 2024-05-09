@@ -44,7 +44,6 @@ export const Login: React.FC<LoginProps> = ({ onRequestSignIn }) => {
 
     const onFormFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
 
-        console.log(loginFormData);
         setLoginFormData({
             ...loginFormData,
             [e.target.name]: e.target.value
