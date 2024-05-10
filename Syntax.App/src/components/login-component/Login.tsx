@@ -8,24 +8,22 @@ type LoginProps = {
 
 export const Login: React.FC<LoginProps> = ({ onRequestSignIn }) => {    
 
-    const [email, setEmail] = useState("");    
-    const [emailError, setEmailError] = useState("");
+    const [loginFormData, setLoginFormData] = useState({
+        username: "",
+        password: ""
+    });
 
-    const [password, setPassword] = useState("");
-    const [passwordError, setPasswordError] = useState("");
-    
     const formHasErrors = (): boolean => {
 
         let hasErrors = false;
 
-        if (email.trim().length < 1) {
-            setEmailError("Email field cannot be empty.");
+        if (loginFormData.username.trim().length < 1) {
+            //setEmailError("Email field cannot be empty.");
             hasErrors = true;
         }
 
-        if (password.trim().length < 1) {
-
-            setPasswordError("Password field cannot be empty");
+        if (loginFormData.password.trim().length < 1) {
+            //setPasswordError("Password field cannot be empty");
             hasErrors = true;
         }
 
@@ -36,31 +34,31 @@ export const Login: React.FC<LoginProps> = ({ onRequestSignIn }) => {
         
         e.preventDefault();
         
-        if (formHasErrors() === false)
-            await onRequestSignIn({ email, password });        
+        if (formHasErrors() === false) {
+            await onRequestSignIn({
+                username: loginFormData.username,
+                password: loginFormData.password
+            });        
+        }
     }
 
-    const onEmailchange = (e: ChangeEvent<HTMLInputElement>) => {
+    const onFormFieldChange = (e: ChangeEvent<HTMLInputElement>) => {
 
-        setEmailError("");
-        setEmail(e.target.value);
+        setLoginFormData({
+            ...loginFormData,
+            [e.target.name]: e.target.value
+        });
     }
-
-    const onPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-
-        setPasswordError("");
-        setPassword(e.target.value);
-    } 
 
     return (<>
         <form className="login-form " onSubmit={onLoginSubmit}>
             <div className="row col-md-4 justify-content-md-center">
                 <div className="form-field-group col-md-10">
-                    <input type="text" onChange={onEmailchange}/>
+                    <input name="username" type="text" onChange={onFormFieldChange}/>
                 </div>
 
                 <div className="form-field-group col-md-10">
-                    <input type="password" onChange={onPasswordChange}/>
+                    <input name="password" type="password" onChange={onFormFieldChange}/>
                 </div>
 
                 <div className="form-field-group col-md-10">

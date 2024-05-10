@@ -70,6 +70,14 @@ namespace Syntax.API.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return Ok();
         }
+
+        [HttpGet("Session")]
+        public async Task<IActionResult> GetCurrentSession()
+        {
+            UserAccount user = await _userManager.GetUserAsync(User);
+
+            return user == null ? NoContent() : new JsonResult(new ApplicationUserRecord(user));
+        }
     }
 
     public record class ApplicationUserRecord

@@ -3,18 +3,19 @@ import { sendRequest } from '../helpers/apiRequestHelpers';
 // import { InfoMessage, InfoMessageType } from "../components/info-message-component/InfoMessage";
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
+import { AuthenticationState } from '../models/AuthenticationState';
 
 type RequestSignInProps = {
 
-    email: string;
+    username: string;
     password: string;
 }
 type LoginPageProps = {
 
-    // setAuthStateFunction: Function
+    setAuthStateFunction: React.Dispatch<React.SetStateAction<AuthenticationState>>
 }
 
-const LoginPage: React.FC<LoginPageProps> = () => {
+const LoginPage: React.FC<LoginPageProps> = ({setAuthStateFunction}) => {
 
     const navigate = useNavigate();
     const [errorModel, setErrorModel] = useState({ showError: false, message: "" });
@@ -27,20 +28,21 @@ const LoginPage: React.FC<LoginPageProps> = () => {
 
         setErrorModel({ showError: false, message: "" });
         setIsAuthenticating(true);
-        
+
         const response = await sendRequest({
 
             method: "POST",
             endpoint: "authentication/login",
             requestBody: {
-                "username": props.email,
+                "username": props.username,
                 "password": props.password
-              }
+            },
+            
         });
 
         if (response.status === 200) {
 
-            // setAuthStateFunction({ isSignedIn: true, user: await response.json() });
+            setAuthStateFunction({ isSignedIn: true, User: await response.json() });
             navigate("/");
         }
 
