@@ -7,6 +7,7 @@ import { createContext, useEffect, useInsertionEffect, useState } from 'react';
 import { sendRequest } from './helpers/apiRequestHelpers';
 import SignoutPage from './pages/SignoutPage';
 import { AuthenticationState } from './models/AuthenticationState';
+import TopicViewPage from './pages/TopicViewPage';
 
 export const AuthenticationContext = createContext<AuthenticationState>({ isSignedIn: false});
 
@@ -36,6 +37,7 @@ const App = () => {
             <Route path="/" element={<MainFeedPage/>}/>
             <Route path="/login" element={<LoginPage setAuthStateFunction={setAuthState}/>}/>
             <Route path="/signout" element={<SignoutPage setAuthStateFunction={setAuthState}/>}/>
+            <Route path="/topic/:topicId" element={<TopicViewPage/>}/>
           </Routes>
         </div>
       </AuthenticationContext.Provider>

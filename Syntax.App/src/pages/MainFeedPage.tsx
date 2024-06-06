@@ -2,12 +2,7 @@ import { sendRequest } from '../helpers/apiRequestHelpers';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { Topic } from '../components/topic-component/Topic';
-
-type TopicDto = {
-
-    title: string,
-    body: string
-};
+import { TopicDto } from '../dtos/TopicDto';
 
 const MainFeedPage: React.FC = () => {
 
@@ -20,6 +15,7 @@ const MainFeedPage: React.FC = () => {
 
             if(response.status === 200){
                 const responseData: TopicDto[] = await response.json();
+                console.log(responseData);
                 setTopics(responseData);
             }
             else if(response.status === 401){
@@ -37,7 +33,8 @@ const MainFeedPage: React.FC = () => {
 
                 {topics?.map((value, index) => 
                     <Topic 
-                    key={index} 
+                    key={index}
+                    id={value.id} 
                     content={value.body} 
                     title={value.title}/>
                     )}
