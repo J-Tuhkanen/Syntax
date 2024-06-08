@@ -13,10 +13,8 @@ const MainFeedPage: React.FC = () => {
         const getTopics = async () => {
             const response = await sendRequest({method: "GET", endpoint: "topic"});
 
-            if(response.status === 200){
-                const responseData: TopicDto[] = await response.json();
-                console.log(responseData);
-                setTopics(responseData);
+            if(response.status === 200){                
+                setTopics(await response.json());
             }
             else if(response.status === 401){
                 navigate("/login");

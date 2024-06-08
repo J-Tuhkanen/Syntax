@@ -1,4 +1,3 @@
-import { UUID } from "crypto";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { sendRequest } from "../helpers/apiRequestHelpers";
@@ -11,10 +10,9 @@ const TopicViewPage : React.FC = () => {
     useEffect(() =>  {
 
         const getTopicData = async () => {
-            const response = await sendRequest({method: "GET", endpoint: `topic/${topicId}`});
             
-            var data = await response.json();
-            console.log(setTopic(data));
+            const response = await sendRequest({method: "GET", endpoint: `topic/${topicId}`});
+            setTopic(await response.json());
         };
 
         getTopicData();
