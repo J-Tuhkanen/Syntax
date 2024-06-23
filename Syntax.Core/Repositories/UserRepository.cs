@@ -21,16 +21,16 @@ namespace Syntax.Core.Repositories
             }
         }
 
-        public async Task<Blob> GetUserProfilePictureAsync(string userId)
+        public async Task<Blob?> GetUserProfilePictureAsync(string userId)
         {
             var user = await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-            return user.ProfilePictureFileId != null
+            return user?.ProfilePictureFileId != null
                 ? await applicationDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == user.ProfilePictureFileId)
                 : null;
         }
 
-        public async Task<UserAccount> GetUserById(string id)
+        public async Task<UserAccount?> GetUserById(string id)
             => await applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
 
     }

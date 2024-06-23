@@ -10,6 +10,6 @@ namespace Syntax.Core.Models.Base
         public Guid Id { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime Timestamp { get; set; }
-        public string UserId { get; set; }
+        public string UserId { get; set; } = string.Empty;
     }
 }

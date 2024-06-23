@@ -12,7 +12,7 @@ namespace Syntax.Core.Repositories
         { 
         }
     
-        public async Task<Comment> CreateCommentAsync(Comment comment)
+        public async Task<Comment?> CreateCommentAsync(Comment comment)
         {
             await applicationDbContext.Comments.AddAsync(comment);
 
@@ -34,7 +34,7 @@ namespace Syntax.Core.Repositories
             return comment;
         }
 
-        public async Task<Comment> GetCommentAsync(Guid id)
+        public async Task<Comment?> GetCommentAsync(Guid id)
         {
             return await applicationDbContext.Comments.FirstOrDefaultAsync(c => c.Id == id);
         }

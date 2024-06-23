@@ -15,13 +15,13 @@ namespace Syntax.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Comment> CreateCommentAsync(Guid postId, string content, string userId)
+        public async Task<Comment> CreateCommentAsync(Guid topicId, string content, string userId)
         {
-            Topic post = await _unitOfWork.Topics.GetTopicById(postId);
+            Topic topic = await _unitOfWork.Topics.GetTopicById(topicId);
 
             var comment = new Comment
             {
-                Topic = post,
+                Topic = topic,
                 Content = content,
                 UserId = userId
             };
@@ -37,7 +37,7 @@ namespace Syntax.Core.Services
             return await _unitOfWork.Comments.DeleteCommentAsync(id);
         }
 
-        public async Task<Comment> GetCommentAsync(Guid id) 
+        public async Task<Comment?> GetCommentAsync(Guid id) 
             => await _unitOfWork.Comments.GetCommentAsync(id);
 
         public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)

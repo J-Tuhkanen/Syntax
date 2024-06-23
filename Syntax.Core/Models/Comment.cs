@@ -11,8 +11,8 @@ namespace Syntax.Core.Models
         }
 
         public Guid TopicId { get; set; }
-        public virtual Topic Topic { get; set; }
-        public virtual UserAccount User { get; set; }
-        public string Content { get; set; }
+        public virtual Topic Topic { get; set; } = null!;
+        public virtual UserAccount User { get; set; } = null!;
+        public string Content { get; set; } = string.Empty;
     }
 }

@@ -11,12 +11,14 @@ namespace Syntax.Core.Models
         {
             Timestamp = DateTime.UtcNow;
         }
-        
-        public virtual UserAccount User { get; set; }
+
+        public virtual UserAccount User { get; set; } = null!;
 
         [MaxLength(80)]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         
-        public string Body { get; set; }
+        public string Body { get; set; } = string.Empty;
+
+        public virtual List<Comment> Comments { get; set; } = null!;
     }
 }

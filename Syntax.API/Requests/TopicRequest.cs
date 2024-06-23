@@ -5,8 +5,8 @@ namespace Syntax.API.Requests
     public class PostTopicRequest
     {
         [Required]
-        public string Title { get; set; }
+        public string Title { get; set; } = null!;
         [Required]
-        public string Body { get; set; }
+        public string Body { get; set; } = null!;
     }
 }
