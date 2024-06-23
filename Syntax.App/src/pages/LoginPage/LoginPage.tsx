@@ -1,9 +1,9 @@
-import { Login } from '../components/login-component/Login';
-import { sendRequest } from '../helpers/apiRequestHelpers';
+import { Login } from '../../components/login-component/Login';
+import { sendRequest } from '../../helpers/apiRequestHelpers';
 // import { InfoMessage, InfoMessageType } from "../components/info-message-component/InfoMessage";
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
-import { AuthenticationState } from '../models/AuthenticationState';
+import { AuthenticationState } from '../../models/AuthenticationState';
 
 type RequestSignInProps = {
 
