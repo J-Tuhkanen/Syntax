@@ -22,12 +22,34 @@ namespace Syntax.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostTopic(CommentRequest commentRequest)
+        public async Task<IActionResult> PostComment([FromBody] CommentRequest commentRequest)
         {
             var user = await _userManager.GetUserAsync(User);
-            var comment = await _commentService.CreateCommentAsync(commentRequest.TopicId, commentRequest.Content, user.Id);
+            var comment = await _commentService.CreateCommentAsync(commentRequest.TopicId, commentRequest.Content, user);
 
             return new JsonResult(comment);
+        }
+
+        [HttpGet("{topicId}")]
+        public async Task<IActionResult> GetComments(Guid topicId)
+        {
+            var comments = await _commentService.GetCommentsAsync(topicId, new List<Guid>(), 5);
+
+            return new JsonResult(comments);
+        }
+
+        [HttpDelete("{commentId}")]
+        public async Task<IActionResult> DeleteComment(Guid commentId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var comment = await _commentService.GetCommentAsync(commentId);
+
+            return comment == null
+                ? NotFound()
+                : comment.User == user
+                    ? Ok()
+                    : Forbid();
         }
     }
 }

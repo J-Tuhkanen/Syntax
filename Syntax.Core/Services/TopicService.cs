@@ -20,9 +20,9 @@ namespace Syntax.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Topic> CreateTopicAsync(string title, string body, string userId)
+        public async Task<Topic> CreateTopicAsync(string title, string body, UserAccount user)
         {
-            Topic createdPost = await _unitOfWork.Topics.CreateTopicAsync(new Topic { Title = title, Body = body, UserId = userId });
+            Topic createdPost = await _unitOfWork.Topics.CreateTopicAsync(new Topic { Title = title, Body = body, User = user});
 
             await _unitOfWork.SaveChangesAsync();
 

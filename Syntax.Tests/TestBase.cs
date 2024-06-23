@@ -38,7 +38,6 @@ namespace Syntax.Tests
             _services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseNpgsql("User ID=postgres; Password=postgres; Host=localhost; Port=5432; Database=Syntax-Tests");
-                options.UseLazyLoadingProxies();
             });
         }
 

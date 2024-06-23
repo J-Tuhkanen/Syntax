@@ -42,7 +42,7 @@ namespace Syntax.API.Controllers
         public async Task<IActionResult> PostTopicAsync(PostTopicRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
-            var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user.Id);
+            var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user);
 
             return new JsonResult(topic);
         }

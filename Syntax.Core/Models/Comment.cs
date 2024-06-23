@@ -1,18 +1,16 @@
 ﻿using Syntax.Core.Models.Base;
-using System;
 
 namespace Syntax.Core.Models
 {
-    public class Comment : EntityBase, IUserActivity
+    public class Comment : EntityBase
     {
         public Comment()
         {
             Timestamp = DateTime.UtcNow;
         }
 
-        public Guid TopicId { get; set; }
-        public virtual Topic Topic { get; set; } = null!;
-        public virtual UserAccount User { get; set; } = null!;
+        public Topic Topic { get; set; } = null!;
+        public UserAccount User { get; set; } = null!;
         public string Content { get; set; } = string.Empty;
     }
 }

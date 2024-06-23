@@ -37,7 +37,7 @@ namespace Syntax.Core.Repositories
         {
             var validPosts = applicationDbContext.Topics.Where(p =>
                 p.IsDeleted == false &&
-                p.UserId == userId &&
+                p.User.Id == userId &&
                 excludedPosts.Contains(p.Id) == false).Take(amount);
 
             return await validPosts.ToListAsync();

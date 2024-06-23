@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Syntax.Core.Data;
 using Syntax.Core.Models;
 using Syntax.Core.Repositories.Base;
@@ -49,10 +50,10 @@ namespace Syntax.Core.Repositories
             return await query.Take(amount).ToListAsync();
         }
 
-        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<Guid> ExcludedComments, int amount)
+        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(UserAccount user, IEnumerable<Guid> ExcludedComments, int amount)
         {
             IQueryable<Comment> query = applicationDbContext.Comments.Where(c =>
-                c.UserId == userId &&
+                c.User == user &&
                 c.IsDeleted == false &&
                 ExcludedComments.Contains(c.Id) == false);
 

@@ -15,7 +15,7 @@ namespace Syntax.Core.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Comment> CreateCommentAsync(Guid topicId, string content, string userId)
+        public async Task<Comment> CreateCommentAsync(Guid topicId, string content, UserAccount user)
         {
             Topic topic = await _unitOfWork.Topics.GetTopicById(topicId);
 
@@ -23,7 +23,7 @@ namespace Syntax.Core.Services
             {
                 Topic = topic,
                 Content = content,
-                UserId = userId
+                User = user
             };
 
             await _unitOfWork.Comments.CreateCommentAsync(comment);
@@ -33,9 +33,7 @@ namespace Syntax.Core.Services
         }
 
         public async Task<Comment> DeleteCommentAsync(Guid id)
-        {
-            return await _unitOfWork.Comments.DeleteCommentAsync(id);
-        }
+            => await _unitOfWork.Comments.DeleteCommentAsync(id);        
 
         public async Task<Comment?> GetCommentAsync(Guid id) 
             => await _unitOfWork.Comments.GetCommentAsync(id);
@@ -43,7 +41,7 @@ namespace Syntax.Core.Services
         public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)
             => await _unitOfWork.Comments.GetCommentsAsync(postId, ExcludedComments, amount);
 
-        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(string userId, IEnumerable<Guid> ExcludedComments, int amount)
-            => await _unitOfWork.Comments.GetCommentsByUserAsync(userId, ExcludedComments, amount);
+        public async Task<IEnumerable<Comment>> GetCommentsByUserAsync(UserAccount user, IEnumerable<Guid> ExcludedComments, int amount)
+            => await _unitOfWork.Comments.GetCommentsByUserAsync(user, ExcludedComments, amount);
     }
 }

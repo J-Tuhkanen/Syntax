@@ -21,7 +21,7 @@ namespace Syntax.Core.Services
         /// <summary>
         /// TODO: Replace later with Azure Storage
         /// </summary>
-        public async Task<Blob> UploadFileAsync(IFormFile file, string userId)
+        public async Task<Blob> UploadFileAsync(IFormFile file, UserAccount user)
         {
             if(file.Length < 0)
                 throw new Exception("Invalid file");
@@ -31,7 +31,7 @@ namespace Syntax.Core.Services
             if (fileExtension == ImageFormat.unknown)
                 throw new Exception("Invalid file");
 
-            string userFileName = Path.Combine("files", userId + "." + fileExtension.ToString());
+            string userFileName = Path.Combine("files", user.Id + "." + fileExtension.ToString());
             string fileName = Path.Combine(_environment.WebRootPath, userFileName);
 
             using (var fileStream = new FileStream(fileName, FileMode.Create))
@@ -41,8 +41,7 @@ namespace Syntax.Core.Services
                 var newBlob = new Blob
                 {
                     Path = "/" + userFileName.Replace("\\", "/"),
-                    Timestamp = DateTime.Now,
-                    UserId = userId
+                    Timestamp = DateTime.Now
                 };
 
                 await _appDbContext.Blobs.AddAsync(newBlob);

@@ -6,6 +6,6 @@ namespace Syntax.Core.Services.Base
 {
     public interface IFileService
     {
-        Task<Blob> UploadFileAsync(IFormFile Upload, string userId);
+        Task<Blob> UploadFileAsync(IFormFile Upload, UserAccount user);
     }
 }
