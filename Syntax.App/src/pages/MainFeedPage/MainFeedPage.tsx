@@ -1,8 +1,8 @@
-import { sendRequest } from '../helpers/apiRequestHelpers';
+import { sendRequest } from '../../helpers/apiRequestHelpers';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import { FeedTopic } from '../components/feed-topic-component/FeedTopic';
-import { TopicDto } from '../dtos/TopicDto';
+import { FeedTopic } from '../../components/feed-topic-component/FeedTopic';
+import { TopicDto } from '../../dtos/TopicDto';
 
 const MainFeedPage: React.FC = () => {
 

@@ -1,13 +1,13 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import MainFeedPage from './pages/MainFeedPage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import MainFeedPage from './pages/MainFeedPage/MainFeedPage';
 import { NavBar } from './components/navbar-component/NavBar';
 import { createContext, useEffect, useInsertionEffect, useState } from 'react';
 import { sendRequest } from './helpers/apiRequestHelpers';
-import SignoutPage from './pages/SignoutPage';
+import SignoutPage from './pages/SignoutPage/SignoutPage';
 import { AuthenticationState } from './models/AuthenticationState';
-import TopicViewPage from './pages/TopicViewPage';
+import TopicViewPage from './pages/TopicViewPage/TopicViewPage';
 
 export const AuthenticationContext = createContext<AuthenticationState>({ isSignedIn: false});
 

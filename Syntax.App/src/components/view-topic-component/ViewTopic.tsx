@@ -1,14 +1,10 @@
-import { UUID } from 'crypto'
+import { TopicDto } from '../../dtos/TopicDto'
 
-type TopicProps = {
-    id: UUID,
-    title: string,
-    content: string
-}
-
-export const ViewTopic: React.FC<TopicProps>  = (props) => {
+export const ViewTopic: React.FC<TopicDto>  = (props) => {
   return (
-    <></>
-    // <div>VIewTopic</div>
+    <>
+      <h1>{props.title}</h1>
+      <p>{props.body}</p>
+    </>
   )
 }

@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { sendRequest } from "../helpers/apiRequestHelpers";
-import { TopicDto } from "../dtos/TopicDto";
+import { sendRequest } from "../../helpers/apiRequestHelpers";
+import { TopicDto } from "../../dtos/TopicDto";
+import { ViewTopic } from "../../components/view-topic-component/ViewTopic";
+import './TopicViewPage.scss';
 
 const TopicViewPage : React.FC = () => {
 
@@ -33,11 +35,10 @@ const TopicViewPage : React.FC = () => {
     }, []);
 
 
-    return(topic ? <>
-        <h1>{topic.title}</h1>
-        <p>{topic.body}</p>
-    </> : isFetching ? null : 
-        <p>Post not found...</p>);
+    return(topic ? 
+        <div className="view-topic-container">
+            <ViewTopic id={topic.id} title={topic.title} body={topic.body} />
+        </div> : isFetching ? null : <p>Post not found...</p>);
 }
 
 export default TopicViewPage;
