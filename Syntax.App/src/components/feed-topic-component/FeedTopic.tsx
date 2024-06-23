@@ -1,4 +1,4 @@
-import "./Topic.scss";
+import "./FeedTopic.scss";
 import { useNavigate } from 'react-router-dom';
 import { UUID } from "crypto";
 
@@ -8,7 +8,7 @@ type TopicProps = {
     content: string
 }
 
-export const Topic: React.FC<TopicProps> = (props) => {
+export const FeedTopic: React.FC<TopicProps> = (props) => {
 
     const navigate = useNavigate();
     const onClickTopic = () => {

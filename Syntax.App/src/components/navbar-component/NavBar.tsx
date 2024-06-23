@@ -13,17 +13,19 @@ export const NavBar: React.FC = () => {
             {authenticationContext.isSignedIn 
                 ? <> 
                     <Link to="/" style={{
-                        width: '60%'
+                        width: '55%'
                     }}>{homeButtonText}</Link>
                     <Link to="#"style={{
                         width: '35%', textAlign: 'right'
                     }}>Logged in as {authenticationContext.User?.displayName}</Link>
                     <Link to="/signout" style={{
-                        width: '5%', textAlign: 'right'
+                        width: '10%', textAlign: 'right'
                     }}>Signout</Link>
                 </> 
                 : <>
-                    <Link to='/login'>Login</Link>
+                    <Link to='/login' style={{
+                        width: '100%', textAlign: 'right'
+                    }}>Login</Link>
                 </>            
             }
         </div>

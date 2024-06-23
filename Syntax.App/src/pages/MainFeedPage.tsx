@@ -1,7 +1,7 @@
 import { sendRequest } from '../helpers/apiRequestHelpers';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import { Topic } from '../components/topic-component/Topic';
+import { FeedTopic } from '../components/feed-topic-component/FeedTopic';
 import { TopicDto } from '../dtos/TopicDto';
 
 const MainFeedPage: React.FC = () => {
@@ -30,11 +30,11 @@ const MainFeedPage: React.FC = () => {
                 <div className='col-6'>
 
                 {topics?.map((value, index) => 
-                    <Topic 
-                    key={index}
-                    id={value.id} 
-                    content={value.body} 
-                    title={value.title}/>
+                    <FeedTopic 
+                        key={index}
+                        id={value.id} 
+                        content={value.body} 
+                        title={value.title}/>
                     )}
                 </div>
             </div>
