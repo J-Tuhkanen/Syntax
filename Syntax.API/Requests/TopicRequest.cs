@@ -2,7 +2,7 @@
 
 namespace Syntax.API.Requests
 {
-    public class PostTopicRequest
+    public class TopicRequest
     {
         [Required]
         public string Title { get; set; } = null!;

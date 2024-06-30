@@ -6,6 +6,10 @@ using Syntax.Core.Services.Base;
 using Syntax.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace Syntax.API
 {
@@ -35,6 +39,11 @@ namespace Syntax.API
                     policy.AllowAnyMethod();
                     policy.AllowCredentials();
                 });
+            });
+
+            services.Configure<JsonOptions>(o =>
+            {
+                o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
             // Configure identity and required settings for each user
@@ -79,10 +88,10 @@ namespace Syntax.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //CreateRoles(serviceProvider).GetAwaiter().GetResult();
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -39,7 +39,7 @@ namespace Syntax.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostTopicAsync(PostTopicRequest request)
+        public async Task<IActionResult> PostTopicAsync(TopicRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
             var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user);
