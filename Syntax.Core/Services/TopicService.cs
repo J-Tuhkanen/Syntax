@@ -39,11 +39,8 @@ namespace Syntax.Core.Services
             return await _unitOfWork.Topics.GetTopicsAsync(excludedPosts, amount);
         }
 
-        public async Task<Topic> GetTopicAsync(Guid id) => await _unitOfWork.Topics.GetTopicById(id);
+        public async Task<Topic?> GetTopicAsync(Guid id) => await _unitOfWork.Topics.GetTopicById(id);
 
-        public async Task<Topic> DeleteTopicAsync(Guid id)
-        {
-            return await _unitOfWork.Topics.DeleteTopicAsync(id);
-        }
+        public async Task<Topic?> DeleteTopicAsync(Guid id) => await _unitOfWork.Topics.DeleteTopicAsync(id);
     }
 }

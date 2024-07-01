@@ -123,6 +123,7 @@ namespace Syntax.API
             });
             app.UseResponseCaching();  
         }
+
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();

@@ -35,10 +35,10 @@ namespace Syntax.Core.Repositories
 
         public async Task<IEnumerable<Topic>> GetTopicsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
         {
-            var validPosts = applicationDbContext.Topics.Where(p =>
-                p.IsDeleted == false &&
-                p.User.Id == userId &&
-                excludedPosts.Contains(p.Id) == false).Take(amount);
+            var validPosts = applicationDbContext.Topics
+                .Include(t => t.Comments)
+                .Include(t => t.User)
+                .Where(p => p.IsDeleted == false && p.User.Id == userId && excludedPosts.Contains(p.Id) == false).Take(amount);
 
             return await validPosts.ToListAsync();
         }
@@ -49,12 +49,18 @@ namespace Syntax.Core.Repositories
                 .Where(p => p.IsDeleted == false && excludedPosts.Contains(p.Id) == false)
                 .Take(amount)
                 .Include(t => t.User)
+                .Include(t => t.Comments)
                 .ToListAsync();
             
             return validPosts;
         }
 
-        public async Task<Topic> GetTopicById(Guid id) => await applicationDbContext.Topics.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
-
+        public async Task<Topic?> GetTopicById(Guid id)
+        {
+            return await applicationDbContext.Topics
+                .Include(t => t.User)
+                .Include(t => t.Comments)
+                .FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
+        }
     }
 }

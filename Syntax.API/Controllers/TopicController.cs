@@ -33,9 +33,9 @@ namespace Syntax.API.Controllers
         [HttpGet("{topicId}")]
         public async Task<IActionResult> GetTopicAsync(Guid topicId)
         {
-            Topic topic = await _topicService.GetTopicAsync(topicId);
+            Topic? topic = await _topicService.GetTopicAsync(topicId);
 
-            return new JsonResult(topic);
+            return topic != null ? new JsonResult(topic) : NotFound();
         }
 
         [HttpPost]
@@ -50,8 +50,7 @@ namespace Syntax.API.Controllers
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopicAsync(Guid topicId)
         {
-            var topic = await _topicService.DeleteTopicAsync(topicId);
-            return Ok();
+            return await _topicService.DeleteTopicAsync(topicId) != null ? Ok() : NotFound();
         }
 
         [HttpPut("{topicId}")]
