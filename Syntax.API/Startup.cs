@@ -29,7 +29,12 @@ namespace Syntax.API
         {
             // Database configuration
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
+                    .LogTo(
+                        msg =>
+                        {
+                            File.AppendAllLines("Database logs.txt", new string[] { msg });
+                        }, LogLevel.Information));
 
             services.AddCors(options =>
             {
@@ -76,11 +81,9 @@ namespace Syntax.API
                 });
 
             // Add services to dependency injection to be injectable whenever needed
-            services.AddTransient<ITopicService, TopicService>();
-            services.AddTransient<ICommentService, CommentService>();
+            services.AddTransient<IUserActivityService, UserActivityService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<UnitOfWork>();
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();
             services.AddEndpointsApiExplorer();

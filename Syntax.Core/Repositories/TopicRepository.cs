@@ -18,7 +18,7 @@ namespace Syntax.Core.Repositories
             return post;
         }
 
-        public async Task<Topic> DeleteTopicAsync(Guid id)
+        public async Task<Topic?> DeleteTopicAsync(Guid id)
         {
             // Get post from database
             var post = applicationDbContext.Topics.FirstOrDefault(p => p.Id == id);
@@ -55,11 +55,11 @@ namespace Syntax.Core.Repositories
             return validPosts;
         }
 
-        public async Task<Topic?> GetTopicById(Guid id)
+        public async Task<Topic?> GetTopicByIdAsync(Guid id)
         {
             return await applicationDbContext.Topics
-                .Include(t => t.User)
                 .Include(t => t.Comments)
+                .Include(t => t.User)
                 .FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
         }
     }

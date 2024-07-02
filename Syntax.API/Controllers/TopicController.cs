@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Requests;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Base;
-using Syntax.Core.Wrappers;
-using System.Text.Json;
 
 namespace Syntax.API.Controllers
 {
@@ -14,35 +12,35 @@ namespace Syntax.API.Controllers
     [Route("api/[controller]")]
     public class TopicController : ControllerBase
     {
-        private readonly ITopicService _topicService;
+        private readonly IUserActivityService _userActivityService;
         private readonly UserManager<UserAccount> _userManager;
 
-        public TopicController(ITopicService topicService, UserManager<UserAccount> userManager)
+        public TopicController(IUserActivityService userActivityService, UserManager<UserAccount> userManager)
         {
-            _topicService = topicService;
+            _userActivityService = userActivityService;
             _userManager = userManager;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetTopicsAsync()
         {
-            var topics = await _topicService.GetTopicsAsync(new List<Guid>(), 100);
+            var topics = await _userActivityService.GetTopicsAsync(new List<Guid>(), 100);
             return new JsonResult(topics);
         }
 
         [HttpGet("{topicId}")]
         public async Task<IActionResult> GetTopicAsync(Guid topicId)
         {
-            Topic? topic = await _topicService.GetTopicAsync(topicId);
+            Topic? topic = await _userActivityService.GetTopicAsync(topicId);
 
             return topic != null ? new JsonResult(topic) : NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostTopicAsync(TopicRequest request)
+        public async Task<IActionResult> PostTopicAsync([FromBody] TopicRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
-            var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user);
+            var topic = await _userActivityService.CreateTopicAsync(request.Title, request.Body, user);
 
             return new JsonResult(topic);
         }
@@ -50,13 +48,21 @@ namespace Syntax.API.Controllers
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopicAsync(Guid topicId)
         {
-            return await _topicService.DeleteTopicAsync(topicId) != null ? Ok() : NotFound();
+            return await _userActivityService.DeleteTopicAsync(topicId) != null ? Ok() : NotFound();
         }
 
         [HttpPut("{topicId}")]
-        public async Task<IActionResult> UpdateTopicAsync()
+        public async Task<IActionResult> UpdateTopicAsync(Guid topicId, [FromBody] TopicRequest request)
         {
-            return Ok();
+            var user = await _userManager.GetUserAsync(User);
+            var topic = await _userActivityService.UpdateTopicAsync(topicId, request.Title, request.Body, user);
+            
+            if (topic?.User.Id != user.Id)
+            {
+                return Forbid();
+            }
+
+            return new JsonResult(topic);
         }
     }
 }

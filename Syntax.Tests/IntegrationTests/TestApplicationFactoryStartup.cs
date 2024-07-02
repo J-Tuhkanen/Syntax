@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Syntax.API;
 using Syntax.Core.Repositories;
 using Syntax.Core.Services;
@@ -28,7 +29,8 @@ namespace Syntax.Tests.IntegrationTests
 
                 services.AddDbContext<ApplicationDbContext>(options =>
                 {
-                    options.UseNpgsql("User ID=postgres; Password=postgres; Host=localhost; Port=5432; Database=Syntax-Tests");
+                    options.UseNpgsql("User ID=postgres; Password=postgres; Host=localhost; Port=5432; Database=Syntax-Tests")
+                    .LogTo(msg => File.AppendAllLines("Database logs.txt", new string[] { msg }), LogLevel.Information);
                 });
 
                 using (var serviceProvider = services.BuildServiceProvider())

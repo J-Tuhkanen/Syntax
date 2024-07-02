@@ -20,13 +20,13 @@ namespace Syntax.Core.Repositories
             return comment;
         }
 
-        public async Task<Comment> DeleteCommentAsync(Guid id)
+        public async Task<Comment?> DeleteCommentAsync(Guid id)
         {
             var comment = applicationDbContext.Comments.FirstOrDefault(comment => comment.Id == id);
 
             if (comment == null)
             {
-                throw new Exception($"Comment with id {id} was not found and could not be deleted.");
+                return null;
             }
 
             comment.IsDeleted = true;

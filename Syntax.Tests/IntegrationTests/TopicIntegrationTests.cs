@@ -53,7 +53,7 @@ namespace Syntax.Tests.IntegrationTests
             var postTopicResponse = await Client.PostAsync("/api/topic", requestContent.ToJsonStringContent());
             var postTopic = DeserializeWithOptions<Topic>(await postTopicResponse.Content.ReadAsStringAsync());
 
-            var commentResponse = await Client.PostAsync("/api/comment", new CommentRequest
+            await Client.PostAsync("/api/comment", new CommentRequest
             {
                 Content = "TestComment",
                 TopicId = postTopic.Id
@@ -89,5 +89,36 @@ namespace Syntax.Tests.IntegrationTests
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
         }
+
+        [Test]
+        public async Task CreateTopicAndUpdateItsTitleAndContent()
+        {
+            await Authenticate();
+
+            var requestContent = new TopicRequest
+            {
+                Body = "TestBody",
+                Title = "TestTitle"
+            };
+
+            var postTopicResponse = await Client.PostAsync("/api/topic", requestContent.ToJsonStringContent());
+            var postTopic = DeserializeWithOptions<Topic>(await postTopicResponse.Content.ReadAsStringAsync());
+            var updateRequest = new TopicRequest
+            {
+                Body = "UpdatedTestBody",
+                Title = "UpdatedTestTitle"
+            };
+            
+            await Client.PutAsync($"/api/topic/{postTopic.Id}", updateRequest.ToJsonStringContent());
+            var response = await Client.GetAsync($"/api/topic/{postTopic.Id}");
+
+            var topic = DeserializeWithOptions<Topic>(await response.Content.ReadAsStringAsync());
+
+            Assert.That(topic.Body, Is.EqualTo("UpdatedTestBody"));
+            Assert.That(topic.Title, Is.EqualTo("UpdatedTestTitle"));
+        }
+
+        // Delete comment
+        // Update comment
     }
 }

@@ -6,7 +6,7 @@ namespace Syntax.Core.Repositories.Base
     {
         Task<Topic> CreateTopicAsync(Topic post);
         Task<Topic?> DeleteTopicAsync(Guid id);
-        Task<Topic?> GetTopicById(Guid id);
+        Task<Topic?> GetTopicByIdAsync(Guid id);
         Task<IEnumerable<Topic>> GetTopicsAsync(IEnumerable<Guid> excludedPosts, int amount);
         Task<IEnumerable<Topic>> GetTopicsByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount);
         Task SaveChangesAsync();

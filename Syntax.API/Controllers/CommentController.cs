@@ -12,12 +12,12 @@ namespace Syntax.API.Controllers
     [Route("api/[controller]")]
     public class CommentController : Controller
     {
-        private readonly ICommentService _commentService;
+        private readonly IUserActivityService _userActivityService;
         private readonly UserManager<UserAccount> _userManager;
 
-        public CommentController(ICommentService commentService, UserManager<UserAccount> userManager)
+        public CommentController(IUserActivityService userActivityService, UserManager<UserAccount> userManager)
         {
-            _commentService = commentService;
+            _userActivityService = userActivityService;
             _userManager = userManager;
         }
 
@@ -25,7 +25,7 @@ namespace Syntax.API.Controllers
         public async Task<IActionResult> PostComment([FromBody] CommentRequest commentRequest)
         {
             var user = await _userManager.GetUserAsync(User);
-            var comment = await _commentService.CreateCommentAsync(commentRequest.TopicId, commentRequest.Content, user);
+            var comment = await _userActivityService.CreateCommentAsync(commentRequest.TopicId, commentRequest.Content, user);
 
             return new JsonResult(comment);
         }
@@ -33,7 +33,7 @@ namespace Syntax.API.Controllers
         [HttpGet("{topicId}")]
         public async Task<IActionResult> GetComments(Guid topicId)
         {
-            var comments = await _commentService.GetCommentsAsync(topicId, new List<Guid>(), 5);
+            var comments = await _userActivityService.GetCommentsAsync(topicId, new List<Guid>(), 5);
 
             return new JsonResult(comments);
         }
@@ -41,15 +41,23 @@ namespace Syntax.API.Controllers
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteComment(Guid commentId)
         {
-            var user = await _userManager.GetUserAsync(User);
+            //var user = await _userManager.GetUserAsync(User);
 
-            var comment = await _commentService.GetCommentAsync(commentId);
+            //var comment = await _commentService.GetCommentAsync(commentId);
 
-            return comment == null
-                ? NotFound()
-                : comment.User == user
-                    ? Ok()
-                    : Forbid();
+            //return comment == null
+            //    ? NotFound()
+            //    : comment.User == user
+            //        ? Ok()
+            //        : Forbid();
+
+            
+        }
+
+        [HttpPut("{commentId}")]
+        public async Task<IActionResult> UpdateCommentAsync(Guid commentId, [FromBody] CommentRequest request)
+        {
+
         }
     }
 }
