@@ -1,4 +1,5 @@
-﻿using Syntax.API.Requests;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using Syntax.API.Requests;
 using System.Net;
 
 namespace Syntax.Tests.IntegrationTests
@@ -8,7 +9,7 @@ namespace Syntax.Tests.IntegrationTests
         [Test]
         public async Task CreateTopicAndAddCommentToIt()
         {
-            await Authenticate();
+            var client = await CreateClientAndAuthenticate(TimoTestUsername);
 
             var requestContent = new TopicRequest
             {
@@ -16,7 +17,7 @@ namespace Syntax.Tests.IntegrationTests
                 Title = "TestTitle"
             };
 
-            var topicResponse = await Client.PostAsync("/api/topic", requestContent.ToJsonStringContent());
+            var topicResponse = await client.PostAsync("/api/topic", requestContent.ToJsonStringContent());
             var contentString = await topicResponse.Content.ReadAsStringAsync();
 
             if (topicResponse.IsSuccessStatusCode == false)
@@ -26,7 +27,7 @@ namespace Syntax.Tests.IntegrationTests
 
             var topic = DeserializeWithOptions<Topic>(contentString);
 
-            var commentResponse = await Client.PostAsync("/api/comment", new CommentRequest
+            var commentResponse = await client.PostAsync("/api/comment", new CommentRequest
             {
                 Content = "TestComment",
                 TopicId = topic.Id
@@ -42,7 +43,7 @@ namespace Syntax.Tests.IntegrationTests
         [Test]
         public async Task CreateTopicAndGetTopicWithId()
         {
-            await Authenticate();
+            var client = await CreateClientAndAuthenticate(TimoTestUsername);
 
             var requestContent = new TopicRequest
             {
@@ -50,29 +51,29 @@ namespace Syntax.Tests.IntegrationTests
                 Title = "TestTitle"
             };
 
-            var postTopicResponse = await Client.PostAsync("/api/topic", requestContent.ToJsonStringContent());
+            var postTopicResponse = await client.PostAsync("/api/topic", requestContent.ToJsonStringContent());
             var postTopic = DeserializeWithOptions<Topic>(await postTopicResponse.Content.ReadAsStringAsync());
 
-            var commentResponse = await Client.PostAsync("/api/comment", new CommentRequest
+            var commentResponse = await client.PostAsync("/api/comment", new CommentRequest
             {
                 Content = "TestComment",
                 TopicId = postTopic.Id
             }.ToJsonStringContent());
 
-            var getTopicResponse = await Client.GetAsync($"/api/topic/{postTopic.Id}");
+            var getTopicResponse = await client.GetAsync($"/api/topic/{postTopic.Id}");
             var getTopic = DeserializeWithOptions<Topic>(await getTopicResponse.Content.ReadAsStringAsync());
 
             Assert.That(getTopic.Title, Is.EqualTo(postTopic.Title));
             Assert.That(getTopic.Body, Is.EqualTo(postTopic.Body));
             Assert.True(getTopic.Comments.Count == 1);
-            Assert.That(getTopic.User.UserName, Is.EqualTo(TestApplicationFactoryStartup.User.UserName));
-            Assert.That(getTopic.User.Email, Is.EqualTo(TestApplicationFactoryStartup.User.Email));
+            Assert.That(getTopic.User.UserName, Is.EqualTo(TestApplicationFactory.TimoTestUser.UserName));
+            Assert.That(getTopic.User.Email, Is.EqualTo(TestApplicationFactory.TimoTestUser.Email));
         }
 
         [Test]
         public async Task CreateTopicAndDelete()
         {
-            await Authenticate();
+            var client = await CreateClientAndAuthenticate(TimoTestUsername);
 
             var requestContent = new TopicRequest
             {
@@ -80,14 +81,36 @@ namespace Syntax.Tests.IntegrationTests
                 Title = "TestTitle"
             };
 
-            var postTopicResponse = await Client.PostAsync("/api/topic", requestContent.ToJsonStringContent());
+            var postTopicResponse = await client.PostAsync("/api/topic", requestContent.ToJsonStringContent());
             var postTopic = DeserializeWithOptions<Topic>(await postTopicResponse.Content.ReadAsStringAsync());
 
-            await Client.DeleteAsync($"/api/topic/{postTopic.Id}");
+            await client.DeleteAsync($"/api/topic/{postTopic.Id}");
 
-            var response = await Client.GetAsync($"/api/topic/{postTopic.Id}");
+            var response = await client.GetAsync($"/api/topic/{postTopic.Id}");
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+        }
+
+        [Test]
+        public async Task CreateTopicAndOtherAccountTriesToDelete()
+        {
+            var jutska = QueryableMethods.Join;
+
+            var timoClient = await CreateClientAndAuthenticate(TimoTestUsername);
+            var toniClient = await CreateClientAndAuthenticate(ToniTestUsername);
+
+            var requestContent = new TopicRequest
+            {
+                Body = "TestBody",
+                Title = "TestTitle"
+            };
+
+            var postTopicResponse = await timoClient.PostAsync("/api/topic", requestContent.ToJsonStringContent());
+            var postTopic = DeserializeWithOptions<Topic>(await postTopicResponse.Content.ReadAsStringAsync());
+
+            var response = await toniClient.DeleteAsync($"/api/topic/{postTopic.Id}");
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
         }
     }
 }

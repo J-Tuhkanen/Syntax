@@ -11,5 +11,8 @@ namespace Syntax.Core.Services.Base
         Task<SignInResult> SignInAsync(string email, string password);
         Task<bool> AssignToRole(UserAccount user, string role);
         Task<IdentityResult> CreateUser(UserAccount user, string username, string password, string email);
+        Task SetUserProfilePictureAsync(string userId, Blob blob);
+        Task<Blob?> GetUserProfilePictureAsync(string userId);
+        Task<UserAccount?> GetUserById(string id);
     }
 }

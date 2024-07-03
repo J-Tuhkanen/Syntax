@@ -1,15 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syntax.Core.Data;
 using Syntax.Core.Models;
-using Syntax.Core.Repositories;
 using Syntax.Core.Services.Base;
 using Syntax.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 
 namespace Syntax.API
 {
@@ -80,7 +77,6 @@ namespace Syntax.API
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<UnitOfWork>();
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();
             services.AddEndpointsApiExplorer();

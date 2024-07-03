@@ -1,20 +1,15 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Syntax.API;
-using Syntax.Core.Repositories;
-using Syntax.Core.Services;
 using System.Data.Common;
-using System.Linq;
 
 namespace Syntax.Tests.IntegrationTests
 {
-    internal class TestApplicationFactoryStartup : WebApplicationFactory<Program>
+    internal class TestApplicationFactory : WebApplicationFactory<Program>
     {
-        public static UserAccount User { get; private set; }
+        public static UserAccount TimoTestUser { get; private set; }
+        public static UserAccount ToniTestUser { get; private set; }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -34,27 +29,15 @@ namespace Syntax.Tests.IntegrationTests
                 using (var serviceProvider = services.BuildServiceProvider())
                 {
                     var userService = serviceProvider.GetRequiredService<IUserService>();
-                    User = CreateUserInstance();
+                    TimoTestUser = new UserAccount();
+                    ToniTestUser = new UserAccount();
                     
-                    var result = userService.CreateUser(User, "TimoTest", "Testi123", "timo.testi@gmail.com").GetAwaiter().GetResult();
+                    userService.CreateUser(TimoTestUser, "TimoTest", "Testi123", "timo.testi@gmail.com").GetAwaiter().GetResult();
+                    userService.CreateUser(ToniTestUser, "ToniTest", "Testi123", "toni.testi@gmail.com").GetAwaiter().GetResult();
                 }
             });
 
             builder.UseEnvironment("Development");
-        }
-
-        protected UserAccount CreateUserInstance()
-        {
-            try
-            {
-                return Activator.CreateInstance<UserAccount>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(UserAccount)}'. " +
-                    $"Ensure that '{nameof(UserAccount)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
         }
     }
 }

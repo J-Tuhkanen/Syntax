@@ -50,7 +50,7 @@ namespace Syntax.API.Controllers
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopicAsync(Guid topicId)
         {
-            return await _topicService.DeleteTopicAsync(topicId) != null ? Ok() : NotFound();
+            return await _topicService.DeleteTopicAsync(topicId, await _userManager.GetUserAsync(User)) != null ? Ok() : Forbid();
         }
 
         [HttpPut("{topicId}")]

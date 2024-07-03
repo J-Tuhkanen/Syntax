@@ -1,4 +1,5 @@
 ﻿using Syntax.API.Requests;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -6,15 +7,13 @@ namespace Syntax.Tests.IntegrationTests
 {
     internal class IntegrationTestsBase
     {
-        protected TestApplicationFactoryStartup Factory;
-        protected HttpClient Client;
-        protected string Username = "TimoTest";
-        protected string Email = "TimoTest";
+        protected TestApplicationFactory Factory;
+        protected string TimoTestUsername = "TimoTest";
+        protected string ToniTestUsername = "ToniTest";
 
         protected IntegrationTestsBase()
         {
-            Factory = new TestApplicationFactoryStartup();
-            Client = Factory.CreateClient();
+            Factory = new TestApplicationFactory();
         }
 
         protected T DeserializeWithOptions<T>(string json) where T : class
@@ -26,13 +25,17 @@ namespace Syntax.Tests.IntegrationTests
             });
         }
 
-        protected async Task Authenticate()
+        protected async Task<HttpClient> CreateClientAndAuthenticate(string username)
         {
-            await Client.PostAsync("/api/authentication/login", new SigninRequest
+            var client = Factory.CreateClient();
+
+            await client.PostAsync("/api/authentication/login", new SigninRequest
             {
-                Username = "TimoTest",
+                Username = username,
                 Password = "Testi123"
             }.ToJsonStringContent());
+
+            return client;
         }
     }
 }

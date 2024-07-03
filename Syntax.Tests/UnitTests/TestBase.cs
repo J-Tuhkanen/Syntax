@@ -1,10 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Syntax.Core.Data;
-using Syntax.Core.Models;
-using Syntax.Core.Repositories.Base;
-using Syntax.Core.Repositories;
-using Syntax.Core.Services.Base;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Syntax.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -76,7 +70,6 @@ namespace Syntax.Tests.UnitTests
             _services.AddTransient<ICommentService, CommentService>();
             _services.AddTransient<IFileService, FileService>();
             _services.AddTransient<IUserService, UserService>();
-            _services.AddTransient<UnitOfWork>();
         }
 
         protected UserAccount CreateUserInstance()

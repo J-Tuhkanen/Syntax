@@ -42,7 +42,7 @@ namespace Syntax.Tests.UnitTests
         {
             var newTopic = await _topicService.CreateTopicAsync("Janne", "Ty�mies", _user);
 
-            var topic = await _topicService.DeleteTopicAsync(newTopic.Id);
+            var topic = await _topicService.DeleteTopicAsync(newTopic.Id, _user);
 
             Assert.True(topic.IsDeleted);
         }
