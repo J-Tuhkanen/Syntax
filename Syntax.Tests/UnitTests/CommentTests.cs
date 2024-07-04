@@ -46,7 +46,7 @@
         {
             _targetTopic = await _topicService.CreateTopicAsync("Janne", "Työmies", _user);
             var newComment = await _commentService.CreateCommentAsync(_targetTopic.Id, "Timo Testi poistuu kentältä", _user);
-            var commentToBeDeleted = await _commentService.DeleteCommentAsync(newComment.Id);
+            var commentToBeDeleted = await _commentService.DeleteCommentAsync(newComment.Id, _user);
 
             Assert.True(commentToBeDeleted.IsDeleted);
         }

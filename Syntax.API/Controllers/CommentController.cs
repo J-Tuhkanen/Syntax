@@ -42,14 +42,9 @@ namespace Syntax.API.Controllers
         public async Task<IActionResult> DeleteComment(Guid commentId)
         {
             var user = await _userManager.GetUserAsync(User);
+            var comment = await _commentService.DeleteCommentAsync(commentId, user);
 
-            var comment = await _commentService.GetCommentAsync(commentId);
-
-            return comment == null
-                ? NotFound()
-                : comment.User == user
-                    ? Ok()
-                    : Forbid();
+            return comment != null ? Ok() : StatusCode(403);
         }
     }
 }

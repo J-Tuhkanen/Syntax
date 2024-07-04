@@ -94,8 +94,6 @@ namespace Syntax.Tests.IntegrationTests
         [Test]
         public async Task CreateTopicAndOtherAccountTriesToDelete()
         {
-            var jutska = QueryableMethods.Join;
-
             var timoClient = await CreateClientAndAuthenticate(TimoTestUsername);
             var toniClient = await CreateClientAndAuthenticate(ToniTestUsername);
 
@@ -109,6 +107,34 @@ namespace Syntax.Tests.IntegrationTests
             var postTopic = DeserializeWithOptions<Topic>(await postTopicResponse.Content.ReadAsStringAsync());
 
             var response = await toniClient.DeleteAsync($"/api/topic/{postTopic.Id}");
+
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
+        }
+
+        [Test]
+        public async Task CreateCommentAndOtherAccountTriesToDelete()
+        {
+            var timoClient = await CreateClientAndAuthenticate(TimoTestUsername);
+            var toniClient = await CreateClientAndAuthenticate(ToniTestUsername);
+
+            var requestContent = new TopicRequest
+            {
+                Body = "TestBody",
+                Title = "TestTitle"
+            };
+
+            var postTopicResponse = await timoClient.PostAsync("/api/topic", requestContent.ToJsonStringContent());
+            var postTopic = DeserializeWithOptions<Topic>(await postTopicResponse.Content.ReadAsStringAsync());
+
+            var commentResponse = await timoClient.PostAsync($"/api/Comment", new CommentRequest
+            {
+                Content = "TestComment",
+                TopicId = postTopic.Id
+            }.ToJsonStringContent());
+
+            var comment = DeserializeWithOptions<Comment>(await commentResponse.Content.ReadAsStringAsync());
+
+            var response = await toniClient.DeleteAsync($"api/comment/{comment.Id}");
 
             Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
         }

@@ -59,16 +59,18 @@ namespace Syntax.Core.Services
         public async Task<Topic?> DeleteTopicAsync(Guid id, UserAccount user)
         {
             // Get post from database
-            var post = _applicationDbContext.Topics.FirstOrDefault(p => p.Id == id);
+            var topic = _applicationDbContext.Topics
+                .AsSplitQuery()
+                .FirstOrDefault(p => p.IsDeleted == false && p.Id == id && p.User.Id == user.Id);
+
+            if (topic == null)
+                return null;
 
             // If post was found, mark it as deleted.
-            if (post == null)
-                throw new Exception($"Post with id {id} was not found and could not be deleted.");
-
-            post.IsDeleted = true;
+            topic.IsDeleted = true;
             await _applicationDbContext.SaveChangesAsync();
 
-            return post;
+            return topic;
         }        
     }
 }

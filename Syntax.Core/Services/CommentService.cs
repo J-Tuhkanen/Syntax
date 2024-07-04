@@ -34,14 +34,12 @@ namespace Syntax.Core.Services
             return comment;
         }
 
-        public async Task<Comment> DeleteCommentAsync(Guid id)
+        public async Task<Comment?> DeleteCommentAsync(Guid id, UserAccount user)
         {
-            var comment = _applicationDbContext.Comments.FirstOrDefault(comment => comment.Id == id);
+            var comment = _applicationDbContext.Comments.FirstOrDefault(comment => comment.Id == id && comment.IsDeleted == false && comment.User.Id == user.Id);
 
             if (comment == null)
-            {
-                throw new Exception($"Comment with id {id} was not found and could not be deleted.");
-            }
+                return null;
 
             comment.IsDeleted = true;
             await _applicationDbContext.SaveChangesAsync();
