@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Syntax.API;
 using System.Data.Common;
@@ -28,6 +29,10 @@ namespace Syntax.Tests.IntegrationTests
 
                 using (var serviceProvider = services.BuildServiceProvider())
                 {
+                    var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                    dbContext.Database.EnsureDeletedAsync().GetAwaiter().GetResult();
+                    dbContext.Database.MigrateAsync().GetAwaiter().GetResult();
+
                     var userService = serviceProvider.GetRequiredService<IUserService>();
                     TimoTestUser = new UserAccount();
                     ToniTestUser = new UserAccount();
