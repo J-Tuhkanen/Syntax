@@ -1,16 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Syntax.Core.Data;
-using Syntax.Core.Models;
-using Syntax.Core.Repositories.Base;
-using Syntax.Core.Repositories;
-using Syntax.Core.Services.Base;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Syntax.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 
-namespace Syntax.Tests
+namespace Syntax.Tests.UnitTests
 {
     public abstract class TestBase
     {
@@ -19,18 +13,18 @@ namespace Syntax.Tests
         public TestBase()
         {
             _services = new ServiceCollection();
-            
+
             ConfigureDatabase();
             ConfigureIdentity();
             InjectServiceDependencies();
 
-            _serviceProvider = _services.BuildServiceProvider();            
+            _serviceProvider = _services.BuildServiceProvider();
         }
 
-        protected T GetService<T>() 
+        protected T GetService<T>()
             where T : class
         {
-            return _serviceProvider.GetService<T>();   
+            return _serviceProvider.GetService<T>();
         }
 
         protected void ConfigureDatabase()
@@ -38,7 +32,6 @@ namespace Syntax.Tests
             _services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseNpgsql("User ID=postgres; Password=postgres; Host=localhost; Port=5432; Database=Syntax-Tests");
-                options.UseLazyLoadingProxies();
             });
         }
 
@@ -77,7 +70,6 @@ namespace Syntax.Tests
             _services.AddTransient<ICommentService, CommentService>();
             _services.AddTransient<IFileService, FileService>();
             _services.AddTransient<IUserService, UserService>();
-            _services.AddTransient<UnitOfWork>();
         }
 
         protected UserAccount CreateUserInstance()

@@ -33,16 +33,16 @@ namespace Syntax.API.Controllers
         [HttpGet("{topicId}")]
         public async Task<IActionResult> GetTopicAsync(Guid topicId)
         {
-            Topic topic = await _topicService.GetTopicAsync(topicId);
+            Topic? topic = await _topicService.GetTopicAsync(topicId);
 
-            return new JsonResult(topic);
+            return topic != null ? new JsonResult(topic) : NotFound();
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostTopicAsync(PostTopicRequest request)
+        public async Task<IActionResult> PostTopicAsync(TopicRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
-            var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user.Id);
+            var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user);
 
             return new JsonResult(topic);
         }
@@ -50,8 +50,7 @@ namespace Syntax.API.Controllers
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopicAsync(Guid topicId)
         {
-            var topic = await _topicService.DeleteTopicAsync(topicId);
-            return Ok();
+            return await _topicService.DeleteTopicAsync(topicId, await _userManager.GetUserAsync(User)) != null ? Ok() : StatusCode(403);
         }
 
         [HttpPut("{topicId}")]

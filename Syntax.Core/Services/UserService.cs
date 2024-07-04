@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Syntax.Core.Models;
-using Syntax.Core.Repositories;
-using Syntax.Core.Repositories.Base;
 using Syntax.Core.Services.Base;
 using System.Security.Claims;
+using Syntax.Core.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Syntax.Core.Services
 {
@@ -15,16 +15,16 @@ namespace Syntax.Core.Services
         private readonly UserManager<UserAccount> _userManager;
         private readonly SignInManager<UserAccount> _signInManager;
         private readonly IUserStore<UserAccount> _userStore;
-        private readonly UnitOfWork _unitOfWork;
         private readonly IUserEmailStore<UserAccount> _emailStore;
+        private readonly ApplicationDbContext _applicationDbContext;
 
-        public UserService(UserManager<UserAccount> userManager, SignInManager<UserAccount> signInManager, IUserStore<UserAccount> userStore, UnitOfWork unitOfWork)
+        public UserService(UserManager<UserAccount> userManager, SignInManager<UserAccount> signInManager, IUserStore<UserAccount> userStore, ApplicationDbContext applicationDbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _userStore = userStore;
-            _unitOfWork = unitOfWork;
             _emailStore = GetEmailStore();
+            _applicationDbContext = applicationDbContext;
         }
 
         public async Task<SignInResult> SignInAsync(string username, string password)
@@ -79,6 +79,28 @@ namespace Syntax.Core.Services
             await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
             return await _userManager.CreateAsync(user, password);
         }
+
+        public async Task SetUserProfilePictureAsync(string userId, Blob blob)
+        {
+            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user != null)
+            {
+                user.ProfilePictureFileId = blob.Id;
+            }
+        }
+
+        public async Task<Blob?> GetUserProfilePictureAsync(string userId)
+        {
+            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+
+            return user?.ProfilePictureFileId != null
+                ? await _applicationDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == user.ProfilePictureFileId)
+                : null;
+        }
+
+        public async Task<UserAccount?> GetUserById(string id)
+            => await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
 
         private IUserEmailStore<UserAccount> GetEmailStore()
         {

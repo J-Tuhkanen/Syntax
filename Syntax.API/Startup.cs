@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syntax.Core.Data;
 using Syntax.Core.Models;
-using Syntax.Core.Repositories;
 using Syntax.Core.Services.Base;
 using Syntax.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Syntax.API
 {
@@ -35,6 +36,11 @@ namespace Syntax.API
                     policy.AllowAnyMethod();
                     policy.AllowCredentials();
                 });
+            });
+
+            services.Configure<JsonOptions>(o =>
+            {
+                o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
             // Configure identity and required settings for each user
@@ -71,7 +77,6 @@ namespace Syntax.API
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<UnitOfWork>();
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();
             services.AddEndpointsApiExplorer();
@@ -79,10 +84,10 @@ namespace Syntax.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //CreateRoles(serviceProvider).GetAwaiter().GetResult();
-
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -114,6 +119,7 @@ namespace Syntax.API
             });
             app.UseResponseCaching();  
         }
+
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();

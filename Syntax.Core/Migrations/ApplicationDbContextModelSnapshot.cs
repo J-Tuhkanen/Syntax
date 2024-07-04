@@ -220,13 +220,11 @@ namespace Syntax.Core.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Path")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -240,6 +238,7 @@ namespace Syntax.Core.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Content")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
@@ -252,7 +251,6 @@ namespace Syntax.Core.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -271,6 +269,7 @@ namespace Syntax.Core.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Body")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
@@ -280,11 +279,11 @@ namespace Syntax.Core.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasMaxLength(80)
                         .HasColumnType("character varying(80)");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -421,16 +420,14 @@ namespace Syntax.Core.Migrations
             modelBuilder.Entity("Syntax.Core.Models.Comment", b =>
                 {
                     b.HasOne("Syntax.Core.Models.Topic", "Topic")
-                        .WithMany()
+                        .WithMany("Comments")
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Syntax.Core.Models.UserAccount", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("Topic");
 
@@ -441,11 +438,14 @@ namespace Syntax.Core.Migrations
                 {
                     b.HasOne("Syntax.Core.Models.UserAccount", "User")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Syntax.Core.Models.Topic", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
