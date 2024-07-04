@@ -58,6 +58,8 @@ namespace Syntax.Core.Services
         public async Task<IEnumerable<Comment>> GetCommentsAsync(Guid postId, IEnumerable<Guid> ExcludedComments, int amount)
         {
             IQueryable<Comment> query = _applicationDbContext.Comments
+                .Include(c => c.User)
+                .Include(c => c.Topic)
                 .AsNoTracking()
                 .AsSplitQuery()
                 .Where(c => c.Topic.Id == postId && c.IsDeleted == false && ExcludedComments.Contains(c.Id) == false);

@@ -28,7 +28,7 @@ namespace Syntax.Core.Data
             builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
             builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
             builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
-            builder.Entity<IdentityUser>().ToTable("Users");
+            builder.Entity<UserAccount>().ToTable("Users");
         }
     }
 }

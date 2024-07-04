@@ -1,8 +1,8 @@
-import { sendRequest } from '../../helpers/apiRequestHelpers';
+import { sendHttpRequest } from 'services/httpRequest';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from 'react';
-import { FeedTopic } from '../../components/feed-topic-component/FeedTopic';
-import { TopicDto } from '../../dtos/TopicDto';
+import { FeedTopic } from 'components/feed-topic-component/FeedTopic';
+import { TopicDto } from 'dtos/TopicDto';
 
 const MainFeedPage: React.FC = () => {
 
@@ -11,7 +11,7 @@ const MainFeedPage: React.FC = () => {
     useEffect(() => {
         
         const getTopics = async () => {
-            const response = await sendRequest({method: "GET", endpoint: "topic"});
+            const response = await sendHttpRequest({method: "GET", endpoint: "topic"});
 
             if(response.status === 200){                
                 setTopics(await response.json());

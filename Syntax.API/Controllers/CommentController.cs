@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Syntax.API.Requests;
+using Syntax.Core.Dtos;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Base;
 
@@ -27,7 +28,7 @@ namespace Syntax.API.Controllers
             var user = await _userManager.GetUserAsync(User);
             var comment = await _commentService.CreateCommentAsync(commentRequest.TopicId, commentRequest.Content, user);
 
-            return new JsonResult(comment);
+            return comment != null ? new JsonResult(new CommentDto(comment)) : throw new Exception("Something went wrong with creating a new comment");
         }
 
         [HttpGet("{topicId}")]
@@ -35,7 +36,7 @@ namespace Syntax.API.Controllers
         {
             var comments = await _commentService.GetCommentsAsync(topicId, new List<Guid>(), 5);
 
-            return new JsonResult(comments);
+            return new JsonResult(comments.Select(c => new CommentDto(c)));
         }
 
         [HttpDelete("{commentId}")]

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { sendRequest } from "../../helpers/apiRequestHelpers";
-import { TopicDto } from "../../dtos/TopicDto";
-import { ViewTopic } from "../../components/view-topic-component/ViewTopic";
+import { sendHttpRequest } from "services/httpRequest";
+import { TopicDto } from "dtos/TopicDto";
+import { ViewTopic } from "components/view-topic-component/ViewTopic";
 import './TopicViewPage.scss';
 
-const TopicViewPage : React.FC = () => {
+const TopicViewView : React.FC = () => {
 
     const { topicId } = useParams();
     const [topic, setTopic] = useState<TopicDto>();
@@ -16,7 +16,7 @@ const TopicViewPage : React.FC = () => {
 
         const getTopicData = async () => {
             
-            const response = await sendRequest({method: "GET", endpoint: `topic/${topicId}`});
+            const response = await sendHttpRequest({method: "GET", endpoint: `topic/${topicId}`});
             
             if(response.status === 401){
                 navigate("/login");
@@ -41,4 +41,4 @@ const TopicViewPage : React.FC = () => {
         </div> : isFetching ? null : <p>Post not found...</p>);
 }
 
-export default TopicViewPage;
+export default TopicViewView;

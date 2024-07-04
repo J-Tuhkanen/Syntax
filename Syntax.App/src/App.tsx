@@ -1,13 +1,13 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginPage from './pages/LoginPage/LoginPage';
-import MainFeedPage from './pages/MainFeedPage/MainFeedPage';
-import { NavBar } from './components/navbar-component/NavBar';
-import { createContext, useEffect, useInsertionEffect, useState } from 'react';
-import { sendRequest } from './helpers/apiRequestHelpers';
-import SignoutPage from './pages/SignoutPage/SignoutPage';
-import { AuthenticationState } from './models/AuthenticationState';
-import TopicViewPage from './pages/TopicViewPage/TopicViewPage';
+import LoginPage from 'views/LoginPage/LoginPage';
+import MainFeedPage from 'views/MainFeedPage/MainFeedPage';
+import { NavBar } from 'components/navbar-component/NavBar';
+import { createContext, useEffect, useState } from 'react';
+import { sendHttpRequest } from 'services/httpRequest';
+import SignoutPage from 'views/SignoutPage/SignoutPage';
+import { AuthenticationState } from 'models/AuthenticationState';
+import TopicViewPage from 'views/TopicViewPage/TopicViewPage';
 
 export const AuthenticationContext = createContext<AuthenticationState>({ isSignedIn: false});
 
@@ -17,7 +17,7 @@ const App = () => {
   useEffect(() => {
     const getCurrentSession = async (): Promise<void> => {
 
-      const response = await sendRequest({ method: "GET", endpoint: "authentication/session" });
+      const response = await sendHttpRequest({ method: "GET", endpoint: "authentication/session" });
 
       if(response.status === 200){
         setAuthState({ isSignedIn: true, User: await response.json()});

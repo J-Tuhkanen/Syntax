@@ -1,13 +1,13 @@
 const API_BASE_URI: string = "https://localhost:7181/api/";
 
-type RequestArguments = {
+type HttpRequestArguments = {
 
     method: string,
     endpoint: string,
     requestBody?: object
 };
 
-export const sendRequest = async(requestArgs: RequestArguments):  Promise<Response> => {
+export const sendHttpRequest = async(requestArgs: HttpRequestArguments):  Promise<Response> => {
 
     const requestUri = `${API_BASE_URI}${requestArgs.endpoint}`;
     const requestCredentials: RequestCredentials = 'include';

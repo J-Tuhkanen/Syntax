@@ -1,9 +1,8 @@
-import { Login } from '../../components/login-component/Login';
-import { sendRequest } from '../../helpers/apiRequestHelpers';
-// import { InfoMessage, InfoMessageType } from "../components/info-message-component/InfoMessage";
+import { Login } from 'components/login-component/Login';
+import { sendHttpRequest } from 'services/httpRequest';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
-import { AuthenticationState } from '../../models/AuthenticationState';
+import { AuthenticationState } from 'models/AuthenticationState';
 
 type RequestSignInProps = {
 
@@ -29,7 +28,7 @@ const LoginPage: React.FC<LoginPageProps> = ({setAuthStateFunction}) => {
         setErrorModel({ showError: false, message: "" });
         setIsAuthenticating(true);
 
-        const response = await sendRequest({
+        const response = await sendHttpRequest({
 
             method: "POST",
             endpoint: "authentication/login",
