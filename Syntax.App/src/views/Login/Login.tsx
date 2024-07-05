@@ -3,69 +3,23 @@ import { sendHttpRequest } from 'services/httpRequest';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { AuthenticationState } from 'models/AuthenticationState';
+import { ApplicationUser } from 'models/ApplicationUser';
 
-type RequestSignInProps = {
-
-    username: string;
-    password: string;
-}
 type LoginPageProps = {
     setAuthStateFunction: React.Dispatch<React.SetStateAction<AuthenticationState>>
-
 }
 
 const LoginPage: React.FC<LoginPageProps> = (pageProps:LoginPageProps) => {
 
-    const navigate = useNavigate();
-    const [errorModel, setErrorModel] = useState({ showError: false, message: "" });
-    const [isAuthenticating, setIsAuthenticating] = useState(false);
-
-    const onRequestSignIn = async (props: RequestSignInProps): Promise<void> => {
-
-        if (isAuthenticating)
-            return;
-
-        setErrorModel({ showError: false, message: "" });
-        setIsAuthenticating(true);
-
-        const response = await sendHttpRequest({
-
-            method: "POST",
-            endpoint: "authentication/login",
-            requestBody: {
-                "username": props.username,
-                "password": props.password
-            },
-            
-        });
-
-        if (response.status === 200) {
-
-            pageProps.setAuthStateFunction({ isSignedIn: true, User: await response.json() });
-            navigate("/");
-        }
-
-        else if (response.status === 401){
-            setErrorModel({ showError: true, message: "Authentication failed. Check email and password." });
-        }
-
-        setIsAuthenticating(false);
-    };
-
-    // if (isAuthenticating)
-    //     return (<Loader />);
+    const OnSubmitResult = (user: ApplicationUser) => {
+        
+        pageProps.setAuthStateFunction({ isSignedIn: true, User: user });
+    }
 
     return (
-        <>
-            <div className='container container-sm'>
-                <LoginForm onRequestSignIn={onRequestSignIn} />
-
-            {/* {errorModel.showError
-                ? <InfoMessage infoMessageType={InfoMessageType.Error} message={errorModel.message} />
-            : null} */}
-    
-            </div>
-        </>
+        <div className='container container-sm'>
+            <LoginForm submitResult={OnSubmitResult}/>
+        </div>
     );
 
 }

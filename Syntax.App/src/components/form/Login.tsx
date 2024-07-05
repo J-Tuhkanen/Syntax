@@ -1,17 +1,57 @@
+import { useNavigate } from "react-router-dom";
 import "./Form.scss";
 import React, { ChangeEvent, useState } from "react";
+import { sendHttpRequest } from "services/httpRequest";
+import { SyntaxFormProps } from "./Form";
+import { ApplicationUser } from "models/ApplicationUser";
 
-type LoginProps = {
+type RequestSignInProps = {
 
-    onRequestSignIn: Function
+    username: string;
+    password: string;
 }
 
-export const LoginForm: React.FC<LoginProps> = ({ onRequestSignIn }) => {    
+export const LoginForm: React.FC<SyntaxFormProps<ApplicationUser>> = (formProps) => {    
 
     const [loginFormData, setLoginFormData] = useState({
         username: "",
         password: ""
     });
+    const navigate = useNavigate();
+    const [errorModel, setErrorModel] = useState({ showError: false, message: "" });
+    const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+    const onRequestSignIn = async (props: RequestSignInProps): Promise<void> => {
+
+        if (isAuthenticating)
+            return;
+
+        setErrorModel({ showError: false, message: "" });
+        setIsAuthenticating(true);
+
+        const response = await sendHttpRequest({
+
+            method: "POST",
+            endpoint: "authentication/login",
+            requestBody: {
+                "username": props.username,
+                "password": props.password
+            },
+            
+        });
+
+        if (response.status === 200) {
+
+            formProps.submitResult(await response.json());
+            navigate("/");
+        }
+
+        else if (response.status === 401){
+            setErrorModel({ showError: true, message: "Authentication failed. Check email and password." });
+        }
+
+        setIsAuthenticating(false);
+    };
 
     const formHasErrors = (): boolean => {
 

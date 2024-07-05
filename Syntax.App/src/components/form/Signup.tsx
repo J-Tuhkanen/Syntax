@@ -1,13 +1,9 @@
 import { sendHttpRequest } from "services/httpRequest";
 import "./Form.scss";
 import React, { ChangeEvent, useState } from "react";
+import { SyntaxFormProps } from "./Form";
 
-type SignupProps = {
-
-    // onRequestSignIn: Function
-}
-
-export const SignupForm: React.FC<SignupProps> = () => {    
+export const SignupForm: React.FC<SyntaxFormProps<number>> = (formProps) => {    
 
     const [signUpFormData, setLoginFormData] = useState({
         username: "",
@@ -20,7 +16,7 @@ export const SignupForm: React.FC<SignupProps> = () => {
         let hasErrors = false;
 
         if (signUpFormData.username.trim().length < 1) {
-            //setEmailError("Email field cannot be empty.");
+            //setEmailError("Username field cannot be empty.");
             hasErrors = true;
         }
 
@@ -42,12 +38,9 @@ export const SignupForm: React.FC<SignupProps> = () => {
         e.preventDefault();
         
         if (formHasErrors() === false) {
-            const response = await sendHttpRequest({ 
-                method: "POST", 
-                endpoint: "authentication/register", 
-                requestBody: signUpFormData});
-
-            console.log(response);
+            
+            const response = await sendHttpRequest({ method: "POST", endpoint: "authentication/register", requestBody: signUpFormData});
+            formProps.submitResult(response.status)
         }
     }
 
