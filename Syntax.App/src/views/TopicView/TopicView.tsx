@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { sendHttpRequest } from "services/httpRequest";
 import { TopicDto } from "dtos/TopicDto";
 import { ViewTopic } from "components/view-topic-component/ViewTopic";
-import './TopicViewPage.scss';
+import './TopicView.scss';
 
 const TopicViewView : React.FC = () => {
 

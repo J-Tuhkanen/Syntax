@@ -1,6 +1,6 @@
 import { sendHttpRequest } from 'services/httpRequest';
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 import { FeedTopic } from 'components/feed-topic-component/FeedTopic';
 import { TopicDto } from 'dtos/TopicDto';
 
@@ -24,20 +24,21 @@ const MainFeedPage: React.FC = () => {
         getTopics();
     }, []);
 
-    return(
-        <div>
-            <div className="row justify-content-center">
-                <div className='col-6'>
 
-                {topics?.map((value, index) => 
-                    <FeedTopic 
-                        key={index}
-                        id={value.id} 
-                        content={value.body} 
-                        title={value.title}/>
-                    )}
-                </div>
-            </div>
+    var style: CSSProperties = {
+        margin: 20
+    };
+
+    return(
+        <div className='col-5' style={style}>
+
+        {topics?.map((value, index) => 
+            <FeedTopic 
+                key={index}
+                id={value.id} 
+                content={value.body} 
+                title={value.title}/>
+            )}
         </div>);
 }
 

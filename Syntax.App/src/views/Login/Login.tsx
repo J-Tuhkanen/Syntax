@@ -1,4 +1,4 @@
-import { Login } from 'components/login-component/Login';
+import { LoginForm } from 'components/form/Login';
 import { sendHttpRequest } from 'services/httpRequest';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
@@ -10,11 +10,11 @@ type RequestSignInProps = {
     password: string;
 }
 type LoginPageProps = {
-
     setAuthStateFunction: React.Dispatch<React.SetStateAction<AuthenticationState>>
+
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({setAuthStateFunction}) => {
+const LoginPage: React.FC<LoginPageProps> = (pageProps:LoginPageProps) => {
 
     const navigate = useNavigate();
     const [errorModel, setErrorModel] = useState({ showError: false, message: "" });
@@ -41,7 +41,7 @@ const LoginPage: React.FC<LoginPageProps> = ({setAuthStateFunction}) => {
 
         if (response.status === 200) {
 
-            setAuthStateFunction({ isSignedIn: true, User: await response.json() });
+            pageProps.setAuthStateFunction({ isSignedIn: true, User: await response.json() });
             navigate("/");
         }
 
@@ -50,7 +50,6 @@ const LoginPage: React.FC<LoginPageProps> = ({setAuthStateFunction}) => {
         }
 
         setIsAuthenticating(false);
-
     };
 
     // if (isAuthenticating)
@@ -59,7 +58,7 @@ const LoginPage: React.FC<LoginPageProps> = ({setAuthStateFunction}) => {
     return (
         <>
             <div className='container container-sm'>
-                <Login onRequestSignIn={onRequestSignIn} />
+                <LoginForm onRequestSignIn={onRequestSignIn} />
 
             {/* {errorModel.showError
                 ? <InfoMessage infoMessageType={InfoMessageType.Error} message={errorModel.message} />
