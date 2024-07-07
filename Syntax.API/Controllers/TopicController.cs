@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Server.IIS.Core;
 using Syntax.API.Requests;
+using Syntax.Core.Dtos;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Base;
 using Syntax.Core.Wrappers;
@@ -27,7 +29,7 @@ namespace Syntax.API.Controllers
         public async Task<IActionResult> GetTopicsAsync()
         {
             var topics = await _topicService.GetTopicsAsync(new List<Guid>(), 100);
-            return new JsonResult(topics);
+            return new JsonResult(topics.Select(t => new TopicDto(t)));
         }
 
         [HttpGet("{topicId}")]
@@ -35,7 +37,7 @@ namespace Syntax.API.Controllers
         {
             Topic? topic = await _topicService.GetTopicAsync(topicId);
 
-            return topic != null ? new JsonResult(topic) : NotFound();
+            return topic != null ? new JsonResult(new TopicDto(topic)) : NotFound();
         }
 
         [HttpPost]
@@ -44,7 +46,7 @@ namespace Syntax.API.Controllers
             var user = await _userManager.GetUserAsync(User);
             var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user);
 
-            return new JsonResult(topic);
+            return new JsonResult(new TopicDto(topic));
         }
 
         [HttpDelete("{topicId}")]
@@ -56,7 +58,7 @@ namespace Syntax.API.Controllers
         [HttpPut("{topicId}")]
         public async Task<IActionResult> UpdateTopicAsync()
         {
-            return Ok();
+            throw new NotImplementedException();
         }
     }
 }

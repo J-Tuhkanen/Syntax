@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { sendHttpRequest } from 'services/httpRequest';
+import { sendHttpRequest } from 'utils/httpRequest';
 import { AuthenticationState } from 'models/AuthenticationState';
 
 type SignoutViewProps = {

@@ -1,5 +1,5 @@
 import { LoginForm } from 'components/form/Login';
-import { sendHttpRequest } from 'services/httpRequest';
+import { sendHttpRequest } from 'utils/httpRequest';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { AuthenticationState } from 'models/AuthenticationState';

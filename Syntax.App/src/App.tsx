@@ -4,7 +4,7 @@ import LoginView from 'views/Login/Login';
 import MainFeedView from 'views/MainFeed/MainFeedView';
 import { NavBar } from 'components/navbar-component/NavBar';
 import { createContext, useEffect, useState } from 'react';
-import { sendHttpRequest } from 'services/httpRequest';
+import { sendHttpRequest } from 'utils/httpRequest';
 import SignoutView from 'views/Signout/SignoutView';
 import { AuthenticationState } from 'models/AuthenticationState';
 import TopicView from 'views/TopicView/TopicView';

@@ -1,8 +1,21 @@
 .topic-element {
-
+    .feed-topic-header{
+        text-align: left;
+        :last-child{
+            text-align: right;
+        }
+    }
+    margin: auto;
     border: 1px solid #476378;
     border-radius: 5px;
     padding: 2em 1em;
     margin-top: 1em;
     display: block;
+    text-align: left;;
+    width: 70%;
+}
+
+.topic-element-hover{
+
+    background-color: #a3b7c7;
 }

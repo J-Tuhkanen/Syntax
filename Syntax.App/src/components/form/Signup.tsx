@@ -1,4 +1,4 @@
-import { sendHttpRequest } from "services/httpRequest";
+import { sendHttpRequest } from "utils/httpRequest";
 import "./Form.scss";
 import React, { ChangeEvent, useState } from "react";
 import { SyntaxFormProps } from "./Form";
@@ -38,7 +38,7 @@ export const SignupForm: React.FC<SyntaxFormProps<number>> = (formProps) => {
         e.preventDefault();
         
         if (formHasErrors() === false) {
-            
+
             const response = await sendHttpRequest({ method: "POST", endpoint: "authentication/register", requestBody: signUpFormData});
             formProps.submitResult(response.status)
         }

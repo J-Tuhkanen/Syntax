@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./Form.scss";
 import React, { ChangeEvent, useState } from "react";
-import { sendHttpRequest } from "services/httpRequest";
+import { sendHttpRequest } from "utils/httpRequest";
 import { SyntaxFormProps } from "./Form";
 import { ApplicationUser } from "models/ApplicationUser";
 

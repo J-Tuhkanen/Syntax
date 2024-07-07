@@ -7,7 +7,7 @@ type HttpRequestArguments = {
     requestBody?: object
 };
 
-export const sendHttpRequest = async(requestArgs: HttpRequestArguments):  Promise<Response> => {
+export const sendHttpRequest = async(requestArgs: HttpRequestArguments): Promise<Response> => {
 
     const requestUri = `${API_BASE_URI}${requestArgs.endpoint}`;
     const requestCredentials: RequestCredentials = 'include';

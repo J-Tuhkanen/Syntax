@@ -1,26 +1,35 @@
 import "./FeedTopic.scss";
 import { useNavigate } from 'react-router-dom';
-import { UUID } from "crypto";
+import { DateFormatter } from "services/dateFormatter";
+import { TopicDto } from "dtos/TopicDto";
+import { MouseEventHandler } from "react";
 
-type TopicProps = {
-    id: UUID,
-    title: string,
-    content: string
-}
 
-export const FeedTopic: React.FC<TopicProps> = (props) => {
+export const FeedTopic: React.FC<TopicDto> = (props) => {
 
     const navigate = useNavigate();
+
     const onClickTopic = () => {
-        navigate(`Topic/${props.id}`);
+        navigate(`topic/${props.id}`);
     };
+
+    function openCreatorProfile(event:React.MouseEvent<HTMLElement>): void {
+        event.stopPropagation();
+        navigate(`/user/${props.userId}`)
+    }
 
     return (
     <>
-        {/* TODO: scss */}
-        <div className="topic-element" onClick={onClickTopic} style={{ cursor: 'pointer' }}>
-            <h3>{props.title}</h3>
-            <p>{props.content}</p>
+        <div className="topic-element" style={{ cursor: 'pointer' }} onClick={onClickTopic}>
+            <div className="feed-topic-header row">
+                <p className="col-8" >{DateFormatter(new Date(props.timestamp))}</p>
+                <p className="col-4">By <a onClick={openCreatorProfile}>{props.username}</a></p>
+            </div>
+            <hr className="solid"></hr>
+            <div className="feed-topic-body">
+                <h3>{props.title}</h3>
+                <p>{props.content}</p>
+            </div>
         </div>
     </>);
 } 

@@ -5,7 +5,7 @@ export const ViewTopic: React.FC<TopicDto>  = (props) => {
   return (
     <>
       <h1>{props.title}</h1>
-      <p>{props.body}</p>
+      <p>{props.content}</p>
       <CommentArea TopicId={props.id}/>
     </>
   )

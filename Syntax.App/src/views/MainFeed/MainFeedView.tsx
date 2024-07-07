@@ -1,4 +1,4 @@
-import { sendHttpRequest } from 'services/httpRequest';
+import { sendHttpRequest } from 'utils/httpRequest';
 import { useNavigate } from "react-router-dom";
 import { CSSProperties, useEffect, useState } from 'react';
 import { FeedTopic } from 'components/feed-topic-component/FeedTopic';
@@ -24,22 +24,20 @@ const MainFeedPage: React.FC = () => {
         getTopics();
     }, []);
 
-
-    var style: CSSProperties = {
-        margin: 20
-    };
-
     return(
-        <div className='col-5' style={style}>
-
-        {topics?.map((value, index) => 
-            <FeedTopic 
+            <>
+            {topics?.map((value, index) => 
+                <FeedTopic 
                 key={index}
                 id={value.id} 
-                content={value.body} 
-                title={value.title}/>
-            )}
-        </div>);
+                content={value.content} 
+                title={value.title}
+                timestamp={value.timestamp}
+                username={value.username}
+                userId={value.userId}/>
+                )}
+            </>
+        );
 }
 
 export default MainFeedPage;

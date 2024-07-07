@@ -1,5 +1,5 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import { sendHttpRequest } from 'services/httpRequest'
+import { sendHttpRequest } from 'utils/httpRequest'
 import { CommentDto } from 'dtos/CommentDto'
 
 type CommentAreaProps = {
