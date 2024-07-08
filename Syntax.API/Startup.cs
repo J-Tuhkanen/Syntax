@@ -79,7 +79,7 @@ namespace Syntax.API
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<INotificationService, NotificationService>();
-
+            
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();
             services.AddEndpointsApiExplorer();

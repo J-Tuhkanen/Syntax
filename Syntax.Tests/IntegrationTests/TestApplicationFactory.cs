@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Syntax.API;
+using Syntax.Core.Hubs;
 using System.Data.Common;
 
 namespace Syntax.Tests.IntegrationTests
@@ -21,10 +24,15 @@ namespace Syntax.Tests.IntegrationTests
 
                 var dbConnectionDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(DbConnection));
                 services.Remove(dbConnectionDescriptor);
-
+                
                 services.AddDbContext<ApplicationDbContext>(options =>
                 {
                     options.UseNpgsql("User ID=postgres; Password=postgres; Host=localhost; Port=5432; Database=Syntax-Tests");
+                });
+
+                services.Configure<IEndpointRouteBuilder>(options =>
+                {
+                    options.MapHub<NotificationHub>("/notification/{topicId}");
                 });
 
                 using (var serviceProvider = services.BuildServiceProvider())
@@ -41,7 +49,7 @@ namespace Syntax.Tests.IntegrationTests
                     userService.CreateUser(ToniTestUser, "ToniTest", "Testi123", "toni.testi@gmail.com").GetAwaiter().GetResult();
                 }
             });
-
+            
             builder.UseEnvironment("Development");
         }
     }

@@ -9,16 +9,16 @@ namespace Syntax.Core.Services
     {
         private readonly IHubContext<NotificationHub> _notificationHubContext;
 
-        public NotificationService(IHubContext<NotificationHub> notificationHubContext)
-        {
-            _notificationHubContext = notificationHubContext;
-        }
+        //public NotificationService(IHubContext<NotificationHub> notificationHubContext)
+        //{
+        //    _notificationHubContext = notificationHubContext;
+        //}
 
         public async Task SendCommentNotification(CommentDto comment, Guid topicId)
         {
-            var clientsOfGroup = _notificationHubContext.Clients.Group(topicId.ToString());
+            //var clientsOfGroup = _notificationHubContext.Clients.Group(topicId.ToString());
 
-            await clientsOfGroup.SendAsync("messageReceived", comment);
+            //await clientsOfGroup.SendAsync("messageReceived", comment);
         }
     }
 }

@@ -16,16 +16,6 @@ namespace Syntax.Tests.IntegrationTests
             Factory = new TestApplicationFactory();
         }
 
-        //[OneTimeSetUp]
-        //public async Task Setup()
-        //{
-        //    Factory = new TestApplicationFactory();
-
-        //    var dbContext = Factory.Services.GetRequiredService<ApplicationDbContext>();
-        //    await dbContext.Database.EnsureDeletedAsync();
-        //    await dbContext.Database.MigrateAsync();
-        //}
-
         protected T DeserializeWithOptions<T>(string json) where T : class
         {
             return JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions

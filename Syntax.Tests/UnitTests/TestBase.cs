@@ -70,6 +70,7 @@ namespace Syntax.Tests.UnitTests
             _services.AddTransient<ICommentService, CommentService>();
             _services.AddTransient<IFileService, FileService>();
             _services.AddTransient<IUserService, UserService>();
+            _services.AddTransient<INotificationService, NotificationService>();
         }
 
         protected UserAccount CreateUserInstance()
