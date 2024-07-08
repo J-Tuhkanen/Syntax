@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
+using Syntax.Core.Hubs;
 
 namespace Syntax.API
 {
@@ -27,7 +28,7 @@ namespace Syntax.API
             // Database configuration
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-
+            services.AddSignalR();
             services.AddCors(options =>
             {
                 options.AddPolicy(name: allowSpecificOrigin, policy => {
@@ -77,6 +78,8 @@ namespace Syntax.API
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<INotificationService, NotificationService>();
+
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();
             services.AddEndpointsApiExplorer();
@@ -102,13 +105,16 @@ namespace Syntax.API
             }
 
             app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseRouting();
+
             app.UseCors(allowSpecificOrigin);
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<NotificationHub>("/notification/{topicId}");
                 endpoints.MapControllers();
 
                 Console.WriteLine("Avaible endpoints:");

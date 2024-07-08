@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syntax.Core.Data;
+using Syntax.Core.Dtos;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Base;
 
@@ -8,10 +9,12 @@ namespace Syntax.Core.Services
     public class CommentService : ICommentService
     {
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly INotificationService _notificationService;
 
-        public CommentService(ApplicationDbContext applicationDbContext)
+        public CommentService(ApplicationDbContext applicationDbContext, INotificationService notificationService)
         {
-            _applicationDbContext = applicationDbContext; ;
+            _applicationDbContext = applicationDbContext;
+            _notificationService = notificationService;
         }
 
         public async Task<Comment?> CreateCommentAsync(Guid topicId, string content, UserAccount user)
@@ -30,6 +33,8 @@ namespace Syntax.Core.Services
 
             await _applicationDbContext.Comments.AddAsync(comment);
             await _applicationDbContext.SaveChangesAsync();
+
+            await _notificationService.SendCommentNotification(new CommentDto(comment), topicId);
 
             return comment;
         }

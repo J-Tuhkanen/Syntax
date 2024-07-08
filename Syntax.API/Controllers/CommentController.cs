@@ -34,7 +34,7 @@ namespace Syntax.API.Controllers
         [HttpGet("{topicId}")]
         public async Task<IActionResult> GetComments(Guid topicId)
         {
-            var comments = await _commentService.GetCommentsAsync(topicId, new List<Guid>(), 5);
+            var comments = await _commentService.GetCommentsAsync(topicId, new List<Guid>(), 100);
 
             return new JsonResult(comments.Select(c => new CommentDto(c)));
         }

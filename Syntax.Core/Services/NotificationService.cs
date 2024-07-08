@@ -15,6 +15,10 @@ namespace Syntax.Core.Services
         }
 
         public async Task SendCommentNotification(CommentDto comment, Guid topicId)
-            => await _notificationHubContext.Clients.Group(topicId.ToString()).SendAsync("messageReceived", comment);
+        {
+            var clientsOfGroup = _notificationHubContext.Clients.Group(topicId.ToString());
+
+            await clientsOfGroup.SendAsync("messageReceived", comment);
+        }
     }
 }
