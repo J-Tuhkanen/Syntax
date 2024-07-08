@@ -110,16 +110,6 @@ export const LoginForm: React.FC<SyntaxFormProps<ApplicationUser>> = (formProps)
                     <button type="submit" className="btn btn-primary">Login</button>
                 </div>
             </div>
-            {/* <div className="col-md-6 justify-content-md-center login-description">
-                <h4>Welcome to Syntax!</h4>
-                <p>This is a social network for programming. You can find all kinds of topics about different languages and 
-                    projects on our platform.
-                </p>
-
-                <p>
-                    You need to sign in or if you haven't, <a href="/register">sign up</a> and start browsing.
-                </p>
-            </div> */}
         </form>
     </>);
 }

@@ -4,7 +4,7 @@ const monthStrings = [
 ]
 
 /** Converts Date to clear date string (eg. 1st Jan 2019) */
-export const DateFormatter = (date:Date) => {
+export const FormateDateToTopicTimestamp = (date:Date) => {
 
     let dayString:string = date.getDate().toString();
     

@@ -1,9 +1,7 @@
 import "./FeedTopic.scss";
 import { useNavigate } from 'react-router-dom';
-import { DateFormatter } from "services/dateFormatter";
+import { FormateDateToTopicTimestamp } from "utils/dateFormatter";
 import { TopicDto } from "dtos/TopicDto";
-import { MouseEventHandler } from "react";
-
 
 export const FeedTopic: React.FC<TopicDto> = (props) => {
 
@@ -22,7 +20,7 @@ export const FeedTopic: React.FC<TopicDto> = (props) => {
     <>
         <div className="topic-element" style={{ cursor: 'pointer' }} onClick={onClickTopic}>
             <div className="feed-topic-header row">
-                <p className="col-8" >{DateFormatter(new Date(props.timestamp))}</p>
+                <p className="col-8" >{FormateDateToTopicTimestamp(new Date(props.timestamp))}</p>
                 <p className="col-4">By <a onClick={openCreatorProfile}>{props.username}</a></p>
             </div>
             <hr className="solid"></hr>
