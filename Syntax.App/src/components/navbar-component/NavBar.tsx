@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom';
 import './NavBar.scss';
-import { AuthenticationContext } from '../../App';
+import { Link } from 'react-router-dom';
+import { AuthenticationContext } from 'App';
 import { useContext } from 'react';
 
 export const NavBar: React.FC = () => {
