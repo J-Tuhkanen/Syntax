@@ -5,13 +5,13 @@ using System.Text.Json.Serialization;
 
 namespace Syntax.Tests.IntegrationTests
 {
-    internal class IntegrationTestsBase
+    public class IntegrationTestsBase
     {
-        protected TestApplicationFactory Factory;
+        private TestApplicationFactory Factory;
         protected string TimoTestUsername = "TimoTest";
         protected string ToniTestUsername = "ToniTest";
 
-        protected IntegrationTestsBase()
+        public IntegrationTestsBase()
         {
             Factory = new TestApplicationFactory();
         }

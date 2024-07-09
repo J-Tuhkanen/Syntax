@@ -17,6 +17,6 @@ namespace Syntax.Core.Models
         
         public string Body { get; set; } = string.Empty;
 
-        public List<Comment> Comments { get; set; } = null!;
+        public List<Comment> Comments { get; set; } = new();
     }
 }

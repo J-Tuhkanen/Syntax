@@ -5,7 +5,7 @@ namespace Syntax.Tests.UnitTests
         private UserAccount _user;
         private ITopicService _topicService;
 
-        [OneTimeSetUp]
+       
         public async Task Setup()
         {
             Debug.WriteLine("Setting up tests...");
@@ -24,24 +24,29 @@ namespace Syntax.Tests.UnitTests
         [Fact]
         public async Task EnsureTopicHasId()
         {
-            var newTopic = await _topicService.CreateTopicAsync("Jotain", "Ty�maa", _user);
+            await Setup();
+
+            var newTopic = await _topicService.CreateTopicAsync("Jotain", "Työmaa", _user);
             Assert.NotNull(newTopic);
         }
 
         [Fact]
         public async Task IsTopicCreationSuccessful()
         {
-            var newTopic = await _topicService.CreateTopicAsync("Jotain", "Ty�maa", _user);
+            await Setup();
+
+            var newTopic = await _topicService.CreateTopicAsync("Jotain", "Työmaa", _user);
             var topic = await _topicService.GetTopicAsync(newTopic.Id);
 
-            Assert.Null(topic);
+            Assert.NotNull(topic);
         }
 
         [Fact]
         public async Task CheckTopicContainsDeletionFlag()
         {
-            var newTopic = await _topicService.CreateTopicAsync("Janne", "Ty�mies", _user);
+            await Setup();
 
+            var newTopic = await _topicService.CreateTopicAsync("Janne", "Ty�mies", _user);
             var topic = await _topicService.DeleteTopicAsync(newTopic.Id, _user);
 
             Assert.True(topic.IsDeleted);
@@ -50,7 +55,9 @@ namespace Syntax.Tests.UnitTests
         [Fact]
         public async Task CheckCreatedTopicContainsTimestamp()
         {
-            var newTopic = await _topicService.CreateTopicAsync("Janne", "Ty�mies", _user);
+            await Setup();
+
+            var newTopic = await _topicService.CreateTopicAsync("Janne", "Työmies", _user);
 
             var topicTimeStamp = newTopic.Timestamp;
             var currentTimestamp = DateTime.UtcNow;

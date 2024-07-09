@@ -27,8 +27,9 @@ namespace Syntax.Core.Services
         public async Task<IEnumerable<Topic>> GetTopicByUserAsync(string userId, IEnumerable<Guid> excludedPosts, int amount)
         {
             var validPosts = _applicationDbContext.Topics
-                .Include(t => t.Comments)
                 .Include(t => t.User)
+                .Include(t => t.Comments)
+                .ThenInclude(c => c.User)
                 .Where(p => p.IsDeleted == false && p.User.Id == userId && excludedPosts.Contains(p.Id) == false).Take(amount);
 
             return await validPosts.ToListAsync();
@@ -41,6 +42,7 @@ namespace Syntax.Core.Services
                 .Take(amount)
                 .Include(t => t.User)
                 .Include(t => t.Comments)
+                .ThenInclude(c => c.User)
                 .ToListAsync();
 
             return validPosts;
@@ -53,6 +55,7 @@ namespace Syntax.Core.Services
                 .AsSplitQuery()
                 .Include(t => t.User)
                 .Include(t => t.Comments)
+                .ThenInclude(c => c.User)
                 .FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
         }
 

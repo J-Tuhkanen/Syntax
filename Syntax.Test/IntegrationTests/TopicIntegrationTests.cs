@@ -4,9 +4,9 @@ using System.Net;
 
 namespace Syntax.Tests.IntegrationTests
 {
-    internal class TopicIntegrationTests : IntegrationTestsBase
+    public class TopicIntegrationTests : IntegrationTestsBase
     {
-        [Test]
+        [Fact]
         public async Task CreateTopicAndAddCommentToIt()
         {
             var client = await CreateClientAndAuthenticate(TimoTestUsername);
@@ -40,7 +40,7 @@ namespace Syntax.Tests.IntegrationTests
             }
         }
 
-        [Test]
+        [Fact]
         public async Task CreateTopicAndGetTopicWithId()
         {
             var client = await CreateClientAndAuthenticate(TimoTestUsername);
@@ -65,13 +65,13 @@ namespace Syntax.Tests.IntegrationTests
             var getTopicResponse = await client.GetAsync($"/api/topic/{postTopic.Id}");
             var getTopic = DeserializeWithOptions<TopicDto>(await getTopicResponse.Content.ReadAsStringAsync());
 
-            Assert.That(getTopic.Title, Is.EqualTo(postTopic.Title));
-            Assert.That(getTopic.Content, Is.EqualTo(postTopic.Content));
+            Assert.Equal(postTopic.Title, getTopic.Title);
+            Assert.Equal(postTopic.Content, getTopic.Content);
             Assert.True(getTopic.Comments.Count() == 1);
-            Assert.That(getTopic.Username, Is.EqualTo(TestApplicationFactory.TimoTestUser.UserName));
+            Assert.Equal(TestApplicationFactory.TimoTestUser.UserName, getTopic.Username);
         }
 
-        [Test]
+        [Fact]
         public async Task CreateTopicAndDelete()
         {
             var client = await CreateClientAndAuthenticate(TimoTestUsername);
@@ -89,10 +89,10 @@ namespace Syntax.Tests.IntegrationTests
 
             var response = await client.GetAsync($"/api/topic/{postTopic.Id}");
 
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Test]
+        [Fact]
         public async Task CreateTopicAndOtherAccountTriesToDelete()
         {
             var timoClient = await CreateClientAndAuthenticate(TimoTestUsername);
@@ -109,10 +109,10 @@ namespace Syntax.Tests.IntegrationTests
 
             var response = await toniClient.DeleteAsync($"/api/topic/{postTopic.Id}");
 
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
 
-        [Test]
+        [Fact]
         public async Task CreateCommentAndOtherAccountTriesToDelete()
         {
             var timoClient = await CreateClientAndAuthenticate(TimoTestUsername);
@@ -139,7 +139,7 @@ namespace Syntax.Tests.IntegrationTests
 
             var response = await toniClient.DeleteAsync($"api/comment/{comment.Id}");
 
-            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Forbidden));
+            Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
         }
     }
 }
