@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginView from 'views/Login/Login';
-import MainFeedView from 'views/MainFeed/MainFeedView';
+import MainFeedView from 'views/MainFeed/MainFeed';
 import { NavBar } from 'components/navbar-component/NavBar';
 import { createContext, useEffect, useState } from 'react';
 import { sendHttpRequest } from 'utils/httpRequest';
@@ -9,6 +9,7 @@ import SignoutView from 'views/Signout/SignoutView';
 import { AuthenticationState } from 'models/AuthenticationState';
 import TopicView from 'views/TopicView/TopicView';
 import { SignupView } from 'views/Signup/Signup';
+import { UserProfile } from 'views/UserProfile/UserProfile';
 
 export const AuthenticationContext = createContext<AuthenticationState>({ isSignedIn: false});
 
@@ -40,6 +41,7 @@ const App = () => {
             <Route path="/signout" element={<SignoutView setAuthStateFunction={setAuthState}/>}/>
             <Route path="/signup" element={<SignupView/>}/>
             <Route path="/topic/:topicId" element={<TopicView/>}/>
+            <Route path="/user/:userId" element={<UserProfile/>}/>
           </Routes>
         </div>
       </AuthenticationContext.Provider>
