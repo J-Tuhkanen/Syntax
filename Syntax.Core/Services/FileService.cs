@@ -23,7 +23,7 @@ namespace Syntax.Core.Services
         /// </summary>
         public async Task<Blob> UploadFileAsync(IFormFile file, UserAccount user)
         {
-            if(file.Length < 0)
+            if (file.Length < 0)
                 throw new Exception("Invalid file");
 
             var fileExtension = await GetFileFormat(file);
@@ -31,24 +31,30 @@ namespace Syntax.Core.Services
             if (fileExtension == ImageFormat.unknown)
                 throw new Exception("Invalid file");
 
-            string userFileName = Path.Combine("files", user.Id + "." + fileExtension.ToString());
-            string fileName = Path.Combine(_environment.WebRootPath, userFileName);
+            string uploadsFolderName = Path.Combine("Uploads", user.UserName!.ToLower());
 
-            using (var fileStream = new FileStream(fileName, FileMode.Create))
+            var fileName = Guid.NewGuid().ToString() + "." + fileExtension;
+            var filePath = Path.Combine($"{Directory.GetCurrentDirectory()}", uploadsFolderName, fileName);
+
+            if (Directory.Exists(uploadsFolderName) == false)
             {
-                await file.CopyToAsync(fileStream);
+                Directory.CreateDirectory(uploadsFolderName);
+            }
 
-                var newBlob = new Blob
+            using (var stream = new FileStream(filePath, FileMode.CreateNew))
+            {
+                await file.CopyToAsync(stream);
+
+                user.ProfilePictureBlob = new Blob
                 {
-                    Path = "/" + userFileName.Replace("\\", "/"),
-                    Timestamp = DateTime.Now
+                    Path = "/" + fileName.Replace("\\", "/"),
+                    Timestamp = DateTime.UtcNow
                 };
 
-                await _appDbContext.Blobs.AddAsync(newBlob);
                 await _appDbContext.SaveChangesAsync();
 
-                return newBlob;
-            }            
+                return user.ProfilePictureBlob;
+            }
 
             throw new Exception("Invalid file");
         }

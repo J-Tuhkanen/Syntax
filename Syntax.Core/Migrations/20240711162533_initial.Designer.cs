@@ -12,7 +12,7 @@ using Syntax.Core.Data;
 namespace Syntax.Core.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240709193032_initial")]
+    [Migration("20240711162533_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -292,7 +292,7 @@ namespace Syntax.Core.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("ProfilePictureFileId")
+                    b.Property<Guid?>("ProfilePictureBlobId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("SecurityStamp")
@@ -313,6 +313,8 @@ namespace Syntax.Core.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("ProfilePictureBlobId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -392,6 +394,15 @@ namespace Syntax.Core.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Syntax.Core.Models.UserAccount", b =>
+                {
+                    b.HasOne("Syntax.Core.Models.Blob", "ProfilePictureBlob")
+                        .WithMany()
+                        .HasForeignKey("ProfilePictureBlobId");
+
+                    b.Navigation("ProfilePictureBlob");
                 });
 
             modelBuilder.Entity("Syntax.Core.Models.Topic", b =>

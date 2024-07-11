@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Syntax.Core\Syntax.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Uploads\" />
+  </ItemGroup>
+
 </Project>

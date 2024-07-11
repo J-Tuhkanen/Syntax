@@ -74,7 +74,7 @@ namespace Syntax.API.Controllers
         [HttpGet("Session")]
         public async Task<IActionResult> GetCurrentSession()
         {
-            UserAccount user = await _userManager.GetUserAsync(User);
+            UserAccount? user = await _userManager.GetUserAsync(User);
 
             return user == null ? NoContent() : new JsonResult(new ApplicationUserRecord(user));
         }
@@ -88,7 +88,7 @@ namespace Syntax.API.Controllers
         public ApplicationUserRecord(UserAccount user)
         {
             Id = user.Id;
-            DisplayName = user.UserName;
+            DisplayName = user.UserName!;
         }
     }
 }

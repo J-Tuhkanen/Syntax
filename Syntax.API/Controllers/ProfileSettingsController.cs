@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Syntax.Core.Helpers;
 using Syntax.Core.Models;
+using Syntax.Core.Services.Base;
 using System.ComponentModel.DataAnnotations;
 
 namespace Syntax.API.Controllers
@@ -12,22 +14,35 @@ namespace Syntax.API.Controllers
     public class ProfileSettingsController : Controller
     {
         private readonly UserManager<UserAccount> _userManager;
+        private readonly IFileService _fileService;
 
-        public ProfileSettingsController(UserManager<UserAccount> userManager)
+        public ProfileSettingsController(UserManager<UserAccount> userManager, IFileService fileService)
         {
             _userManager = userManager;
+            _fileService = fileService;
         }
 
         [HttpPost]
         public async Task<IActionResult> UploadImage([FromForm] UserInformationRequestDto request)
         {
-            if (request.File == null)
+            var user = await _userManager.GetUserAsync(User);
+
+            if(user == null)
             {
-                return BadRequest("The File field is required.");
+                return Unauthorized();
             }
 
-            // Your logic to handle the file upload
-            return Ok();
+            try
+            {
+                await _fileService.UploadFileAsync(request.File, user);
+
+                // Your logic to handle the file upload
+                return Ok();
+            }
+            catch
+            {
+                throw new Exception("Error saving image");
+            }
         }
 
         [HttpGet]
@@ -42,15 +57,26 @@ namespace Syntax.API.Controllers
             // Your logic to return user information
             return Ok(user);
         }
+
+        private async Task<ImageFormat> GetFileFormat(IFormFile file)
+        {
+            using (var stream = new MemoryStream())
+            {
+                await file.CopyToAsync(stream);
+
+                return FileHelper.GetImageFormatFromBytes(stream.ToArray());
+            }
+        }
     }
 
     public class UserInformationRequestDto
     {
+        [Required]
         public IFormFile File { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
-        public string Description { get; set; }
-        public string AccountEnabled { get; set; }
+        //public string UserName { get; set; }
+        //public string Email { get; set; }
+        //public string Description { get; set; }
+        //public string AccountEnabled { get; set; }
     }
 
     public class UserInformationResponseDto
