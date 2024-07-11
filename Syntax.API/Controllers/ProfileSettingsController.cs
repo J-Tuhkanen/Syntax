@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Syntax.Core.Data;
 using Syntax.Core.Helpers;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Base;
@@ -15,11 +17,13 @@ namespace Syntax.API.Controllers
     {
         private readonly UserManager<UserAccount> _userManager;
         private readonly IFileService _fileService;
+        private readonly ApplicationDbContext _applicationDbContext;
 
-        public ProfileSettingsController(UserManager<UserAccount> userManager, IFileService fileService)
+        public ProfileSettingsController(UserManager<UserAccount> userManager, IFileService fileService, ApplicationDbContext applicationDbContext)
         {
             _userManager = userManager;
             _fileService = fileService;
+            _applicationDbContext = applicationDbContext;
         }
 
         [HttpPost]
@@ -45,17 +49,29 @@ namespace Syntax.API.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetUserInformation()
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetUseProfilePicture(Guid userId)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
+            //var user = await _userManager.GetUserAsync(User);
+
+            //if (user == null)
+            //{
+            //    return NotFound();
+            //}
+
+            UserAccount? user = await _applicationDbContext.Users
+                .Include(u => u.ProfilePictureBlob)
+                .FirstOrDefaultAsync(u => u.Id == userId.ToString());
+
+            if(user == null)
             {
                 return NotFound();
             }
 
+
+
             // Your logic to return user information
-            return Ok(user);
+            return File(;
         }
 
         private async Task<ImageFormat> GetFileFormat(IFormFile file)
