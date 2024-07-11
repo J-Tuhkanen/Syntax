@@ -59,7 +59,6 @@ namespace Syntax.Core.Services
             throw new Exception("Invalid file");
         }
 
-
         private async Task<ImageFormat> GetFileFormat(IFormFile file)
         {
             using (var stream = new MemoryStream())
