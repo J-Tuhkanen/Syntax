@@ -10,6 +10,8 @@ namespace Syntax.Core.Models
             Timestamp = DateTime.UtcNow;
         }
 
+        //public bool IsDraft { get; set; }
+
         public UserAccount User { get; set; } = null!;
 
         [MaxLength(80)]

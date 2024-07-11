@@ -7,7 +7,7 @@ namespace Syntax.Core.Models
     {
         public bool IsDeleted { get; set; }
 
-        public Guid ProfilePictureFileId { get; set; }
+        public Blob? ProfilePictureBlob { get; set; }
 
         public DateTime JoinedDate { get; set; }
     }

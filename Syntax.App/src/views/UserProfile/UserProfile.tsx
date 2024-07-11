@@ -36,9 +36,7 @@ export const UserProfile: React.FC = () => {
         const requestData = {
             method: "POST",
             credentials: requestCredentials,
-            // headers: { 'Content-Type': 'application/json' },
-            body: formData,
-            
+            body: formData            
         };
 
         var response = await fetch(requestUri, requestData);
@@ -52,8 +50,7 @@ export const UserProfile: React.FC = () => {
                         type="file"
                         onChange={uploadFile}
                         ref={fileInputRef}
-                        style={{ display: 'none' }}
-                    />
+                        style={{ display: 'none' }} />
                     <img src={previewUrl} alt="Upload" />
                 </div>
                 <div className="col-md-11">
