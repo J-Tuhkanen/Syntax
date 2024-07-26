@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./UserProfile.scss";
 import { sendHttpRequest } from "utils/httpRequest";
@@ -9,6 +9,7 @@ export const UserProfile: React.FC = () => {
     const [userProfilePic, setUserProfilePic] = useState<File>();
     const [previewUrl, setPreviewUrl] = useState<string>();
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [loadedImageUrl, setLoadedImageUrl] = useState<string>();
 
     const uploadFile = (e: ChangeEvent<HTMLInputElement>) => {
         const selectedFiles = e.target.files;
@@ -42,6 +43,36 @@ export const UserProfile: React.FC = () => {
         var response = await fetch(requestUri, requestData);
     };
 
+    useEffect(() => {
+        
+        const getUserSettings = async () => {
+            try {
+                const requestUri = `https://localhost:7181/api/profilesettings/${userId}`;
+                const requestCredentials: RequestCredentials = 'include';
+                const requestData = {
+                    method: "GET",
+                    credentials: requestCredentials       
+                };
+        
+                var response = await fetch(requestUri, requestData);
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = URL.createObjectURL(blob);
+                    setLoadedImageUrl(url);
+
+                    // console.log(url);
+                } else {
+                    console.error('Failed to fetch image');
+                }
+            } catch (error) {
+                console.error('Error fetching image:', error);
+            }
+        };
+ 
+        getUserSettings();
+    }, []);
+
     return (
         <form style={{ margin: "auto" }} onSubmit={submitUserSettings}>
             <div className="row">
@@ -55,6 +86,8 @@ export const UserProfile: React.FC = () => {
                 </div>
                 <div className="col-md-11">
                     {userId}
+
+                    <img src={loadedImageUrl}/>
                 </div>
             </div>
             <input type="submit" value="Submit" />
