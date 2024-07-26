@@ -58,6 +58,7 @@ namespace Syntax.API.Controllers
         [HttpPut("{topicId}")]
         public async Task<IActionResult> UpdateTopicAsync()
         {
+            // Get topic by topicId that IsDraft == true.
             throw new NotImplementedException();
         }
     }

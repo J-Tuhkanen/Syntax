@@ -11,7 +11,7 @@ namespace Syntax.API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class CommentController : Controller
+    public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
         private readonly UserManager<UserAccount> _userManager;

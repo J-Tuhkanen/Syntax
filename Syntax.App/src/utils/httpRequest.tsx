@@ -4,7 +4,7 @@ type HttpRequestArguments = {
 
     method: string,
     endpoint: string,
-    requestBody?: object
+    requestBody?: object,
 };
 
 export const sendHttpRequest = async(requestArgs: HttpRequestArguments): Promise<Response> => {

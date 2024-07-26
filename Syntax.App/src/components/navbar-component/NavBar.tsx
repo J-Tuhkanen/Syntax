@@ -15,7 +15,7 @@ export const NavBar: React.FC = () => {
                     <Link to="/" style={{
                         width: '55%'
                     }}>{homeButtonText}</Link>
-                    <Link to="#"style={{
+                    <Link to={`/user/${authenticationContext.User?.id}`}style={{
                         width: '35%', textAlign: 'right'
                     }}>Logged in as {authenticationContext.User?.displayName}</Link>
                     <Link to="/signout" style={{

@@ -3,11 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { sendHttpRequest } from 'utils/httpRequest';
 import { AuthenticationState } from 'models/AuthenticationState';
 
-type SignoutViewProps = {
+type SignoutProps = {
     setAuthStateFunction: React.Dispatch<React.SetStateAction<AuthenticationState>>
 };
 
-const SignoutView: React.FC<SignoutViewProps> = ({setAuthStateFunction}) => {
+const SignoutView: React.FC<SignoutProps> = ({setAuthStateFunction}) => {
 
     const navigate = useNavigate();
     

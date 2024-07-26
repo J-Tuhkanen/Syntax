@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Syntax.Core.Hubs;
+using Microsoft.Net.Http.Headers;
 
 namespace Syntax.API
 {
@@ -116,12 +117,6 @@ namespace Syntax.API
             {
                 endpoints.MapHub<NotificationHub>("/notification/{topicId}");
                 endpoints.MapControllers();
-
-                Console.WriteLine("Avaible endpoints:");
-                foreach(var re in endpoints.DataSources.First().Endpoints.OfType<RouteEndpoint>())
-                {
-                    Console.WriteLine(re.RoutePattern.RawText);
-                }
             });
             app.UseResponseCaching();  
         }
