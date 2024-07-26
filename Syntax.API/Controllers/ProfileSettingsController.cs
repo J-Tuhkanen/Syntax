@@ -68,10 +68,16 @@ namespace Syntax.API.Controllers
                 return NotFound();
             }
 
+            if(user.ProfilePictureBlob == null)
+            {
+                return Ok();
+            }
 
+            var image = System.IO.File.OpenRead(Path.Combine($"Uploads/{user.UserName?.ToLower()}", user.ProfilePictureBlob.Path));
+            return File(image, $"image/{new FileInfo(user.ProfilePictureBlob.Path).Extension}");
 
             // Your logic to return user information
-            return File(;
+            //return File(;
         }
 
         private async Task<ImageFormat> GetFileFormat(IFormFile file)

@@ -9,12 +9,10 @@ namespace Syntax.Core.Services
 {
     public class FileService : IFileService
     {
-        private IWebHostEnvironment _environment;
         private ApplicationDbContext _appDbContext;
 
-        public FileService(IWebHostEnvironment environment, ApplicationDbContext appDbContext)
+        public FileService(ApplicationDbContext appDbContext)
         {
-            _environment = environment;
             _appDbContext = appDbContext;
         }
 
@@ -47,7 +45,7 @@ namespace Syntax.Core.Services
 
                 user.ProfilePictureBlob = new Blob
                 {
-                    Path = "/" + fileName.Replace("\\", "/"),
+                    Path = fileName.Replace("\\", "/"),
                     Timestamp = DateTime.UtcNow
                 };
 
