@@ -3,11 +3,12 @@ import { useParams } from "react-router-dom";
 import "./UserProfile.scss";
 import { sendHttpRequest } from "utils/httpRequest";
 import { CommentDto, TopicDto, UserDto } from "dtos/Dtos";
+import { FormateDateToTopicTimestamp } from "utils/dateFormatter";
 
-interface UserDetails {
-    User: UserDto,
-    Comments: CommentDto[],
-    Topics: TopicDto[]
+type UserDetails = {
+    user: UserDto,
+    comments: CommentDto[],
+    topics: TopicDto[]
 }
 
 export const UserProfile: React.FC = () => {
@@ -86,15 +87,26 @@ export const UserProfile: React.FC = () => {
             };
     
             var response = await fetch(requestUri, requestData);
-            setUserDetails(await response.json());
+
+            if (response.ok) {
+                setUserDetails(await response.json());
+            }
         }
  
-        getUserDetails().then(getUserProfilePicture);
+        getUserDetails();
+        getUserProfilePicture();
     }, []);
 
     return (
-        <div>
-
+        
+        <div className="row col-md-12">
+            <div className="row col-md-4">
+                <img src={profilePicture}/>
+            </div>
+            <div className="row col-md-8">
+                <h4>{userDetails?.user?.displayName}</h4>
+                <p>Joined on {userDetails?.user?.joinedDate != null ? FormateDateToTopicTimestamp(new Date(userDetails.user.joinedDate)) : null}</p>
+            </div>
         </div>
         // <form style={{ margin: "auto" }} onSubmit={submitUserSettings}>
         //     <div className="row">

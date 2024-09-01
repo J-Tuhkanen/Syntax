@@ -82,9 +82,12 @@ namespace Syntax.API.Controllers
                 .Include(u => u.UserComments)
                 .Include(u => u.UserTopics)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Id == userId.ToString());            
+                .FirstOrDefaultAsync(u => u.Id == userId.ToString());
 
-            return user != null ? new JsonResult(new { 
+            //return new JsonResult(new TopicDto(user.UserTopics.First()));
+
+            return user != null ? new JsonResult(new UserDetailsResponse
+            {
                 User = new UserDto(user),
                 Comments = user.UserComments.Select(c => new CommentDto(c)),
                 Topics = user.UserTopics.Select(t => new TopicDto(t))
@@ -104,5 +107,12 @@ namespace Syntax.API.Controllers
      
         [Required]
         public string Description { get; set; }
+    }
+
+    public class UserDetailsResponse
+    {
+        public UserDto User { get; set; }
+        public IEnumerable<CommentDto> Comments { get; set; }
+        public IEnumerable<TopicDto> Topics { get; set; }
     }
 }
