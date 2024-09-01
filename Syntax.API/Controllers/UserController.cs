@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Syntax.Core.Data;
-using Syntax.Core.Helpers;
+using Syntax.Core.Dtos;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Base;
 using System.ComponentModel.DataAnnotations;
@@ -13,13 +13,13 @@ namespace Syntax.API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class ProfileSettingsController : Controller
+    public class UserController : Controller
     {
         private readonly UserManager<UserAccount> _userManager;
         private readonly IFileService _fileService;
         private readonly ApplicationDbContext _applicationDbContext;
 
-        public ProfileSettingsController(UserManager<UserAccount> userManager, IFileService fileService, ApplicationDbContext applicationDbContext)
+        public UserController(UserManager<UserAccount> userManager, IFileService fileService, ApplicationDbContext applicationDbContext)
         {
             _userManager = userManager;
             _fileService = fileService;
@@ -27,7 +27,7 @@ namespace Syntax.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadImage([FromForm] UserInformationRequestDto request)
+        public async Task<IActionResult> UploadUserSettings([FromForm] UserInformationRequestDto request)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -38,27 +38,23 @@ namespace Syntax.API.Controllers
 
             try
             {
-                await _fileService.UploadFileAsync(request.File, user);
-
-                // Your logic to handle the file upload
-                return Ok();
-            }
+                if(request.File != null)                    
+                    user.ProfilePictureBlob = await _fileService.UploadFileAsync(request.File, user);
+            }            
             catch
             {
                 throw new Exception("Error saving image");
             }
+
+
+            await _applicationDbContext.SaveChangesAsync();
+            return Ok();
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("avatar/{userId}")]
         public async Task<IActionResult> GetUseProfilePicture(Guid userId)
         {
-            //var user = await _userManager.GetUserAsync(User);
-
-            //if (user == null)
-            //{
-            //    return NotFound();
-            //}
-
+            // TODO: Service
             UserAccount? user = await _applicationDbContext.Users
                 .Include(u => u.ProfilePictureBlob)
                 .FirstOrDefaultAsync(u => u.Id == userId.ToString());
@@ -74,46 +70,39 @@ namespace Syntax.API.Controllers
             }
 
             var image = System.IO.File.OpenRead(Path.Combine($"Uploads/{user.UserName?.ToLower()}", user.ProfilePictureBlob.Path));
+            
             return File(image, $"image/{new FileInfo(user.ProfilePictureBlob.Path).Extension}");
-
-            // Your logic to return user information
-            //return File(;
         }
 
-        private async Task<ImageFormat> GetFileFormat(IFormFile file)
+        [HttpGet("details/{userId}")]
+        public async Task<IActionResult> GetUserDetails(Guid userId)
         {
-            using (var stream = new MemoryStream())
-            {
-                await file.CopyToAsync(stream);
+            // TODO: Service
+            UserAccount? user = await _applicationDbContext.Users
+                .Include(u => u.UserComments)
+                .Include(u => u.UserTopics)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == userId.ToString());            
 
-                return FileHelper.GetImageFormatFromBytes(stream.ToArray());
-            }
+            return user != null ? new JsonResult(new { 
+                User = new UserDto(user),
+                Comments = user.UserComments.Select(c => new CommentDto(c)),
+                Topics = user.UserTopics.Select(t => new TopicDto(t))
+            }) : StatusCode(404);
         }
     }
 
     public class UserInformationRequestDto
     {
+        public IFormFile? File { get; set; }
+        
         [Required]
-        public IFormFile File { get; set; }
-        //public string UserName { get; set; }
-        //public string Email { get; set; }
-        //public string Description { get; set; }
-        //public string AccountEnabled { get; set; }
-    }
-
-    public class UserInformationResponseDto
-    {
-        public string Username { get; set; }
+        public string UserName { get; set; }
+        
+        [Required]
         public string Email { get; set; }
+     
+        [Required]
         public string Description { get; set; }
-        public bool AccountEnabled { get; set; }
-
-        public UserInformationResponseDto(string username, string email, string description, bool accountEnabled)
-        {
-            Username = username;
-            Email = email;
-            Description = description;
-            AccountEnabled = accountEnabled;
-        }
     }
 }

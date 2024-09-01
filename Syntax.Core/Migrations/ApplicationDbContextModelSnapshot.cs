@@ -176,7 +176,7 @@ namespace Syntax.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Blobs");
+                    b.ToTable("Blobs", (string)null);
                 });
 
             modelBuilder.Entity("Syntax.Core.Models.Comment", b =>
@@ -207,7 +207,7 @@ namespace Syntax.Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Syntax.Core.Models.Topic", b =>
@@ -238,7 +238,7 @@ namespace Syntax.Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Topics");
+                    b.ToTable("Topics", (string)null);
                 });
 
             modelBuilder.Entity("Syntax.Core.Models.UserAccount", b =>

@@ -43,15 +43,11 @@ namespace Syntax.Core.Services
             {
                 await file.CopyToAsync(stream);
 
-                user.ProfilePictureBlob = new Blob
+                return new Blob
                 {
                     Path = fileName.Replace("\\", "/"),
                     Timestamp = DateTime.UtcNow
                 };
-
-                await _appDbContext.SaveChangesAsync();
-
-                return user.ProfilePictureBlob;
             }
 
             throw new Exception("Invalid file");

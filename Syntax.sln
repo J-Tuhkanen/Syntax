@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax.Core", "Syntax.Core\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax.API", "Syntax.API\Syntax.API.csproj", "{DD3EE73F-E512-4EE0-8A68-9326C0F0F60D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Syntax.Test", "Syntax.Test\Syntax.Test.csproj", "{A7069FC9-996E-4B21-9F89-C2AC38C13DA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Syntax.Test", "Syntax.Test\Syntax.Test.csproj", "{A7069FC9-996E-4B21-9F89-C2AC38C13DA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
