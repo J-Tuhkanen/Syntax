@@ -5,25 +5,18 @@ namespace Syntax.Core.Dtos
 {
     public class TopicDto
     {
-        public Guid Id { get; }
-        public string Username { get; }
-        public Guid UserId { get; }
-        public string Content { get; }
-        public string Title { get; }
-        public DateTime Timestamp { get; }
-        public IEnumerable<CommentDto> Comments { get; }
+        public Guid Id { get; set; }
+        public string Username { get; set; }
+        public Guid UserId { get; set; }
+        public string Content { get; set; }
+        public string Title { get; set; }
+        public DateTime Timestamp { get; set; }
+        public IEnumerable<CommentDto> Comments { get; set; }
 
 
         [JsonConstructor]
-        public TopicDto(Guid id, string username, Guid userId, string content, string title, DateTime timestamp, IEnumerable<CommentDto> comments) 
+        public TopicDto()
         {
-            Id = id;
-            Username = username;
-            UserId = userId;
-            Content = content;
-            Title = title;
-            Timestamp = timestamp;
-            Comments = comments;
         }
 
         public TopicDto(Topic topic) 

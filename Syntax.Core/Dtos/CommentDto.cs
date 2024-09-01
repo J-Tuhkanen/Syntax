@@ -5,24 +5,21 @@ namespace Syntax.Core.Dtos
 {
     public class CommentDto
     {
-        public Guid TopicId { get; }
-        public string Username { get; }
-        public string Content { get; }
+        public Guid? TopicId { get; set; }
+        public string Username { get; set; }
+        public string Content { get; set; }
 
 
         [JsonConstructor]
-        public CommentDto(Guid topicId, string username, string content)
+        public CommentDto()
         {
-            TopicId = topicId;
-            Username = username;
-            Content = content;
         }
 
         public CommentDto(Comment comment)
         {
             Username = comment.User.UserName!;
             Content = comment.Content;
-            TopicId = comment.Topic.Id;
+            TopicId = comment.Topic?.Id;
         }
     }
 }
