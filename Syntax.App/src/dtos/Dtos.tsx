@@ -1,14 +1,13 @@
 import { UUID } from "crypto";
 
 export type TopicDto = {
-    userId: `${string}-${string}-${string}-${string}-${string}`;
+    userId: UUID,
     id: UUID;
     title: string;
     content: string;
     timestamp: Date,
     username: string
 };
-
 
 export type CommentDto = {
     topicId: UUID,
@@ -17,7 +16,7 @@ export type CommentDto = {
 };
 
 export type UserDto = {
-    DisplayName: string,
-    Email: string,
-    JoinedDate: Date
+    displayName: string,
+    email: string,
+    joinedDate: Date
 }
