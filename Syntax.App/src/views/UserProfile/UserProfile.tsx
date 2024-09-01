@@ -2,10 +2,18 @@ import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./UserProfile.scss";
 import { sendHttpRequest } from "utils/httpRequest";
+import { CommentDto, TopicDto, UserDto } from "dtos/Dtos";
+
+interface UserDetails {
+    User: UserDto,
+    Comments: CommentDto[],
+    Topics: TopicDto[]
+}
 
 export const UserProfile: React.FC = () => {
 
     const { userId } = useParams();
+    const [userDetails, setUserDetails] = useState<UserDetails>();
     // const [userProfilePic, setUserProfilePic] = useState<File>();
     // const [previewUrl, setPreviewUrl] = useState<string>();
     // const fileInputRef = useRef<HTMLInputElement>(null);
@@ -78,7 +86,7 @@ export const UserProfile: React.FC = () => {
             };
     
             var response = await fetch(requestUri, requestData);
-            console.log(await response.json());
+            setUserDetails(await response.json());
         }
  
         getUserDetails().then(getUserProfilePicture);

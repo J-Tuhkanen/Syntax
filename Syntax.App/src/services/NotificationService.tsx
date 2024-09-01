@@ -1,5 +1,5 @@
 import { HubConnection, HubConnectionBuilder, HubConnectionState } from "@microsoft/signalr";
-import { CommentDto } from "dtos/CommentDto";
+import { CommentDto } from "dtos/Dtos";
 
 export class SyntaxCommentClient {
 
