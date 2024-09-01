@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { sendHttpRequest } from "utils/httpRequest";
-import { TopicDto } from "dtos/TopicDto";
 import { ViewTopic } from "components/view-topic-component/ViewTopic";
 import './TopicView.scss';
+import { TopicDto } from "dtos/Dtos";
 
 const TopicView : React.FC = () => {
 
