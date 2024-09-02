@@ -13,6 +13,7 @@ export type CommentDto = {
     topicId: UUID,
     content: string;
     username: string;
+    timestamp: Date,
 };
 
 export type UserDto = {

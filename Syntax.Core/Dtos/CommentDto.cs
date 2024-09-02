@@ -6,6 +6,7 @@ namespace Syntax.Core.Dtos
     public class CommentDto
     {
         public Guid? TopicId { get; set; }
+        public DateTime Timestamp { get; set; }
         public string Username { get; set; }
         public string Content { get; set; }
 
@@ -20,6 +21,7 @@ namespace Syntax.Core.Dtos
             Username = comment.User.UserName!;
             Content = comment.Content;
             TopicId = comment.Topic?.Id;
+            Timestamp = comment.Timestamp;
         }
     }
 }

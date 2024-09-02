@@ -84,8 +84,6 @@ namespace Syntax.API.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == userId.ToString());
 
-            //return new JsonResult(new TopicDto(user.UserTopics.First()));
-
             return user != null ? new JsonResult(new UserDetailsResponse
             {
                 User = new UserDto(user),
