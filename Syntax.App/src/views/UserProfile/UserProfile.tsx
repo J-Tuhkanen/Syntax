@@ -4,6 +4,7 @@ import "./UserProfile.scss";
 import { sendHttpRequest } from "utils/httpRequest";
 import { CommentDto, TopicDto, UserDto } from "dtos/Dtos";
 import { FormateDateToTopicTimestamp } from "utils/dateFormatter";
+import { type } from "os";
 
 type UserDetails = {
     user: UserDto,
@@ -97,8 +98,15 @@ export const UserProfile: React.FC = () => {
         getUserProfilePicture();
     }, []);
 
+    const getUserActivity = () => {
+        if (userDetails) {
+            // Sort by timestamp
+            return [...userDetails.topics, ...userDetails.comments].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+        }
+    };
+ 
     return (
-        
+        <>
         <div className="row col-md-12">
             <div className="row col-md-4">
                 <img src={profilePicture}/>
@@ -108,6 +116,13 @@ export const UserProfile: React.FC = () => {
                 <p>Joined on {userDetails?.user?.joinedDate != null ? FormateDateToTopicTimestamp(new Date(userDetails.user.joinedDate)) : null}</p>
             </div>
         </div>
+        <div>
+            <h4>Recent activity:</h4>
+            {getUserActivity()?.map((item, index) => {
+                return(<p key={index}>{item.content}</p>)
+            })}
+        </div>
+        </>
         // <form style={{ margin: "auto" }} onSubmit={submitUserSettings}>
         //     <div className="row">
         //         <div className="file-upload col-md-1" onClick={handleImageClick} style={{ cursor: 'pointer', margin: 'auto' }}>
