@@ -80,25 +80,6 @@ namespace Syntax.Core.Services
             return await _userManager.CreateAsync(user, password);
         }
 
-        public async Task SetUserProfilePictureAsync(string userId, Blob blob)
-        {
-            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (user != null)
-            {
-                user.ProfilePictureFileId = blob.Id;
-            }
-        }
-
-        public async Task<Blob?> GetUserProfilePictureAsync(string userId)
-        {
-            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-
-            return user?.ProfilePictureFileId != null
-                ? await _applicationDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == user.ProfilePictureFileId)
-                : null;
-        }
-
         public async Task<UserAccount?> GetUserById(string id)
             => await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
 

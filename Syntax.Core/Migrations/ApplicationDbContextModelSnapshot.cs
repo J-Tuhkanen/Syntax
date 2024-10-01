@@ -176,7 +176,7 @@ namespace Syntax.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Blobs");
+                    b.ToTable("Blobs", (string)null);
                 });
 
             modelBuilder.Entity("Syntax.Core.Models.Comment", b =>
@@ -207,7 +207,7 @@ namespace Syntax.Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("Syntax.Core.Models.Topic", b =>
@@ -238,7 +238,7 @@ namespace Syntax.Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Topics");
+                    b.ToTable("Topics", (string)null);
                 });
 
             modelBuilder.Entity("Syntax.Core.Models.UserAccount", b =>
@@ -289,7 +289,7 @@ namespace Syntax.Core.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<Guid>("ProfilePictureFileId")
+                    b.Property<Guid?>("ProfilePictureBlobId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("SecurityStamp")
@@ -310,6 +310,8 @@ namespace Syntax.Core.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
+
+                    b.HasIndex("ProfilePictureBlobId");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -389,6 +391,15 @@ namespace Syntax.Core.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Syntax.Core.Models.UserAccount", b =>
+                {
+                    b.HasOne("Syntax.Core.Models.Blob", "ProfilePictureBlob")
+                        .WithMany()
+                        .HasForeignKey("ProfilePictureBlobId");
+
+                    b.Navigation("ProfilePictureBlob");
                 });
 
             modelBuilder.Entity("Syntax.Core.Models.Topic", b =>

@@ -1,7 +1,7 @@
 import "./FeedTopic.scss";
 import { useNavigate } from 'react-router-dom';
 import { FormateDateToTopicTimestamp } from "utils/dateFormatter";
-import { TopicDto } from "dtos/TopicDto";
+import { TopicDto } from "dtos/Dtos";
 
 export const FeedTopic: React.FC<TopicDto> = (props) => {
 

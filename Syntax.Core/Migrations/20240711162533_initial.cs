@@ -46,7 +46,7 @@ namespace Syntax.Core.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    ProfilePictureFileId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProfilePictureBlobId = table.Column<Guid>(type: "uuid", nullable: true),
                     JoinedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -66,6 +66,11 @@ namespace Syntax.Core.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Blobs_ProfilePictureBlobId",
+                        column: x => x.ProfilePictureBlobId,
+                        principalTable: "Blobs",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -269,6 +274,11 @@ namespace Syntax.Core.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_ProfilePictureBlobId",
+                table: "Users",
+                column: "ProfilePictureBlobId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "Users",
                 column: "NormalizedUserName",
@@ -278,9 +288,6 @@ namespace Syntax.Core.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Blobs");
-
             migrationBuilder.DropTable(
                 name: "Comments");
 
@@ -307,6 +314,9 @@ namespace Syntax.Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Blobs");
         }
     }
 }

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { sendHttpRequest } from 'utils/httpRequest'
-import { CommentDto } from 'dtos/CommentDto'
+import { CommentDto } from 'dtos/Dtos'
 import { SyntaxCommentClient } from 'services/NotificationService'
 import { HubConnectionState } from '@microsoft/signalr'
 

@@ -1,4 +1,4 @@
-import { TopicDto } from 'dtos/TopicDto'
+import { TopicDto } from 'dtos/Dtos'
 import { CommentArea } from 'components/comment-area-component/CommentArea'
 
 export const ViewTopic: React.FC<TopicDto>  = (props) => {
