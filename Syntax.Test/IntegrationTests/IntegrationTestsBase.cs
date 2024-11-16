@@ -22,7 +22,7 @@ namespace Syntax.Tests.IntegrationTests
             {
                 PropertyNameCaseInsensitive = true,
                 ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            })!;
         }
 
         protected async Task<HttpClient> CreateClientAndAuthenticate(string username)

@@ -18,7 +18,8 @@ const LoginPage: React.FC<LoginPageProps> = (pageProps:LoginPageProps) => {
 
     return (
         <div className='container container-sm'>
-            <LoginForm submitResult={OnSubmitResult}/>
+            <LoginForm setAuthStateFunction={pageProps.setAuthStateFunction} />
+
         </div>
     );
 

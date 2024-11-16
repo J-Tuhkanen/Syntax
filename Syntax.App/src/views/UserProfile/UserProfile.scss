@@ -1,21 +1,16 @@
 .file-upload {
-    // display: inline-block;
-    // position: relative;
-    width: 200px;
-    height: 200px;
-    // border: 2px dashed #ccc;
-    // border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-  }
-  
-  .file-upload img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-    border-radius: 2%;
-  }
-  
-  .file-upload input[type="file"] {
-    display: none;
-  }
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.file-upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: 5%;
+}
+
+.file-upload input[type="file"] {
+  display: none;
+}
+

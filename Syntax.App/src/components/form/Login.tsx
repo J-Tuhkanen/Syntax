@@ -2,8 +2,9 @@ import { useNavigate } from "react-router-dom";
 import "./Form.scss";
 import React, { ChangeEvent, useState } from "react";
 import { sendHttpRequest } from "utils/httpRequest";
-import { SyntaxFormProps } from "./Form";
 import { ApplicationUser } from "models/ApplicationUser";
+import { AuthenticationState } from "models/AuthenticationState";
+import { PopupInfo, PopupType } from "components/popup-info-component/PopupInfo";
 
 type RequestSignInProps = {
 
@@ -11,7 +12,7 @@ type RequestSignInProps = {
     password: string;
 }
 
-export const LoginForm: React.FC<SyntaxFormProps<ApplicationUser>> = (formProps) => {    
+export const LoginForm: React.FC<{ setAuthStateFunction: React.Dispatch<React.SetStateAction<AuthenticationState>> }> = ({ setAuthStateFunction }) => {    
 
     const [loginFormData, setLoginFormData] = useState({
         username: "",
@@ -41,8 +42,8 @@ export const LoginForm: React.FC<SyntaxFormProps<ApplicationUser>> = (formProps)
         });
 
         if (response.status === 200) {
-
-            formProps.submitResult(await response.json());
+            
+            setAuthStateFunction({ isSignedIn: true, User: await response.json()});
             navigate("/");
         }
 
@@ -91,6 +92,10 @@ export const LoginForm: React.FC<SyntaxFormProps<ApplicationUser>> = (formProps)
     }
 
     return (<>
+        {errorModel.showError 
+            ? <PopupInfo message={errorModel.message} type={PopupType.Error}/> 
+            : null}
+
         <form className="login-form row" onSubmit={onLoginSubmit}>
             <div className="col-md-12 justify-content-md-center">
 
