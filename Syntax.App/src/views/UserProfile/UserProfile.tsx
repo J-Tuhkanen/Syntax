@@ -13,12 +13,14 @@ type UserDetails = {
 export const UserProfile: React.FC = () => {
 
     const { userId } = useParams();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const [profilePicture, setProfilePicture] = useState<string>();
     const [userDetails, setUserDetails] = useState<UserDetails>();
-    const [isInEditMode, setIsInEditMode] = useState<boolean>(true);
     const [userProfilePic, setUserProfilePic] = useState<File>();
     const [previewUrl, setPreviewUrl] = useState<string>();
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
+    
     const navigate = useNavigate();
 
     const uploadFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -36,12 +38,13 @@ export const UserProfile: React.FC = () => {
         const formData = new FormData();
         if (userProfilePic) {
             formData.append("File", userProfilePic);
-        } else {
-            console.error("No file selected");
-            return;
-        }
+        } 
+        
+        formData.append("UserName", "");
+        formData.append("Email", "");
+        formData.append("Description", "");
     
-        const requestUri = "https://localhost:7181/api/profilesettings";
+        const requestUri = "https://localhost:7181/api/user/avatar";
         const requestCredentials: RequestCredentials = 'include';
         const requestData = {
             method: "POST",
@@ -53,7 +56,6 @@ export const UserProfile: React.FC = () => {
     };
 
     useEffect(() => {
-        
         const getUserProfilePicture = async () => {
             try {
                 const requestUri = `https://localhost:7181/api/user/avatar/${userId}`;
@@ -107,46 +109,35 @@ export const UserProfile: React.FC = () => {
         }
     };
  
-    return isInEditMode ? (
-        <div className="container">        
-            <button onClick={() => setIsInEditMode(false)}>Exit Edit Mode</button>
-            <div className="row col-md-12">
-                <div className="row col-md-4">
-                    <img src={profilePicture} alt="Profile" />
+    return isInEditMode === false ? (
+        <div className="container">
+            <div className="row">        
+                <div className="col-4">
+                    <img src={profilePicture} alt="Profile"/>
                 </div>
-                <div className="row col-md-8">
+                <div className="col-8">
+                    <button onClick={() => setIsInEditMode(true)}>Enter Edit Mode</button>
                     <h4>{userDetails?.user?.displayName}</h4>
-                    <p>
-                        Joined on{" "}
-                        {userDetails?.user?.joinedDate
-                            ? FormateDateToTopicTimestamp(new Date(userDetails.user.joinedDate))
-                            : "N/A"}
-                    </p>
+                    <p>{userDetails?.user?.joinedDate ? "Joined on " + FormateDateToTopicTimestamp(new Date(userDetails.user.joinedDate)) : "N/A"}</p>
                 </div>
             </div>
-            <div>
+            <div className="row">
                 <h4>Recent activity:</h4>
-                {getUserActivity()?.map((item, index) => (
-                    <p key={index}>{item.content}</p>
-                ))}
+                {getUserActivity()?.map((item, index) => (<p key={index}>{item.content}</p> ))}
             </div>
         </div>
     ) : (
         <div className="container">
             <form style={{ margin: "auto" }} onSubmit={submitUserSettings}>
-                <button onClick={() => setIsInEditMode(true)}>Enter Edit Mode</button>
+                <button onClick={() => setIsInEditMode(false)}>Exit Edit Mode</button>
                 <div className="row">
-                    <div
-                        className="file-upload col-md-1"
-                        onClick={handleImageClick}
-                        style={{ cursor: "pointer", margin: "auto" }}
-                        >
+                    <div className="file-upload col-md-1" onClick={handleImageClick} style={{ cursor: "pointer", margin: "auto" }}>
                         <input
                             type="file"
                             onChange={uploadFile}
                             ref={fileInputRef}
-                            style={{ display: "none" }}
-                            />
+                            style={{ display: "none" }} />
+
                         <img src={previewUrl} alt="Upload Preview" />
                     </div>
                 </div>

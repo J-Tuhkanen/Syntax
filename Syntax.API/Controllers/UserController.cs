@@ -26,8 +26,8 @@ namespace Syntax.API.Controllers
             _applicationDbContext = applicationDbContext;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> UploadUserSettings([FromForm] UserInformationRequestDto request)
+        [HttpPost("avatar")]
+        public async Task<IActionResult> UploadUserSettings([FromForm] UserAvatarRequestDto request)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -93,10 +93,13 @@ namespace Syntax.API.Controllers
         }
     }
 
-    public class UserInformationRequestDto
+    public class UserAvatarRequestDto
     {
         public IFormFile? File { get; set; }
-        
+    }
+
+    public class UserInformationRequestDto
+    {        
         [Required]
         public string UserName { get; set; }
         
