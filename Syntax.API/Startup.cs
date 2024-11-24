@@ -77,7 +77,7 @@ namespace Syntax.API
             // Add services to dependency injection to be injectable whenever needed
             services.AddTransient<ITopicService, TopicService>();
             services.AddTransient<ICommentService, CommentService>();
-            services.AddTransient<IFileService, FileService>();
+            services.AddTransient<IFileService, WWWRootFileService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<INotificationService, NotificationService>();
             
@@ -105,11 +105,8 @@ namespace Syntax.API
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
             app.UseRouting();
-
+            app.UseStaticFiles();
             app.UseCors(allowSpecificOrigin);
             app.UseAuthentication();
             app.UseAuthorization();

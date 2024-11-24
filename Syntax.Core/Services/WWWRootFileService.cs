@@ -7,37 +7,31 @@ using Syntax.Core.Services.Base;
 
 namespace Syntax.Core.Services
 {
-    public class FileService : IFileService
+    public class WWWRootFileService : IFileService
     {
-        private ApplicationDbContext _appDbContext;
-
-        public FileService(ApplicationDbContext appDbContext)
-        {
-            _appDbContext = appDbContext;
-        }
-
         /// <summary>
         /// TODO: Replace later with Azure Storage
         /// </summary>
         public async Task<Blob> UploadFileAsync(IFormFile file, UserAccount user)
-        {
+        {            
             if (file.Length < 0)
                 throw new Exception("Invalid file");
+
+            if(file.Length > 4000)
+                throw new Exception("File too large");
 
             var fileExtension = await GetFileFormat(file);
 
             if (fileExtension == ImageFormat.unknown)
                 throw new Exception("Invalid file");
 
-            string uploadsFolderName = Path.Combine("Uploads", user.UserName!.ToLower());
+            string uploadsFolderName = Path.Combine("wwwroot", "images", user.UserName!.ToLower());
 
             var fileName = Guid.NewGuid().ToString() + "." + fileExtension;
             var filePath = Path.Combine($"{Directory.GetCurrentDirectory()}", uploadsFolderName, fileName);
 
-            if (Directory.Exists(uploadsFolderName) == false)
-            {
-                Directory.CreateDirectory(uploadsFolderName);
-            }
+            if (Directory.Exists(uploadsFolderName) == false)            
+                Directory.CreateDirectory(uploadsFolderName);            
 
             using (var stream = new FileStream(filePath, FileMode.CreateNew))
             {

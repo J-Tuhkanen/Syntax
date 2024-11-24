@@ -12,6 +12,6 @@ namespace Syntax.Core.Models
 
         public Blob? ProfilePictureBlob { get; set; }
 
-        public DateTime JoinedDate { get; set; }
+        public DateTime JoinedDate { get; init; }
     }
 }

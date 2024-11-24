@@ -27,7 +27,7 @@ namespace Syntax.API.Controllers
         }
 
         [HttpPost("avatar")]
-        public async Task<IActionResult> UploadUserSettings([FromForm] UserAvatarRequestDto request)
+        public async Task<IActionResult> PostUserSettings([FromForm] UserAvatarRequestDto request)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -74,6 +74,21 @@ namespace Syntax.API.Controllers
             return File(image, $"image/{new FileInfo(user.ProfilePictureBlob.Path).Extension}");
         }
 
+        [HttpPost("details")]
+        public async Task<IActionResult> PostUserDetails([FromForm] UserInformationRequestDto request)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            await _userManager.SetUserNameAsync(user, request.UserName);
+            
+            return Ok();
+        }
+
         [HttpGet("details/{userId}")]
         public async Task<IActionResult> GetUserDetails(Guid userId)
         {
@@ -99,15 +114,9 @@ namespace Syntax.API.Controllers
     }
 
     public class UserInformationRequestDto
-    {        
+    {
         [Required]
-        public string UserName { get; set; }
-        
-        [Required]
-        public string Email { get; set; }
-     
-        [Required]
-        public string Description { get; set; }
+        public string UserName { get; set; } = null!;
     }
 
     public class UserDetailsResponse
