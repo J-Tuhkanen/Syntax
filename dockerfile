@@ -1,4 +1,6 @@
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ENV ASPNETCORE_ENVIRONMENT=Development
+
 WORKDIR /source
 
 # Copy project file and restore as distinct layers
@@ -18,5 +20,5 @@ RUN dotnet publish "Syntax.API.csproj" -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 EXPOSE 8080
 WORKDIR /app
-COPY --from=build /app .
+COPY --from=build /app/publish .
 ENTRYPOINT ["dotnet", "./Syntax.API.dll"]
