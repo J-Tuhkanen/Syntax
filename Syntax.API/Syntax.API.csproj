@@ -4,10 +4,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\images\avatar" />
+    <Content Remove="wwwroot\images\avatar.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\images\avatar" />
+    <None Include="wwwroot\images\avatar.png" />
   </ItemGroup>
 
 </Project>

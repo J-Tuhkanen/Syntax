@@ -17,7 +17,7 @@ namespace Syntax.Core.Services
             if (file.Length < 0)
                 throw new Exception("Invalid file");
 
-            if(file.Length > 4000)
+            if(file.Length > 1000000) // Image images larger than 1 MB.
                 throw new Exception("File too large");
 
             var fileExtension = await GetFileFormat(file);

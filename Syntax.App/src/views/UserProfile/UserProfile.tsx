@@ -134,7 +134,7 @@ export const UserProfile: React.FC = () => {
         <div className="container">
             <div id="details-row" className="row">        
                 <div className="col-4">
-                    <img src={"https://localhost:7181/images/avatar.png"} alt="Profile picture"/>
+                    <img src={"https://localhost:7181/uploads/jannesayssup/avatar.png"} alt="Profile picture"/>
                 </div>
                 <div className="col-6">
                     <h4>{userDetails?.user?.displayName}</h4>
