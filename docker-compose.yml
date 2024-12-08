@@ -1,4 +1,5 @@
 services:
+
   syntax-api:
     build:
       context: .
@@ -6,7 +7,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - postgres
     networks:
@@ -14,20 +15,22 @@ services:
 
   postgres:
     image: postgres:latest
+    restart: always
     environment:
       POSTGRES_USER: syntax_admin
       POSTGRES_PASSWORD: syntax_admin
       POSTGRES_DB: SyntaxDb
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
+      - ./db-init:/docker-entrypoint-initdb.d
       - pg_data:/var/lib/postgresql/data
     networks:
       - syntax-network
 
 networks:
   syntax-network:
-    driver: bridge
+    driver: bridge 
 
 volumes:
   pg_data:
