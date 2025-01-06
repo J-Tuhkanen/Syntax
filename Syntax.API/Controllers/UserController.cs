@@ -26,67 +26,46 @@ namespace Syntax.API.Controllers
             _applicationDbContext = applicationDbContext;
         }
 
-        [HttpPost("avatar")]
-        public async Task<IActionResult> PostUserSettings([FromForm] UserAvatarRequestDto request)
+        [HttpPost("settings")]
+        public async Task<IActionResult> PostUserSettings([FromForm] UserInformationDto request)
         {
             var user = await _userManager.GetUserAsync(User);
 
             if(user == null)
-            {
                 return Unauthorized();
-            }
 
             try
             {
                 if(request.File != null)                    
                     user.ProfilePictureBlob = await _fileService.UploadFileAsync(request.File, user);
+                
+                // TODO: Topic and Comment flag                
+                await _userManager.SetUserNameAsync(user, request.UserName);
             }            
             catch
             {
                 throw new Exception("Error saving image");
             }
 
-
             await _applicationDbContext.SaveChangesAsync();
             return Ok();
         }
 
-        [HttpGet("avatar/{userId}")]
-        public async Task<IActionResult> GetUseProfilePicture(Guid userId)
+        [HttpGet("settings/{userId}")]
+        public async Task<IActionResult> GetUserSettings(Guid userId)
         {
-            // TODO: Service
-            UserAccount? user = await _applicationDbContext.Users
-                .Include(u => u.ProfilePictureBlob)
+            var user = await _applicationDbContext.Users
+                .Include(u => u.UserComments)
+                .Include(u => u.UserTopics)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == userId.ToString());
 
-            if(user == null)
+            return user != null ? new JsonResult(new UserInformationDto
             {
-                return NotFound();
-            }
-
-            if(user.ProfilePictureBlob == null)
-            {
-                return Ok();
-            }
-
-            var image = System.IO.File.OpenRead(Path.Combine($"Uploads/{user.UserName?.ToLower()}", user.ProfilePictureBlob.Path));
-            
-            return File(image, $"image/{new FileInfo(user.ProfilePictureBlob.Path).Extension}");
-        }
-
-        [HttpPost("details")]
-        public async Task<IActionResult> PostUserDetails([FromForm] UserInformationRequestDto request)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            
-            if (user == null)
-            {
-                return Unauthorized();
-            }
-
-            await _userManager.SetUserNameAsync(user, request.UserName);
-            
-            return Ok();
+                UserName = user.UserName,
+                ShowComments = true,
+                ShowTopics = true,
+            }) : StatusCode(404);
         }
 
         [HttpGet("details/{userId}")]
@@ -113,10 +92,18 @@ namespace Syntax.API.Controllers
         public IFormFile? File { get; set; }
     }
 
-    public class UserInformationRequestDto
+    public class UserInformationDto
     {
         [Required]
         public string UserName { get; set; } = null!;
+
+        [Required]
+        public bool ShowTopics { get; set; }
+
+        [Required]
+        public bool ShowComments { get; set; }
+
+        public IFormFile? File { get; set; } = null;
     }
 
     public class UserDetailsResponse

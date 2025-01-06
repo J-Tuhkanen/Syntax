@@ -25,9 +25,9 @@ namespace Syntax.Core.Services
             if (fileExtension == ImageFormat.unknown)
                 throw new Exception("Invalid file");
 
-            string uploadsFolderName = Path.Combine("wwwroot", "images", user.UserName!.ToLower());
+            string uploadsFolderName = Path.Combine("wwwroot", "users", user.Id);
 
-            var fileName = Guid.NewGuid().ToString() + "." + fileExtension;
+            var fileName = $"avatar.{fileExtension}";
             var filePath = Path.Combine($"{Directory.GetCurrentDirectory()}", uploadsFolderName, fileName);
 
             if (Directory.Exists(uploadsFolderName) == false)            

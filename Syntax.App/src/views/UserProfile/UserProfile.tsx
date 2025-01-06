@@ -13,8 +13,10 @@ type UserDetails = {
 }
 
 type UserSettings = {
+    username: string,
+    profilePicture: string,
     showTopics: boolean,
-    showComments: boolean
+    showComments: boolean,
 }
 
 export const UserProfile: React.FC = () => {
@@ -22,7 +24,6 @@ export const UserProfile: React.FC = () => {
     const { userId } = useParams();
     const fileInputRef = useRef<HTMLInputElement>(null);
     
-    const [profilePicture, setProfilePicture] = useState<string>();
     const [userDetails, setUserDetails] = useState<UserDetails>();
     const [userProfilePic, setUserProfilePic] = useState<File>();
     const [previewUrl, setPreviewUrl] = useState<string>();
@@ -41,18 +42,17 @@ export const UserProfile: React.FC = () => {
 
     const handleImageClick = () => fileInputRef.current?.click();
 
-    const submitUserSettings = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const submitUserSettings = async () => {
+
         const formData = new FormData();
         if (userProfilePic) {
             formData.append("File", userProfilePic);
         } 
-        
-        // formData.append("UserName", "");
-        // formData.append("Email", "");
-        // formData.append("Description", "");
-    
-        const requestUri = "https://localhost:7181/api/user/avatar";
+        formData.append("UserName", "terve");
+        formData.append("ShowTopics", "false");
+        formData.append("ShowComments", "false");
+
+        const requestUri = "https://localhost:7181/api/user/settings";
         const requestCredentials: RequestCredentials = 'include';
         const requestData = {
             method: "POST",
@@ -64,31 +64,7 @@ export const UserProfile: React.FC = () => {
     };
 
     useEffect(() => {
-        // const getUserProfilePicture = async () => {
-        //     try {
-        //         const requestUri = `https://localhost:7181/api/user/avatar/${userId}`;
-        //         const requestCredentials: RequestCredentials = 'include';
-        //         const requestData = {
-        //             method: "GET",
-        //             credentials: requestCredentials       
-        //         };
         
-        //         var response = await fetch(requestUri, requestData);
-                
-        //         if (response.ok) {
-        //             const blob = await response.blob();
-        //             const url = URL.createObjectURL(blob);
-        //             setProfilePicture(url);
-        //             setPreviewUrl(url);
-        //         } 
-        //         else {
-        //             navigate("/login");
-        //         }
-        //     } catch (error) {
-        //         console.error('Error fetching image:', error);
-        //     }
-        // };
-
         const getUserDetails = async () => {
             const requestUri = `https://localhost:7181/api/user/details/${userId}`;
             const requestCredentials: RequestCredentials = 'include';
@@ -107,8 +83,23 @@ export const UserProfile: React.FC = () => {
             }
         }
  
+        const getUserSettings = async () => {
+            const requestUri = `https://localhost:7181/api/user/settings/${userId}`;
+            const requestCredentials: RequestCredentials = 'include';
+            const requestData = {
+                method: "GET",
+                credentials: requestCredentials       
+            };
+    
+            var response = await fetch(requestUri, requestData);
+
+            if (response.ok) {
+                setUserSettings(await response.json());
+            }
+        }
+
         getUserDetails();
-        // getUserProfilePicture();
+        getUserSettings();
     }, []);
 
     const getUserTopicActity = () => {
@@ -125,6 +116,14 @@ export const UserProfile: React.FC = () => {
         }
     }
 
+    const updateUserSettings = (property:string, value:any) => {
+
+        setUserSettings({
+            ...(userSettings as UserSettings),
+            [property]: value
+        });
+    }
+
     const tabsContent = [
         {label: "Topics", content: getUserTopicActity()?.map((item, index) => (<p key={index}>{item.content}</p> ))}, 
         {label: "Comments", content: getUserCommentActity()?.map((item, index) => (<p key={index}>{item.content}</p> ))}
@@ -134,7 +133,7 @@ export const UserProfile: React.FC = () => {
         <div className="container">
             <div id="details-row" className="row">        
                 <div className="col-4">
-                    <img src={"https://localhost:7181/uploads/jannesayssup/avatar.png"} alt="Profile picture"/>
+                    <img src={`https://localhost:7181/users/${userId}/avatar.png`} alt="Profile picture"/>
                 </div>
                 <div className="col-6">
                     <h4>{userDetails?.user?.displayName}</h4>
@@ -144,10 +143,6 @@ export const UserProfile: React.FC = () => {
                     <button onClick={() => setIsInEditMode(true)}>Enter Edit Mode</button>
                 </div>
             </div>
-            {/* <div id="activity-row" className="row">
-                <h4>Recent activity:</h4>
-                {getUserActivity()?.map((item, index) => (<p key={index}>{item.content}</p> ))}
-            </div> */}
             <div id="activity-row" className="row">
                 <Tabs tabs={tabsContent}/>
             </div>
@@ -164,18 +159,19 @@ export const UserProfile: React.FC = () => {
                     </div>
                     <input type="file" onChange={uploadFile} ref={fileInputRef} />
                 </div>
-                <div className="col-6">
+                <div className="col-5">
                     <h4>{userDetails?.user?.displayName}</h4>
                     <p>{userDetails?.user?.joinedDate ? "Joined on " + FormateDateToTopicTimestamp(new Date(userDetails.user.joinedDate)) : "N/A"}</p>
                 </div>
-                <div className="col-2">
+                <div className="col-3">
+                    <button onClick={() => submitUserSettings()}>Save changes</button>
                     <button onClick={() => setIsInEditMode(false)}>Exit Edit Mode</button>
                 </div>
             </div>
             <div id="activity-row" className="row">
                 <h4>Activity options</h4>
-                <ToggleSwitch label="Show topics" isOn={true} onToggle={() => {}} />
-                <ToggleSwitch label="Show comments" isOn={true} onToggle={() => {}} />
+                <ToggleSwitch label="Show topics" isOn={userSettings?.showTopics ?? false} onToggle={() => updateUserSettings("showTopics", !userSettings?.showTopics)} />
+                <ToggleSwitch label="Show comments" isOn={userSettings?.showComments ?? false} onToggle={() => updateUserSettings("showComments", !userSettings?.showComments)} />
             </div>
         </div>
     );

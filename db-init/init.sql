@@ -200,7 +200,5 @@ CREATE INDEX IF NOT EXISTS "IX_Comments_UserId"
     ON public."Comments" USING btree
     ("UserId" COLLATE pg_catalog."default" ASC NULLS LAST)
     TABLESPACE pg_default;
-
 	
-CREATE USER syntax_admin WITH PASSWORD 'syntax_admin';
 GRANT ALL PRIVILEGES ON DATABASE SyntaxDB TO syntax_admin;
