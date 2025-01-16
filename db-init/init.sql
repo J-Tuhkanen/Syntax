@@ -1,4 +1,4 @@
-CREATE DATABASE SyntaxDB;
+CREATE DATABASE SyntaxDb;
 
 CREATE TABLE IF NOT EXISTS public."Roles"
 (
@@ -200,5 +200,11 @@ CREATE INDEX IF NOT EXISTS "IX_Comments_UserId"
     ON public."Comments" USING btree
     ("UserId" COLLATE pg_catalog."default" ASC NULLS LAST)
     TABLESPACE pg_default;
-	
-GRANT ALL PRIVILEGES ON DATABASE SyntaxDB TO syntax_admin;
+
+GRANT ALL PRIVILEGES ON DATABASE SyntaxDb TO postgres;
+
+CREATE ROLE syntax_admin WITH LOGIN PASSWORD 'syntax_admin';
+
+GRANT CONNECT ON DATABASE SyntaxDb TO syntax_admin;
+GRANT USAGE ON SCHEMA public TO syntax_admin;
+GRANT SELECT, UPDATE, INSERT ON ALL TABLES IN SCHEMA public TO syntax_admin;

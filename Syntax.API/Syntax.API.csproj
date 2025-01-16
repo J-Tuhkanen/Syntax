@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Syntax.Core\Syntax.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\users\" />
+  </ItemGroup>
+
 </Project>

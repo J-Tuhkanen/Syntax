@@ -4,13 +4,11 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_USER: syntax_admin
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: syntax_admin
       POSTGRES_DB: SyntaxDb
     ports:
-      - 5432:5432
-    networks:
-      - syntax-network
+      - 2345:5432
     volumes:
       - ./db-init:/docker-entrypoint-initdb.d
       - pg_data:/var/lib/postgresql/data
@@ -29,8 +27,6 @@ services:
     depends_on:
       postgres: 
         condition: service_healthy
-    networks:
-      - syntax-network
 
   # Completely optional, but here as an example if needed
   syntax-api:
@@ -44,12 +40,6 @@ services:
     depends_on:
       postgres: 
         condition: service_healthy
-    networks:
-      - syntax-network
-
-networks:
-  syntax-network:
-    driver: bridge 
 
 volumes:
   pg_data:
