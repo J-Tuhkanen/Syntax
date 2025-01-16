@@ -364,5 +364,5 @@ FodyWeavers.xsd
 /.svn
 /.editorconfig
 
-# Other stuff
-Syntax.API/Uploads
+# App content folders
+Syntax.API/wwwroot
