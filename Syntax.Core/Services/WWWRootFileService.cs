@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Syntax.Core.Data;
+﻿using Microsoft.AspNetCore.Http;
 using Syntax.Core.Helpers;
 using Syntax.Core.Models;
 using Syntax.Core.Services.Base;
@@ -39,8 +37,7 @@ namespace Syntax.Core.Services
 
                 return new Blob
                 {
-                    Path = fileName.Replace("\\", "/"),
-                    Timestamp = DateTime.UtcNow
+                    Path = fileName.Replace("\\", "/")
                 };
             }
 

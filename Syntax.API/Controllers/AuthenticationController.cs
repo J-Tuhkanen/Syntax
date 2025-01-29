@@ -55,7 +55,7 @@ namespace Syntax.API.Controllers
             if (ModelState.IsValid == false)
                 return BadRequest();
 
-            var result = await _authService.Register(request.Email, request.Password, request.Username);
+            var result = await _authService.Register(request.Email, request.Password, request.Username, request.Username);
 
             if (result.Succeeded)
                 return Ok();

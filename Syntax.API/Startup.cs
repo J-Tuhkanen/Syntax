@@ -79,7 +79,6 @@ namespace Syntax.API
             services.AddTransient<ICommentService, CommentService>();
             services.AddTransient<IFileService, WWWRootFileService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<INotificationService, NotificationService>();
             
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();

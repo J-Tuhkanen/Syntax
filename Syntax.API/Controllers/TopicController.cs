@@ -44,22 +44,26 @@ namespace Syntax.API.Controllers
         public async Task<IActionResult> PostTopicAsync(TopicRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
-            var topic = await _topicService.CreateTopicAsync(request.Title, request.Body, user);
 
-            return new JsonResult(new TopicDto(topic));
+            var topic = user != null 
+                ? await _topicService.CreateTopicAsync(request.Title, request.Body, user)
+                : null;
+
+            return topic != null 
+                ? new JsonResult(new TopicDto(topic)) 
+                : throw new Exception("Something went wrong creating new Topic");
         }
 
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopicAsync(Guid topicId)
         {
-            return await _topicService.DeleteTopicAsync(topicId, await _userManager.GetUserAsync(User)) != null ? Ok() : StatusCode(403);
-        }
+            var user = await _userManager.GetUserAsync(User);
 
-        [HttpPut("{topicId}")]
-        public async Task<IActionResult> UpdateTopicAsync()
-        {
-            // Get topic by topicId that IsDraft == true.
-            throw new NotImplementedException();
+            var topic = user != null 
+                ? await _topicService.DeleteTopicAsync(topicId, user)
+                : null;
+
+            return topic != null ? Ok() : StatusCode(403);
         }
     }
 }

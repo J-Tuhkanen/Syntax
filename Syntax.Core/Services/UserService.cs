@@ -53,12 +53,22 @@ namespace Syntax.Core.Services
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
 
-        public async Task<IdentityResult> Register(string email, string password, string username)
+        public async Task<IdentityResult> Register(string email, string password, string username, string displayname)
         {
+            var userSettings = new UserSettings
+            {
+                ShowComments = true,
+                ShowTopics = true,
+                DisplayName = displayname
+            };
+
+            _applicationDbContext.UserSettings.Add(userSettings);
+
             var user = Activator.CreateInstance<UserAccount>();
             user.UserName = email;
             user.Email = email;
             user.UserName = username;
+            user.UserSettings = userSettings;
 
             return await _userManager.CreateAsync(user, password);
         }

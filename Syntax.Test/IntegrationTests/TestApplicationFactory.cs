@@ -12,8 +12,8 @@ namespace Syntax.Tests.IntegrationTests
 {
     internal class TestApplicationFactory : WebApplicationFactory<Program>
     {
-        //public static UserAccount TimoTestUser { get; private set; }
-        //public static UserAccount ToniTestUser { get; private set; }
+        public static UserAccount TimoTestUser { get; private set; }
+        public static UserAccount ToniTestUser { get; private set; }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -42,11 +42,11 @@ namespace Syntax.Tests.IntegrationTests
                     dbContext.Database.MigrateAsync().GetAwaiter().GetResult();
 
                     var userService = serviceProvider.GetRequiredService<IUserService>();
-                    //TimoTestUser = new UserAccount();
-                    //ToniTestUser = new UserAccount();
-                    
-                    //userService.CreateUser(TimoTestUser, "TimoTest", "Testi123", "timo.testi@gmail.com").GetAwaiter().GetResult();
-                    //userService.CreateUser(ToniTestUser, "ToniTest", "Testi123", "toni.testi@gmail.com").GetAwaiter().GetResult();
+                    TimoTestUser = new UserAccount();
+                    ToniTestUser = new UserAccount();
+
+                    userService.CreateUser(TimoTestUser, "TimoTest", "Testi123", "timo.testi@gmail.com").GetAwaiter().GetResult();
+                    userService.CreateUser(ToniTestUser, "ToniTest", "Testi123", "toni.testi@gmail.com").GetAwaiter().GetResult();
                 }
             });
             

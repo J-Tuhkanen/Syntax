@@ -27,7 +27,7 @@ namespace Syntax.API.Controllers
         }
 
         [HttpPost("settings")]
-        public async Task<IActionResult> PostUserSettings([FromForm] UserInformationDto request)
+        public async Task<IActionResult> PostUserSettings([FromForm] UserInformationRequest request)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -40,7 +40,7 @@ namespace Syntax.API.Controllers
                     user.ProfilePictureBlob = await _fileService.UploadFileAsync(request.File, user);
                 
                 // TODO: Topic and Comment flag                
-                await _userManager.SetUserNameAsync(user, request.UserName);
+                await _userManager.SetUserNameAsync(user, request.DisplayName);
             }            
             catch
             {
@@ -54,7 +54,7 @@ namespace Syntax.API.Controllers
         [HttpGet("settings/{userId}")]
         public async Task<IActionResult> GetUserSettings(Guid userId)
         {
-            var user = await _applicationDbContext.Users
+            UserAccount? user = await _applicationDbContext.Users
                 .Include(u => u.UserComments)
                 .Include(u => u.UserTopics)
                 .AsNoTracking()
@@ -62,9 +62,10 @@ namespace Syntax.API.Controllers
 
             return user != null ? new JsonResult(new UserInformationDto
             {
-                UserName = user.UserName,
-                ShowComments = true,
-                ShowTopics = true,
+                DisplayName = user.UserSettings.DisplayName,
+                ShowComments = user.UserSettings.ShowComments,
+                ShowTopics = user.UserSettings.ShowTopics,
+                ProfilePicture = user.UserSettings.ProfilePicture
             }) : StatusCode(404);
         }
 
@@ -78,7 +79,7 @@ namespace Syntax.API.Controllers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == userId.ToString());
 
-            return user != null ? new JsonResult(new UserDetailsResponse
+            return user != null ? new JsonResult(new UserDetailsDto
             {
                 User = new UserDto(user),
                 Comments = user.UserComments.Select(c => new CommentDto(c)),
@@ -87,29 +88,35 @@ namespace Syntax.API.Controllers
         }
     }
 
-    public class UserAvatarRequestDto
+    public class UserInformationRequest
     {
+        [Required]
+        public string DisplayName { get; set; } = null!;
+
+        [Required]
+        public bool ShowTopics { get; set; }
+        
+        [Required]
+        public bool ShowComments { get; set; }
+
         public IFormFile? File { get; set; }
     }
 
     public class UserInformationDto
     {
-        [Required]
-        public string UserName { get; set; } = null!;
+        public string DisplayName { get; set; } = null!;
 
-        [Required]
         public bool ShowTopics { get; set; }
 
-        [Required]
         public bool ShowComments { get; set; }
 
-        public IFormFile? File { get; set; } = null;
+        public string? ProfilePicture { get; set; }
     }
 
-    public class UserDetailsResponse
+    public class UserDetailsDto
     {
-        public UserDto User { get; set; }
-        public IEnumerable<CommentDto> Comments { get; set; }
-        public IEnumerable<TopicDto> Topics { get; set; }
+        public UserDto User { get; set; } = new UserDto();
+        public IEnumerable<CommentDto> Comments { get; set; } = [];
+        public IEnumerable<TopicDto> Topics { get; set; } = [];
     }
 }

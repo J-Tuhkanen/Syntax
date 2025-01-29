@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Syntax.API.Requests;
+﻿using Syntax.API.Requests;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
