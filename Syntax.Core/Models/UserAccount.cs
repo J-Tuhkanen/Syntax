@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Syntax.Core.Models
 {
     public class UserAccount : IdentityUser
     {
+        public List<Topic> UserTopics { get; set; } = new List<Topic>();
+        public List<Comment> UserComments { get; set; } = new List<Comment>();
         public bool IsDeleted { get; set; }
+        public Blob? ProfilePictureBlob { get; set; }
+        public UserSettings UserSettings { get; set; } = new UserSettings();
 
-        public Guid ProfilePictureFileId { get; set; }
-
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime JoinedDate { get; set; }
     }
 }

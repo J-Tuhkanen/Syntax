@@ -3,13 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Syntax.Core.Models
 {
-    public class Topic : EntityBase
+    public class Topic : ActivityBase
     {
-        public Topic() 
-        {
-            Timestamp = DateTime.UtcNow;
-        }
-
         public UserAccount User { get; set; } = null!;
 
         [MaxLength(80)]

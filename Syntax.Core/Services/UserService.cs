@@ -40,6 +40,7 @@ namespace Syntax.Core.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim("Email", user.Email!),
+                new Claim("DisplayName", user.UserSettings.DisplayName)
             };
 
             var authProperties = new AuthenticationProperties()
@@ -53,12 +54,22 @@ namespace Syntax.Core.Services
             await httpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
         }
 
-        public async Task<IdentityResult> Register(string email, string password, string username)
+        public async Task<IdentityResult> Register(string email, string password, string username, string displayname)
         {
+            var userSettings = new UserSettings
+            {
+                ShowComments = true,
+                ShowTopics = true,
+                DisplayName = displayname
+            };
+
+            _applicationDbContext.UserSettings.Add(userSettings);
+
             var user = Activator.CreateInstance<UserAccount>();
             user.UserName = email;
             user.Email = email;
             user.UserName = username;
+            user.UserSettings = userSettings;
 
             return await _userManager.CreateAsync(user, password);
         }
@@ -78,25 +89,6 @@ namespace Syntax.Core.Services
             await _userStore.SetUserNameAsync(user, username, CancellationToken.None);
             await _emailStore.SetEmailAsync(user, email, CancellationToken.None);
             return await _userManager.CreateAsync(user, password);
-        }
-
-        public async Task SetUserProfilePictureAsync(string userId, Blob blob)
-        {
-            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-
-            if (user != null)
-            {
-                user.ProfilePictureFileId = blob.Id;
-            }
-        }
-
-        public async Task<Blob?> GetUserProfilePictureAsync(string userId)
-        {
-            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-
-            return user?.ProfilePictureFileId != null
-                ? await _applicationDbContext.Blobs.FirstOrDefaultAsync(b => b.Id == user.ProfilePictureFileId)
-                : null;
         }
 
         public async Task<UserAccount?> GetUserById(string id)

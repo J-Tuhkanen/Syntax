@@ -44,7 +44,7 @@ namespace Syntax.Tests.IntegrationTests
                     var userService = serviceProvider.GetRequiredService<IUserService>();
                     TimoTestUser = new UserAccount();
                     ToniTestUser = new UserAccount();
-                    
+
                     userService.CreateUser(TimoTestUser, "TimoTest", "Testi123", "timo.testi@gmail.com").GetAwaiter().GetResult();
                     userService.CreateUser(ToniTestUser, "ToniTest", "Testi123", "toni.testi@gmail.com").GetAwaiter().GetResult();
                 }

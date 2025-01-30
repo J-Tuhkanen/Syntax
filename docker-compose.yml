@@ -1,0 +1,46 @@
+services:
+
+  postgres:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: syntax_admin
+      POSTGRES_DB: SyntaxDb
+    ports:
+      - 2345:5432
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-U", "postgres"]
+      interval: 5s
+      timeout: 1s
+      retries: 2
+
+  flyway:
+    image: flyway/flyway
+    entrypoint: ["bash"]
+    command: -c /flyway/sql/migrate.sh
+    volumes:
+      - ./Syntax.Core/Migrations:/flyway/sql
+    depends_on:
+      postgres: 
+        condition: service_healthy
+
+  # Completely optional, but here as an example if needed
+  syntax-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - 8080:8080
+    depends_on:
+      postgres: 
+        condition: service_healthy
+
+volumes:
+  pg_data:
+    driver: local

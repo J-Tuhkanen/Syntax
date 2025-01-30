@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { sendHttpRequest } from "utils/httpRequest";
-import { TopicDto } from "dtos/TopicDto";
 import { ViewTopic } from "components/view-topic-component/ViewTopic";
 import './TopicView.scss';
+import { TopicDto } from "dtos/Dtos";
 
-const TopicViewView : React.FC = () => {
+const TopicView : React.FC = () => {
 
     const { topicId } = useParams();
     const [topic, setTopic] = useState<TopicDto>();
@@ -41,4 +41,4 @@ const TopicViewView : React.FC = () => {
         </div> : isFetching ? null : <p>Post not found...</p>);
 }
 
-export default TopicViewView;
+export default TopicView;

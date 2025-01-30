@@ -2,9 +2,11 @@
 
 namespace Syntax.Core.Models.Base
 {
-    public abstract class EntityBase
+    public abstract class ActivityBase : EntityBase
     {
+        public bool IsDeleted { get; set; }
+
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public Guid Id { get; set; }
+        public DateTime Timestamp { get; set; }
     }
 }

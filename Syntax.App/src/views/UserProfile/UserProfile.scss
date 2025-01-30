@@ -1,0 +1,44 @@
+.file-upload {
+  cursor: pointer;
+  input[type="file"] {
+    display: none;
+  }
+}
+
+.container {
+  display: grid;
+  grid-template-rows: [row1-start] 2vh [second-line] 25vh [third-line] 1vh [third-line] auto [last-line];
+  position: relative;
+  img {
+    width: 100%;
+    height: 100%;
+  }  
+}
+
+#file-upload-element{
+  width: 100%;
+  height: 100%;
+  border: 3px solid #4F4F4F;
+  position: relative;
+  img {
+    position: absolute;
+  }  
+  p {
+    align-content: center;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    color: Black;
+    background-color: #FFFFFF60;
+    margin: auto;
+  }  
+}
+
+#details-row {
+  grid-row-start: 2;
+}
+
+#activity-row {
+  grid-row-start: 4;
+}

@@ -76,9 +76,8 @@ namespace Syntax.API
             // Add services to dependency injection to be injectable whenever needed
             services.AddTransient<ITopicService, TopicService>();
             services.AddTransient<ICommentService, CommentService>();
-            services.AddTransient<IFileService, FileService>();
+            services.AddTransient<IFileService, WWWRootFileService>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<INotificationService, NotificationService>();
             
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();
@@ -104,11 +103,8 @@ namespace Syntax.API
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
             app.UseRouting();
-
+            app.UseStaticFiles();
             app.UseCors(allowSpecificOrigin);
             app.UseAuthentication();
             app.UseAuthorization();
@@ -116,12 +112,6 @@ namespace Syntax.API
             {
                 endpoints.MapHub<NotificationHub>("/notification/{topicId}");
                 endpoints.MapControllers();
-
-                Console.WriteLine("Avaible endpoints:");
-                foreach(var re in endpoints.DataSources.First().Endpoints.OfType<RouteEndpoint>())
-                {
-                    Console.WriteLine(re.RoutePattern.RawText);
-                }
             });
             app.UseResponseCaching();  
         }
