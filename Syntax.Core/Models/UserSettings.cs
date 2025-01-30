@@ -7,6 +7,6 @@ namespace Syntax.Core.Models
         public string DisplayName { get; set; } = null!;
         public bool ShowTopics { get; set; }
         public bool ShowComments { get; set; } 
-        public string? ProfilePicture { get; set; }
+        public Blob? ProfilePicture { get; set; }
     }
 }

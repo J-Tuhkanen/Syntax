@@ -37,7 +37,7 @@ namespace Syntax.API.Controllers
             try
             {
                 if(request.File != null)                    
-                    user.ProfilePictureBlob = await _fileService.UploadFileAsync(request.File, user);
+                    user.UserSettings.ProfilePicture = await _fileService.UploadFileAsync(request.File, user);
                 
                 // TODO: Topic and Comment flag                
                 await _userManager.SetUserNameAsync(user, request.DisplayName);
@@ -65,7 +65,7 @@ namespace Syntax.API.Controllers
                 DisplayName = user.UserSettings.DisplayName,
                 ShowComments = user.UserSettings.ShowComments,
                 ShowTopics = user.UserSettings.ShowTopics,
-                ProfilePicture = user.UserSettings.ProfilePicture
+                ProfilePicture = user.UserSettings.ProfilePicture?.Path
             }) : StatusCode(404);
         }
 

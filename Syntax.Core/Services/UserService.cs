@@ -39,8 +39,7 @@ namespace Syntax.Core.Services
             var claims = new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim("Email", user.Email!),
-                new Claim("DisplayName", user.UserSettings.DisplayName)
+                new Claim("Email", user.Email!)
             };
 
             var authProperties = new AuthenticationProperties()
