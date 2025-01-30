@@ -94,7 +94,8 @@ export const UserProfile: React.FC = () => {
             var response = await fetch(requestUri, requestData);
 
             if (response.ok) {
-                setUserSettings(await response.json());
+                var json = await response.json();
+                setUserSettings(json);
             }
         }
 
@@ -133,7 +134,7 @@ export const UserProfile: React.FC = () => {
         <div className="container">
             <div id="details-row" className="row">        
                 <div className="col-4">
-                    <img src={`https://localhost:7181/users/${userId}/avatar.png`} alt="Profile picture"/>
+                    <img src={userSettings?.profilePicture != null ? `https://localhost:7181/users/${userId}/${userSettings.profilePicture}` : "https://localhost:7181/default-avatar.png"} alt="Profile picture"/>
                 </div>
                 <div className="col-6">
                     <h4>{userDetails?.user?.displayName}</h4>

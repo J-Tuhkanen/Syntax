@@ -40,6 +40,7 @@ namespace Syntax.Core.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim("Email", user.Email!),
+                new Claim("DisplayName", user.UserSettings.DisplayName)
             };
 
             var authProperties = new AuthenticationProperties()

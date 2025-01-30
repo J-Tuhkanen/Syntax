@@ -1,5 +1,13 @@
 CREATE DATABASE SyntaxDb;
 
+CREATE TABLE public."UserSettings" (
+	"Id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    "DisplayName" TEXT NOT NULL,
+    "ShowTopics" BOOLEAN NOT NULL,
+    "ShowComments" BOOLEAN NOT NULL,
+    "ProfilePicture" TEXT) 
+	TABLESPACE pg_default;
+
 CREATE TABLE IF NOT EXISTS public."Roles"
 (
     "Id" text COLLATE pg_catalog."default" NOT NULL,
@@ -14,7 +22,7 @@ CREATE TABLE IF NOT EXISTS public."Blobs"
     "Id" uuid NOT NULL,
     "Path" text COLLATE pg_catalog."default" NOT NULL,
     "IsDeleted" boolean NOT NULL,
-    "Timestamp" timestamp with time zone NOT NULL,
+    "Timestamp" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT "PK_Blobs" PRIMARY KEY ("Id")
 ) TABLESPACE pg_default;
 
@@ -23,7 +31,8 @@ CREATE TABLE IF NOT EXISTS public."Users"
     "Id" text COLLATE pg_catalog."default" NOT NULL,
     "IsDeleted" boolean NOT NULL,
     "ProfilePictureBlobId" uuid,
-    "JoinedDate" timestamp with time zone NOT NULL,
+	"UserSettingsId" uuid NOT NULL,
+    "JoinedDate" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     "UserName" character varying(256) COLLATE pg_catalog."default",
     "NormalizedUserName" character varying(256) COLLATE pg_catalog."default",
     "Email" character varying(256) COLLATE pg_catalog."default",
@@ -35,14 +44,16 @@ CREATE TABLE IF NOT EXISTS public."Users"
     "PhoneNumber" text COLLATE pg_catalog."default",
     "PhoneNumberConfirmed" boolean NOT NULL,
     "TwoFactorEnabled" boolean NOT NULL,
-    "LockoutEnd" timestamp with time zone,
+    "LockoutEnd" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     "LockoutEnabled" boolean NOT NULL,
     "AccessFailedCount" integer NOT NULL,
     CONSTRAINT "PK_Users" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_Users_Blobs_ProfilePictureBlobId" FOREIGN KEY ("ProfilePictureBlobId")
         REFERENCES public."Blobs" ("Id") MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE NO ACTION,
+	CONSTRAINT "FK_Users_UserSettings_Id" FOREIGN KEY ("UserSettingsId") 
+		REFERENCES public."UserSettings" ("Id")
 ) TABLESPACE pg_default;
 	
 CREATE INDEX IF NOT EXISTS "EmailIndex"
@@ -159,7 +170,7 @@ CREATE TABLE IF NOT EXISTS public."Topics"
     "Title" character varying(80) COLLATE pg_catalog."default" NOT NULL,
     "Body" text COLLATE pg_catalog."default" NOT NULL,
     "IsDeleted" boolean NOT NULL,
-    "Timestamp" timestamp with time zone NOT NULL,
+    "Timestamp" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT "PK_Topics" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_Topics_Users_UserId" FOREIGN KEY ("UserId")
         REFERENCES public."Users" ("Id") MATCH SIMPLE
@@ -179,7 +190,7 @@ CREATE TABLE IF NOT EXISTS public."Comments"
     "UserId" text COLLATE pg_catalog."default",
     "Content" text COLLATE pg_catalog."default" NOT NULL,
     "IsDeleted" boolean NOT NULL,
-    "Timestamp" timestamp with time zone NOT NULL,
+    "Timestamp" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     CONSTRAINT "PK_Comments" PRIMARY KEY ("Id"),
     CONSTRAINT "FK_Comments_Topics_TopicId" FOREIGN KEY ("TopicId")
         REFERENCES public."Topics" ("Id") MATCH SIMPLE

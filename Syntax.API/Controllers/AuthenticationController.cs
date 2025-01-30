@@ -35,7 +35,7 @@ namespace Syntax.API.Controllers
             {
                 try
                 {
-                    UserAccount user = await _userManager.Users.FirstAsync(u => u.UserName == request.Username);
+                    UserAccount user = await _userManager.Users.Include(u => u.UserSettings).FirstAsync(u => u.UserName == request.Username);
                     await _authService.GenerateSignInCookie(HttpContext, user);
 
                     return new JsonResult(new ApplicationUserRecord(user));

@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Syntax.Core.Hubs;
-using Microsoft.Net.Http.Headers;
 
 namespace Syntax.API
 {

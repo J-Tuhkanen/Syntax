@@ -6,6 +6,7 @@ export const SignupForm: React.FC = (formProps) => {
 
     const [signUpFormData, setLoginFormData] = useState({
         username: "",
+        displayname: "",
         email: "",
         password: ""
     });
@@ -58,6 +59,7 @@ export const SignupForm: React.FC = (formProps) => {
 
                 <div className="form-field-group merged-inputs col-md-10">
                     <input className="top-input" name="username" type="text" placeholder="Username" onChange={onFormFieldChange}/>
+                    <input className="top-input" name="displayname" type="text" placeholder="Displayname" onChange={onFormFieldChange}/>
                     <input name="email" type="text" placeholder="Email" onChange={onFormFieldChange}/>
                     <input className="bottom-input" name="password" type="password" placeholder="Password" onChange={onFormFieldChange}/>
                     {/* <label>Username</label> */}
