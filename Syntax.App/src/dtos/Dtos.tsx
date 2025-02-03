@@ -16,8 +16,20 @@ export type CommentDto = {
     timestamp: Date,
 };
 
-export type UserDto = {
-    displayName: string,
+export type UserInformationDto = {
     email: string,
     joinedDate: Date
+    activity: {        
+        comments: CommentDto[],
+        topics: TopicDto[],
+    }
+    settings: UserSettings
 }
+
+export type UserSettings = {
+    displayName: string,
+    profilePicture: string,
+    showTopics: boolean,
+    showComments: boolean,
+}
+    
