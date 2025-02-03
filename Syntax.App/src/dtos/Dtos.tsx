@@ -23,10 +23,10 @@ export type UserInformationDto = {
         comments: CommentDto[],
         topics: TopicDto[],
     }
-    settings: UserSettings
+    settings: UserSettingsDto
 }
 
-export type UserSettings = {
+export type UserSettingsDto = {
     displayName: string,
     profilePicture: string,
     showTopics: boolean,

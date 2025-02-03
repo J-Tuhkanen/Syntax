@@ -2,40 +2,21 @@ import "./UserProfile.scss";
 
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { CommentDto, TopicDto, UserSettingsDto } from "dtos/Dtos";
+import { CommentDto, TopicDto, UserInformationDto, UserSettingsDto } from "dtos/Dtos";
 import { ProfileEditComponent } from "views/UserProfile/components/Edit";
 import { ProfileViewComponent } from "./components/View";
 
 export const UserProfile: React.FC = () => {
 
-    const [userDetails, setUserDetails] = useState<{comments:CommentDto[], topics:TopicDto[]}>();
-    const navigate = useNavigate();
-    const { userId } = useParams();    
+    const { userId } = useParams();
+    const navigate = useNavigate();  
     const [isInEditMode, setIsInEditMode] = useState<boolean>(false);
-    const [userSettings, setUserSettings] = useState<UserSettingsDto>();
+    const [userInformation, setUserInformation] = useState<UserInformationDto>();
     
-    const getUserDetails = async () => {
-        const requestUri = `https://localhost:7181/api/user/details/${userId}`;
-        const requestCredentials: RequestCredentials = 'include';
-        const requestData = {
-            method: "GET",
-            credentials: requestCredentials       
-        };
-
-        var response = await fetch(requestUri, requestData);
-
-        if (response.ok) {
-            setUserDetails(await response.json());
-        }
-        else{
-            navigate("/login");
-        }
-    }
-
     useEffect(() => {
  
-        const getUserSettings = async () => {
-            const requestUri = `https://localhost:7181/api/user/settings/${userId}`;
+        const getUserDetails = async () => {
+            const requestUri = `https://localhost:7181/api/user/details/${userId}`;
             const requestCredentials: RequestCredentials = 'include';
             const requestData = {
                 method: "GET",
@@ -43,26 +24,27 @@ export const UserProfile: React.FC = () => {
             };
     
             var response = await fetch(requestUri, requestData);
-
+    
             if (response.ok) {
-                var json = await response.json();
-                setUserSettings(json);
+                setUserInformation(await response.json());
+            }
+            else{
+                navigate("/login");
             }
         }
 
         getUserDetails();
-        getUserSettings();
     }, []);
     
-    if (userSettings !== undefined) {        
+    if (userInformation !== undefined) {        
         return isInEditMode === false 
             ? <ProfileViewComponent 
-                settings={userSettings} 
-                comments={userDetails?.comments ?? []} 
-                topics={userDetails?.topics ?? []} 
+                userInfo={userInformation} 
+                comments={userInformation.activity?.comments ?? []} 
+                topics={userInformation.activity?.topics ?? []} 
                 toggleFunction={setIsInEditMode}/>
             : <ProfileEditComponent 
-                userInfo={userSettings} 
+                userInfo={userInformation} 
                 toggleFunction={setIsInEditMode}/>
     }
     else {

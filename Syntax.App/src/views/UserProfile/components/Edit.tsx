@@ -1,5 +1,5 @@
 import ToggleSwitch from "components/general/switch";
-import { UserInformationDto, UserSettings as UserSettingsDto } from "dtos/Dtos";
+import { UserInformationDto, UserSettingsDto as UserSettingsDto } from "dtos/Dtos";
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { FaPen } from "react-icons/fa";
 import { FormateDateToTopicTimestamp } from "utils/dateFormatter";

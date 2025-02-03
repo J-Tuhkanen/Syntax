@@ -1,14 +1,17 @@
 import Tabs from "components/general/tabs";
 import { CommentDto, TopicDto, UserInformationDto} from "dtos/Dtos";
 import { Dispatch, SetStateAction } from "react";
+import { useParams } from "react-router-dom";
 import { FormateDateToTopicTimestamp } from "utils/dateFormatter";
 
 export const ProfileViewComponent: React.FC<{
-    userInfo:UserInformationDto, 
+    userInfo: UserInformationDto, 
     comments: CommentDto[],
     topics: TopicDto[]
     toggleFunction:Dispatch<SetStateAction<boolean>>}> = (props) => {
         
+    const { userId } = useParams();  
+    
     const getUserTopicActity = () => {
         return props.topics.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
     }
@@ -26,13 +29,13 @@ export const ProfileViewComponent: React.FC<{
         <div className="container">
             <div id="details-row" className="row">        
                 <div className="col-3">
-                    <img src={props.userInfo.profilePicture != null 
-                        ? `https://localhost:7181/users/${userId}/${userSettings.profilePicture}` 
+                    <img src={props.userInfo.settings.profilePicture != null 
+                        ? `https://localhost:7181/users/${userId}/${props.userInfo.settings.profilePicture}` 
                         : "https://localhost:7181/default-avatar.png"} 
                         alt="Profile picture"/>
                 </div>
                 <div className="col-6">
-                    <h4>{props.userInfo.displayName}</h4>
+                    <h4>{props.userInfo.settings.displayName}</h4>
                     <p>{props.userInfo.joinedDate ? "Joined on " + FormateDateToTopicTimestamp(new Date(props.userInfo.joinedDate)) : "N/A"}</p>
                 </div>
                 <div className="col-2">
