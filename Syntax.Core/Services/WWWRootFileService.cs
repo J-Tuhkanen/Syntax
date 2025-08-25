@@ -25,12 +25,12 @@ namespace Syntax.Core.Services
 
             string uploadsFolderName = Path.Combine("wwwroot", "users", user.Id);
 
-            var fileName = $"avatar.{fileExtension}";
+            var fileName = $"{Guid.NewGuid()}.{fileExtension}";
             var filePath = Path.Combine($"{Directory.GetCurrentDirectory()}", uploadsFolderName, fileName);
 
             if (Directory.Exists(uploadsFolderName) == false)            
-                Directory.CreateDirectory(uploadsFolderName);            
-
+                Directory.CreateDirectory(uploadsFolderName);
+            
             using (var stream = new FileStream(filePath, FileMode.CreateNew))
             {
                 await file.CopyToAsync(stream);
@@ -40,8 +40,6 @@ namespace Syntax.Core.Services
                     Path = fileName.Replace("\\", "/")
                 };
             }
-
-            throw new Exception("Invalid file");
         }
 
         private async Task<ImageFormat> GetFileFormat(IFormFile file)

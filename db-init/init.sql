@@ -56,11 +56,6 @@ CREATE INDEX IF NOT EXISTS "EmailIndex"
     ("NormalizedEmail" COLLATE pg_catalog."default" ASC NULLS LAST)
     TABLESPACE pg_default;
 	
-CREATE INDEX IF NOT EXISTS "IX_Users_ProfilePictureBlobId"
-    ON public."Users" USING btree
-    ("ProfilePictureBlobId" ASC NULLS LAST)
-    TABLESPACE pg_default;
-	
 CREATE UNIQUE INDEX IF NOT EXISTS "UserNameIndex"
     ON public."Users" USING btree
     ("NormalizedUserName" COLLATE pg_catalog."default" ASC NULLS LAST)
