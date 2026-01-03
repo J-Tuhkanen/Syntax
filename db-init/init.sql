@@ -1,11 +1,21 @@
 CREATE DATABASE SyntaxDb;
 
+CREATE TABLE IF NOT EXISTS public."Blobs"
+(
+    "Id" uuid NOT NULL,
+    "Path" text COLLATE pg_catalog."default" NOT NULL,
+    "IsDeleted" boolean NOT NULL,
+    "Timestamp" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    CONSTRAINT "PK_Blobs" PRIMARY KEY ("Id")
+) TABLESPACE pg_default;
+
 CREATE TABLE public."UserSettings" (
 	"Id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "DisplayName" TEXT NOT NULL,
     "ShowTopics" BOOLEAN NOT NULL,
     "ShowComments" BOOLEAN NOT NULL,
-    "ProfilePicture" TEXT) 
+    "ProfilePictureId" uuid,
+	CONSTRAINT "FK_UserSettings_Blobs_ProfilePictureId" FOREIGN KEY ("ProfilePictureId") REFERENCES public."Blobs" ("Id"))
 	TABLESPACE pg_default;
 
 CREATE TABLE IF NOT EXISTS public."Roles"
@@ -17,20 +27,10 @@ CREATE TABLE IF NOT EXISTS public."Roles"
     CONSTRAINT "PK_Roles" PRIMARY KEY ("Id")
 ) TABLESPACE pg_default;
 
-CREATE TABLE IF NOT EXISTS public."Blobs"
-(
-    "Id" uuid NOT NULL,
-    "Path" text COLLATE pg_catalog."default" NOT NULL,
-    "IsDeleted" boolean NOT NULL,
-    "Timestamp" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    CONSTRAINT "PK_Blobs" PRIMARY KEY ("Id")
-) TABLESPACE pg_default;
-
 CREATE TABLE IF NOT EXISTS public."Users"
 (
     "Id" text COLLATE pg_catalog."default" NOT NULL,
     "IsDeleted" boolean NOT NULL,
-    "ProfilePictureBlobId" uuid,
 	"UserSettingsId" uuid NOT NULL,
     "JoinedDate" TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     "UserName" character varying(256) COLLATE pg_catalog."default",
@@ -48,22 +48,12 @@ CREATE TABLE IF NOT EXISTS public."Users"
     "LockoutEnabled" boolean NOT NULL,
     "AccessFailedCount" integer NOT NULL,
     CONSTRAINT "PK_Users" PRIMARY KEY ("Id"),
-    CONSTRAINT "FK_Users_Blobs_ProfilePictureBlobId" FOREIGN KEY ("ProfilePictureBlobId")
-        REFERENCES public."Blobs" ("Id") MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
-	CONSTRAINT "FK_Users_UserSettings_Id" FOREIGN KEY ("UserSettingsId") 
-		REFERENCES public."UserSettings" ("Id")
+	CONSTRAINT "FK_Users_UserSettings_Id" FOREIGN KEY ("UserSettingsId") REFERENCES public."UserSettings" ("Id")
 ) TABLESPACE pg_default;
 	
 CREATE INDEX IF NOT EXISTS "EmailIndex"
     ON public."Users" USING btree
     ("NormalizedEmail" COLLATE pg_catalog."default" ASC NULLS LAST)
-    TABLESPACE pg_default;
-	
-CREATE INDEX IF NOT EXISTS "IX_Users_ProfilePictureBlobId"
-    ON public."Users" USING btree
-    ("ProfilePictureBlobId" ASC NULLS LAST)
     TABLESPACE pg_default;
 	
 CREATE UNIQUE INDEX IF NOT EXISTS "UserNameIndex"
