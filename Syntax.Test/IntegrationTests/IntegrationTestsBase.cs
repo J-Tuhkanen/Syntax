@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Syntax.API.Requests;
+﻿using Syntax.API.Requests;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -22,7 +21,7 @@ namespace Syntax.Tests.IntegrationTests
             {
                 PropertyNameCaseInsensitive = true,
                 ReferenceHandler = ReferenceHandler.IgnoreCycles
-            });
+            })!;
         }
 
         protected async Task<HttpClient> CreateClientAndAuthenticate(string username)

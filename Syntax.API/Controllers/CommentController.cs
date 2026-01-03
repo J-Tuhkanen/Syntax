@@ -11,7 +11,7 @@ namespace Syntax.API.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class CommentController : Controller
+    public class CommentController : ControllerBase
     {
         private readonly ICommentService _commentService;
         private readonly UserManager<UserAccount> _userManager;
@@ -26,7 +26,10 @@ namespace Syntax.API.Controllers
         public async Task<IActionResult> PostComment([FromBody] CommentRequest commentRequest)
         {
             var user = await _userManager.GetUserAsync(User);
-            var comment = await _commentService.CreateCommentAsync(commentRequest.TopicId, commentRequest.Content, user);
+            
+            Comment? comment = user != null 
+                ? await _commentService.CreateCommentAsync(commentRequest.TopicId, commentRequest.Content, user)
+                : null;
 
             return comment != null ? new JsonResult(new CommentDto(comment)) : throw new Exception("Something went wrong with creating a new comment");
         }
@@ -34,7 +37,7 @@ namespace Syntax.API.Controllers
         [HttpGet("{topicId}")]
         public async Task<IActionResult> GetComments(Guid topicId)
         {
-            var comments = await _commentService.GetCommentsAsync(topicId, new List<Guid>(), 100);
+            var comments = await _commentService.GetCommentsAsync(topicId, [], 100);
 
             return new JsonResult(comments.Select(c => new CommentDto(c)));
         }

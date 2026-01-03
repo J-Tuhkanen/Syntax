@@ -1,0 +1,1 @@
+flyway -url=jdbc:postgresql://postgres:5432/SyntaxDb -user=postgres -password=syntax_admin -locations=filesystem:. -baselineOnMigrate=true -baselineVersion="-1" migrate;

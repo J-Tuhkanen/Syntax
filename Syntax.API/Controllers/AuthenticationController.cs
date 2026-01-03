@@ -35,7 +35,7 @@ namespace Syntax.API.Controllers
             {
                 try
                 {
-                    UserAccount user = await _userManager.Users.FirstAsync(u => u.UserName == request.Username);
+                    UserAccount user = await _userManager.Users.Include(u => u.UserSettings).FirstAsync(u => u.UserName == request.Username);
                     await _authService.GenerateSignInCookie(HttpContext, user);
 
                     return new JsonResult(new ApplicationUserRecord(user));
@@ -55,7 +55,7 @@ namespace Syntax.API.Controllers
             if (ModelState.IsValid == false)
                 return BadRequest();
 
-            var result = await _authService.Register(request.Email, request.Password, request.Username);
+            var result = await _authService.Register(request.Email, request.Password, request.Username, request.Username);
 
             if (result.Succeeded)
                 return Ok();
@@ -74,7 +74,7 @@ namespace Syntax.API.Controllers
         [HttpGet("Session")]
         public async Task<IActionResult> GetCurrentSession()
         {
-            UserAccount user = await _userManager.GetUserAsync(User);
+            UserAccount? user = await _userManager.GetUserAsync(User);
 
             return user == null ? NoContent() : new JsonResult(new ApplicationUserRecord(user));
         }
@@ -88,7 +88,7 @@ namespace Syntax.API.Controllers
         public ApplicationUserRecord(UserAccount user)
         {
             Id = user.Id;
-            DisplayName = user.UserName;
+            DisplayName = user.UserName!;
         }
     }
 }

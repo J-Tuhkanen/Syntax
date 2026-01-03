@@ -1,9 +1,8 @@
 ﻿using Syntax.Core.Models.Base;
-using System;
 
 namespace Syntax.Core.Models
 {
-    public class Blob : EntityBase
+    public class Blob : ActivityBase
     {
         public string Path { get; set; } = string.Empty;
     }

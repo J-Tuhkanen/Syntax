@@ -8,14 +8,14 @@ namespace Syntax.Core.Data
     public class ApplicationDbContext : IdentityDbContext<UserAccount>
     {
         public DbSet<Topic> Topics { get; set; } = null!;
-
         public DbSet<Comment> Comments { get; set; } = null!;
-
         public DbSet<Blob> Blobs { get; set; } = null!;
+        public DbSet<UserSettings> UserSettings { get; set; } = null!;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

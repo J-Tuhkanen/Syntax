@@ -2,7 +2,7 @@ import { sendHttpRequest } from 'utils/httpRequest';
 import { useNavigate } from "react-router-dom";
 import { CSSProperties, useEffect, useState } from 'react';
 import { FeedTopic } from 'components/feed-topic-component/FeedTopic';
-import { TopicDto } from 'dtos/TopicDto';
+import { TopicDto } from 'dtos/Dtos';
 
 const MainFeedPage: React.FC = () => {
 
