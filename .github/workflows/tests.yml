@@ -1,4 +1,4 @@
-name: ASP.NET CI/CD Pipeline 
+name: Tests Pipeline 
 
 on:
   pull_request:
