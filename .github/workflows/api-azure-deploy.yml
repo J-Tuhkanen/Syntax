@@ -1,5 +1,10 @@
 name: Build and deploy ASP.NET API to Azure Web App
 
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
 permissions:
   id-token: write
   contents: read
@@ -43,4 +48,3 @@ jobs:
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           package: ${{ env.PUBLISH_DIR }}
-
