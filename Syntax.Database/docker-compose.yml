@@ -29,17 +29,17 @@ services:
         condition: service_healthy
 
   # Completely optional, but here as an example if needed
-  syntax-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    ports:
-      - 8080:8080
-    depends_on:
-      postgres: 
-        condition: service_healthy
+  #syntax-api:
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfile
+  #  environment:
+  #    - ASPNETCORE_ENVIRONMENT=Development
+  #  ports:
+  #    - 8080:8080
+  #  depends_on:
+  #    postgres: 
+  #      condition: service_healthy
 
 volumes:
   pg_data:
