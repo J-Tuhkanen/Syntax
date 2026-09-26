@@ -6,15 +6,16 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <Compile Remove="Extensions\**" />
+	  <EmbeddedResource Remove="Extensions\**" />
+	  <None Remove="Extensions\**" />
+	</ItemGroup>
+
     <ItemGroup>
-	    <PackageReference Include="AutoMapper" Version="13.0.1" />
 	    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
 	    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.7" />
 	</ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Extensions\" />
-    </ItemGroup>
 
 </Project>
