@@ -18,19 +18,29 @@ namespace Syntax.API
     {
         private readonly string allowSpecificOrigin = "AllowSpecificOrigin";
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            HostEnvironment = environment;
         }
 
         public IConfiguration Configuration { get; }
 
+        public IWebHostEnvironment HostEnvironment { get; }
+
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
-            // Database configuration
+            // Database configuration. Nothing secret lives in appsettings.json:
+            //   Azure: ConnectionStrings__DefaultConnection (Key Vault reference)
+            //   local: dotnet user-secrets or the same environment variable
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
+            if (string.IsNullOrWhiteSpace(connectionString) && !HostEnvironment.IsDevelopment())
+                throw new InvalidOperationException("ConnectionStrings:DefaultConnection is not configured.");
+
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(connectionString));
             services.AddSignalR();
             services.AddCors(options =>
             {
