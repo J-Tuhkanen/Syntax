@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Syntax.Core.Hubs;
+using Azure.Core;
+using Azure.Identity;
+using Azure.Storage.Blobs;
 
 namespace Syntax.API
 {
@@ -76,7 +79,7 @@ namespace Syntax.API
             // Add services to dependency injection to be injectable whenever needed
             services.AddTransient<ITopicService, TopicService>();
             services.AddTransient<ICommentService, CommentService>();
-            services.AddTransient<IFileService, WWWRootFileService>();
+            AddFileStorage(services);
             services.AddTransient<IUserService, UserService>();
             
             services.AddWebEncoders();
@@ -104,7 +107,6 @@ namespace Syntax.API
             }
 
             app.UseRouting();
-            app.UseStaticFiles();
             app.UseCors(allowSpecificOrigin);
             app.UseAuthentication();
             app.UseAuthorization();
@@ -115,6 +117,38 @@ namespace Syntax.API
             });
             app.UseResponseCaching();  
         }
+
+        /// <summary>
+        /// Profile pictures go to Azure Blob storage when Storage:BlobServiceUri is
+        /// set (Azure), and to wwwroot/users on local disk otherwise (development).
+        /// Either way they are served by UserFilesController at /users/{userId}/{file}.
+        /// </summary>
+        private void AddFileStorage(IServiceCollection services)
+        {
+            var blobServiceUri = Configuration["Storage:BlobServiceUri"];
+
+            if (string.IsNullOrWhiteSpace(blobServiceUri))
+            {
+                services.AddTransient<IFileService>(provider => new LocalFileService(
+                    Path.Combine(provider.GetRequiredService<IWebHostEnvironment>().ContentRootPath, "wwwroot", "users")));
+                return;
+            }
+
+            var containerName = Configuration["Storage:AvatarContainer"] ?? "avatars";
+
+            services.AddSingleton(new BlobServiceClient(new Uri(blobServiceUri), AzureCredential)
+                .GetBlobContainerClient(containerName));
+            services.AddTransient<IFileService, BlobFileService>();
+        }
+
+        /// <summary>
+        /// Managed identity in Azure (AZURE_CLIENT_ID selects the user-assigned
+        /// identity); developer sign-ins such as `az login` locally.
+        /// </summary>
+        private TokenCredential AzureCredential => _azureCredential ??= new DefaultAzureCredential(
+            new DefaultAzureCredentialOptions { ManagedIdentityClientId = Configuration["AZURE_CLIENT_ID"] });
+
+        private TokenCredential? _azureCredential;
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {

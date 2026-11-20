@@ -11,6 +11,5 @@ infra/
 db/
 tests/
 **/wwwroot/
-**/App_Data/
 **/*.user
 **/appsettings.Development.json
