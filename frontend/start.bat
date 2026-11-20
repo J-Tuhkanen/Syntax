@@ -1,3 +1,2 @@
-set HTTPS=true
-npm start
+npm run dev
 pause
