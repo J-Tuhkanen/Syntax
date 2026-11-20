@@ -1,0 +1,7 @@
+# Scripts and config files that run inside Linux containers must keep LF line
+# endings, even in a Windows checkout with core.autocrlf=true.
+*.sh        text eol=lf
+*.template  text eol=lf
+*.conf      text eol=lf
+Dockerfile* text eol=lf
+dockerfile  text eol=lf
