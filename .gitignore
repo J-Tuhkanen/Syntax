@@ -366,3 +366,6 @@ FodyWeavers.xsd
 
 # App content folders
 backend/wwwroot/
+
+# Local database settings
+db/.env

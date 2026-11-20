@@ -1,29 +1,42 @@
+# Local Postgres with the migrations applied by Flyway.
+#
+#   cp .env.example .env    # then set POSTGRES_PASSWORD
+#   docker compose up -d
+#
+# The API connects with ConnectionStrings:DefaultConnection, e.g. via
+#   dotnet user-secrets set "ConnectionStrings:DefaultConnection" \
+#     "Host=localhost;Port=2345;Database=SyntaxDb;Username=postgres;Password=<POSTGRES_PASSWORD>" \
+#     --project backend
 services:
 
   postgres:
-    image: postgres:17-alpine
+    image: postgres:17.12-alpine
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: syntax_admin
-      POSTGRES_DB: SyntaxDb
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in db/.env (see .env.example)}
+      POSTGRES_DB: ${POSTGRES_DB:-SyntaxDb}
     ports:
       - 2345:5432
     volumes:
-      - ./db-init:/docker-entrypoint-initdb.d
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-q", "-U", "postgres"]
+      test: ["CMD-SHELL", "pg_isready -q -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
       interval: 5s
-      timeout: 1s
-      retries: 2
+      timeout: 2s
+      retries: 10
 
   flyway:
-    image: flyway/flyway
-    entrypoint: ["bash"]
-    command: -c sh /flyway/sql/migrate.sh
+    image: flyway/flyway:12-alpine
+    entrypoint: ["sh", "/flyway/sql/migrate.sh"]
+    environment:
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${POSTGRES_DB:-SyntaxDb}
+      FLYWAY_USER: ${POSTGRES_USER:-postgres}
+      FLYWAY_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in db/.env (see .env.example)}
     volumes:
-      - ./Migrations:/flyway/sql
+      - ./Migrations:/flyway/sql:ro
     depends_on:
       postgres:
         condition: service_healthy

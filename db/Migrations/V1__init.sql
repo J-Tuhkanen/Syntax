@@ -1,4 +1,9 @@
-CREATE DATABASE SyntaxDb;
+-- Initial schema: tables and indexes only.
+--
+-- The database and its owner are created by the Postgres container
+-- (POSTGRES_DB / POSTGRES_USER), not by migrations. Every statement uses
+-- IF NOT EXISTS, so on databases created from the old init.sql Flyway only
+-- records a baseline and this script changes nothing.
 
 CREATE TABLE IF NOT EXISTS public."Blobs"
 (
@@ -9,7 +14,7 @@ CREATE TABLE IF NOT EXISTS public."Blobs"
     CONSTRAINT "PK_Blobs" PRIMARY KEY ("Id")
 ) TABLESPACE pg_default;
 
-CREATE TABLE public."UserSettings" (
+CREATE TABLE IF NOT EXISTS public."UserSettings" (
 	"Id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     "DisplayName" TEXT NOT NULL,
     "ShowTopics" BOOLEAN NOT NULL,
@@ -201,11 +206,3 @@ CREATE INDEX IF NOT EXISTS "IX_Comments_UserId"
     ON public."Comments" USING btree
     ("UserId" COLLATE pg_catalog."default" ASC NULLS LAST)
     TABLESPACE pg_default;
-
-GRANT ALL PRIVILEGES ON DATABASE SyntaxDb TO postgres;
-
-CREATE ROLE syntax_admin WITH LOGIN PASSWORD 'syntax_admin';
-
-GRANT CONNECT ON DATABASE SyntaxDb TO syntax_admin;
-GRANT USAGE ON SCHEMA public TO syntax_admin;
-GRANT SELECT, UPDATE, INSERT ON ALL TABLES IN SCHEMA public TO syntax_admin;
