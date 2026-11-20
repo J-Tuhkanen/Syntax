@@ -11,13 +11,14 @@ using Syntax.Core.Hubs;
 using Azure.Core;
 using Azure.Identity;
 using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.Threading.RateLimiting;
 
 namespace Syntax.API
 {
     public class Startup
     {
-        private readonly string allowSpecificOrigin = "AllowSpecificOrigin";
-
         public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
@@ -27,6 +28,8 @@ namespace Syntax.API
         public IConfiguration Configuration { get; }
 
         public IWebHostEnvironment HostEnvironment { get; }
+
+        private bool RateLimitingEnabled => Configuration.GetValue("RateLimiting:Enabled", true);
 
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
@@ -42,14 +45,19 @@ namespace Syntax.API
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(connectionString));
             services.AddSignalR();
-            services.AddCors(options =>
+
+            // No CORS: in production nginx serves the SPA and proxies the API on the
+            // same origin, and in development the Vite dev server does the same.
+
+            // The API is only reachable inside the Container Apps environment, through
+            // the frontend's nginx, which sends exactly one client address in
+            // X-Forwarded-For. The proxies' own addresses aren't fixed, so trust them all.
+            services.Configure<ForwardedHeadersOptions>(options =>
             {
-                options.AddPolicy(name: allowSpecificOrigin, policy => {
-                    policy.WithOrigins("https://localhost:3000");
-                    policy.AllowAnyHeader();
-                    policy.AllowAnyMethod();
-                    policy.AllowCredentials();
-                });
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost;
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+                options.ForwardLimit = null;
             });
 
             services.Configure<JsonOptions>(o =>
@@ -72,11 +80,25 @@ namespace Syntax.API
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            // Secure cookies everywhere except Development, where the Vite dev server
+            // and the integration tests use plain http://localhost.
+            var cookieSecurePolicy = HostEnvironment.IsDevelopment()
+                ? CookieSecurePolicy.SameAsRequest
+                : CookieSecurePolicy.Always;
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.SecurePolicy = cookieSecurePolicy;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            });
+
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
                     options.Cookie.Name = "syntax.user";
                     options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = cookieSecurePolicy;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
                     options.SlidingExpiration = true;
                     options.ExpireTimeSpan = new TimeSpan(1, 0, 0);
                     options.Events.OnRedirectToLogin = (context) =>
@@ -86,14 +108,21 @@ namespace Syntax.API
                     };
                 });
 
+            AddDataProtection(services);
+
+            if (RateLimitingEnabled)
+                AddRateLimiting(services);
+
             // Add services to dependency injection to be injectable whenever needed
             services.AddTransient<ITopicService, TopicService>();
             services.AddTransient<ICommentService, CommentService>();
             AddFileStorage(services);
             services.AddTransient<IUserService, UserService>();
-            
+
             services.AddWebEncoders();
             services.AddDistributedMemoryCache();
+            services.AddProblemDetails();
+            services.AddHealthChecks();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
         }
@@ -102,7 +131,10 @@ namespace Syntax.API
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             //CreateRoles(serviceProvider).GetAwaiter().GetResult();
-            
+
+            // First, so everything after it sees the client's address and scheme.
+            app.UseForwardedHeaders();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -111,21 +143,85 @@ namespace Syntax.API
             }
             else
             {
-                app.UseExceptionHandler("/Error");
+                // ProblemDetails response instead of re-executing a (non-existent) /Error page.
+                app.UseExceptionHandler();
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts
                 app.UseHsts();
             }
 
             app.UseRouting();
-            app.UseCors(allowSpecificOrigin);
+
+            if (RateLimitingEnabled)
+                app.UseRateLimiter();
+
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/healthz").DisableRateLimiting();
                 endpoints.MapHub<NotificationHub>("/notification/{topicId}");
                 endpoints.MapControllers();
             });
-            app.UseResponseCaching();  
+            app.UseResponseCaching();
+        }
+
+        /// <summary>
+        /// The API scales to zero and may move between replicas, so the Data
+        /// Protection key ring (it encrypts the auth cookies) lives in Blob storage,
+        /// wrapped with a Key Vault key. Without that configuration (development)
+        /// the default local key ring is used.
+        /// </summary>
+        private void AddDataProtection(IServiceCollection services)
+        {
+            var dataProtection = services.AddDataProtection().SetApplicationName("Syntax");
+
+            var keyRingBlobUri = Configuration["DataProtection:BlobUri"];
+            var keyVaultKeyId = Configuration["DataProtection:KeyVaultKeyId"];
+
+            if (!string.IsNullOrWhiteSpace(keyRingBlobUri) && !string.IsNullOrWhiteSpace(keyVaultKeyId))
+            {
+                dataProtection
+                    .PersistKeysToAzureBlobStorage(new Uri(keyRingBlobUri), AzureCredential)
+                    .ProtectKeysWithAzureKeyVault(new Uri(keyVaultKeyId), AzureCredential);
+            }
+            else if (!HostEnvironment.IsDevelopment())
+            {
+                // Keys kept inside the container would be lost on every restart,
+                // signing everybody out.
+                throw new InvalidOperationException("DataProtection:BlobUri and DataProtection:KeyVaultKeyId must be configured outside Development.");
+            }
+        }
+
+        /// <summary>
+        /// Built-in rate limiter (there is no API gateway): a per-client budget for
+        /// every request, and a much smaller one for sign-in and registration.
+        /// Limits come from the RateLimiting section; disabled in Development.
+        /// </summary>
+        private void AddRateLimiting(IServiceCollection services)
+        {
+            var permitLimit = Configuration.GetValue("RateLimiting:PermitLimit", 300);
+            var authenticationPermitLimit = Configuration.GetValue("RateLimiting:AuthenticationPermitLimit", 10);
+
+            static string ClientKey(HttpContext context) =>
+                context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+
+            static FixedWindowRateLimiterOptions PerMinute(int permits) => new()
+            {
+                PermitLimit = permits,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+            };
+
+            services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+                    RateLimitPartition.GetFixedWindowLimiter(ClientKey(context), _ => PerMinute(permitLimit)));
+
+                options.AddPolicy(ApplicationConstants.RateLimitPolicies.Authentication, context =>
+                    RateLimitPartition.GetFixedWindowLimiter(ClientKey(context), _ => PerMinute(authenticationPermitLimit)));
+            });
         }
 
         /// <summary>

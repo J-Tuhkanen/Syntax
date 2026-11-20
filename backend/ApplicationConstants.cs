@@ -10,5 +10,11 @@
             public static IEnumerable<string> GetRoles()
                 => new[] { Admin, User };
         }
+
+        public static class RateLimitPolicies
+        {
+            /// <summary>Sign-in and registration: few attempts per client per minute.</summary>
+            public const string Authentication = "authentication";
+        }
     }
 }

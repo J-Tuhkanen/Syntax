@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Syntax.API.Requests;
 using Syntax.Core.Models;
@@ -24,6 +25,7 @@ namespace Syntax.API.Controllers
         }
 
         [HttpPost("Login")]
+        [EnableRateLimiting(ApplicationConstants.RateLimitPolicies.Authentication)]
         public async Task<IActionResult> LoginAsync([FromBody] SigninRequest request)
         {
             if (ModelState.IsValid == false)
@@ -50,6 +52,7 @@ namespace Syntax.API.Controllers
         }
 
         [HttpPost("Register")]
+        [EnableRateLimiting(ApplicationConstants.RateLimitPolicies.Authentication)]
         public async Task<IActionResult> RegisterAsync([FromBody] SignupRequest request)
         {
             if (ModelState.IsValid == false)
