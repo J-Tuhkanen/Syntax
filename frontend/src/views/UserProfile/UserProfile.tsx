@@ -16,7 +16,7 @@ export const UserProfile: React.FC = () => {
     useEffect(() => {
  
         const getUserDetails = async () => {
-            const requestUri = `https://localhost:7181/api/user/details/${userId}`;
+            const requestUri = `/api/user/details/${userId}`;
             const requestCredentials: RequestCredentials = 'include';
             const requestData = {
                 method: "GET",

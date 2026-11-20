@@ -3,6 +3,7 @@ import { CommentDto, TopicDto, UserInformationDto} from "dtos/Dtos";
 import { Dispatch, SetStateAction } from "react";
 import { useParams } from "react-router-dom";
 import { FormateDateToTopicTimestamp } from "utils/dateFormatter";
+import defaultAvatar from "assets/default-avatar.png";
 
 export const ProfileViewComponent: React.FC<{
     userInfo: UserInformationDto, 
@@ -30,8 +31,8 @@ export const ProfileViewComponent: React.FC<{
             <div id="details-row" className="row">        
                 <div className="col-3">
                     <img src={props.userInfo.settings.profilePicture != null 
-                        ? `https://localhost:7181/users/${userId}/${props.userInfo.settings.profilePicture}` 
-                        : "https://localhost:7181/default-avatar.png"} 
+                        ? `/users/${userId}/${props.userInfo.settings.profilePicture}` 
+                        : defaultAvatar} 
                         alt="Profile picture"/>
                 </div>
                 <div className="col-6">

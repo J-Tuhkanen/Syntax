@@ -1,4 +1,4 @@
-const API_BASE_URI: string = "https://localhost:7181/api/";
+const API_BASE_URI: string = "/api/";
 
 type HttpRequestArguments = {
 

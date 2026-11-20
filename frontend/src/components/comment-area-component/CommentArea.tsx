@@ -12,7 +12,7 @@ export const CommentArea: React.FC<CommentAreaProps> = (props) => {
     
     const [commentSectionComments, setCommentSectionComments] = useState<CommentDto[]>([]);
     const [userComment, setUserComment] = useState<string>();
-    const commentClient = new SyntaxCommentClient(`https://localhost:7181/notification/${props.TopicId}`);
+    const commentClient = new SyntaxCommentClient(`/notification/${props.TopicId}`);
 
     const connectToTopicCommentHub = async () => {
         

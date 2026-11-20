@@ -34,7 +34,7 @@ export const ProfileEditComponent: React.FC<{
         formData.append("ShowTopics",  userSettings.showTopics.toString());
         formData.append("ShowComments", userSettings.showComments.toString());
 
-        const requestUri = "https://localhost:7181/api/user/settings";
+        const requestUri = "/api/user/settings";
         const requestCredentials: RequestCredentials = 'include';
         const requestData = {
             method: "POST",
