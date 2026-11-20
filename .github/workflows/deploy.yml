@@ -1,0 +1,261 @@
+name: Build and deploy
+
+# Pull request:      build every image (no push) and run `terraform plan`.
+# Push to master,
+# or a manual run:   build and push the images (tagged with the commit SHA),
+#                    `terraform apply`, start any stopped apps, run the Flyway
+#                    job, then roll out the API and the frontend.
+#
+# Signs in to Azure with OIDC (no secrets). Repository variables come from
+# infra/bootstrap's outputs; see infra/README.md.
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('plan-{0}', github.head_ref) || 'deploy-dev' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  ENVIRONMENT: dev
+  # Postgres server image, <postgres version>-<wrapper revision>. A new value
+  # builds and pushes a new image; rolling it out to the running database is a
+  # manual step (infra/scripts/postgres-update.sh). The backup image uses the
+  # same Postgres version, so pg_dump always matches the server.
+  POSTGRES_VERSION: "17.12"
+  POSTGRES_IMAGE_TAG: "17.12-1"
+  # Terraform: azurerm provider and backend sign in with the workflow's OIDC token.
+  ARM_USE_OIDC: "true"
+  ARM_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+  ARM_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+  TF_VAR_acr_name: ${{ vars.ACR_NAME }}
+  TF_VAR_alert_email: ${{ vars.ALERT_EMAIL }}
+  TERRAFORM_VERSION: "~1.16.0"
+
+jobs:
+  build:
+    name: Build ${{ matrix.image.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        image:
+          - { name: syntax-frontend, context: frontend, file: frontend/Dockerfile, postgres: false }
+          - { name: syntax-api, context: ., file: backend/dockerfile, postgres: false }
+          - { name: syntax-db-migrate, context: db, file: db/Dockerfile.migrate, postgres: false }
+          - { name: syntax-pg-backup, context: db/backup, file: db/backup/Dockerfile, postgres: true }
+          - { name: syntax-postgres, context: db/postgres, file: db/postgres/Dockerfile, postgres: true }
+    env:
+      PUSH: ${{ github.event_name != 'pull_request' }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: docker/setup-buildx-action@v4
+
+      - name: Sign in to Azure
+        if: env.PUSH == 'true'
+        uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Sign in to the registry
+        if: env.PUSH == 'true'
+        run: az acr login --name "${{ vars.ACR_NAME }}"
+
+      - name: Work out the image reference
+        id: image
+        env:
+          IMAGE_NAME: ${{ matrix.image.name }}
+          ACR_NAME: ${{ vars.ACR_NAME }}
+        run: |
+          if [ "$IMAGE_NAME" = "syntax-postgres" ]; then
+            tag="$POSTGRES_IMAGE_TAG"
+          else
+            tag="$GITHUB_SHA"
+          fi
+
+          if [ "$PUSH" = "true" ]; then
+            registry="$(az acr show --name "$ACR_NAME" --query loginServer -o tsv)"
+          else
+            registry="local"
+          fi
+          echo "ref=${registry}/${IMAGE_NAME}:${tag}" >> "$GITHUB_OUTPUT"
+
+          # The Postgres image tag is immutable: build and push it only once.
+          exists=false
+          if [ "$PUSH" = "true" ] && [ "$IMAGE_NAME" = "syntax-postgres" ] \
+            && az acr repository show --name "$ACR_NAME" --image "${IMAGE_NAME}:${tag}" > /dev/null 2>&1; then
+            exists=true
+            echo "${IMAGE_NAME}:${tag} is already in the registry, skipping."
+          fi
+          echo "exists=${exists}" >> "$GITHUB_OUTPUT"
+
+      - name: Build${{ github.event_name != 'pull_request' && ' and push' || '' }}
+        if: steps.image.outputs.exists != 'true'
+        uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.image.context }}
+          file: ${{ matrix.image.file }}
+          build-args: ${{ matrix.image.postgres && format('PG_VERSION={0}', env.POSTGRES_VERSION) || '' }}
+          tags: ${{ steps.image.outputs.ref }}
+          push: ${{ env.PUSH == 'true' }}
+          provenance: false
+          cache-from: type=gha,scope=${{ matrix.image.name }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.image.name }}
+
+  plan:
+    name: Terraform plan
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/main
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - name: terraform fmt
+        run: terraform fmt -check -recursive -diff ..
+
+      - name: terraform init
+        run: >-
+          terraform init
+          -backend-config="resource_group_name=${{ vars.TF_STATE_RESOURCE_GROUP }}"
+          -backend-config="storage_account_name=${{ vars.TF_STATE_STORAGE_ACCOUNT }}"
+          -backend-config="container_name=${{ vars.TF_STATE_CONTAINER }}"
+          -backend-config="key=${ENVIRONMENT}.tfstate"
+
+      - name: terraform validate
+        run: terraform validate
+
+      - name: terraform plan
+        run: >-
+          terraform plan
+          -lock-timeout=5m
+          -var-file="environments/${ENVIRONMENT}.tfvars"
+          -var="image_tag=${{ github.event.pull_request.head.sha }}"
+          -var="postgres_image_tag=${POSTGRES_IMAGE_TAG}"
+
+  deploy:
+    name: Deploy to dev
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: dev
+    defaults:
+      run:
+        working-directory: infra/main
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: hashicorp/setup-terraform@v4
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - name: Sign in to Azure
+        uses: azure/login@v3
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: terraform init
+        run: >-
+          terraform init
+          -backend-config="resource_group_name=${{ vars.TF_STATE_RESOURCE_GROUP }}"
+          -backend-config="storage_account_name=${{ vars.TF_STATE_STORAGE_ACCOUNT }}"
+          -backend-config="container_name=${{ vars.TF_STATE_CONTAINER }}"
+          -backend-config="key=${ENVIRONMENT}.tfstate"
+
+      - name: terraform apply
+        run: >-
+          terraform apply
+          -auto-approve
+          -lock-timeout=10m
+          -var-file="environments/${ENVIRONMENT}.tfvars"
+          -var="image_tag=${GITHUB_SHA}"
+          -var="postgres_image_tag=${POSTGRES_IMAGE_TAG}"
+
+      - name: Read Terraform outputs
+        run: |
+          {
+            echo "RG=$(terraform output -raw resource_group_name)"
+            echo "ACR=$(terraform output -raw acr_login_server)"
+            echo "API_APP=$(terraform output -raw api_app_name)"
+            echo "FRONTEND_APP=$(terraform output -raw frontend_app_name)"
+            echo "MIGRATE_JOB=$(terraform output -raw migrate_job_name)"
+            echo "APP_URL=$(terraform output -raw frontend_url)"
+          } >> "$GITHUB_ENV"
+
+      # Undoes a budget shutdown; does nothing when everything is running.
+      - name: Start stopped apps
+        run: ../scripts/start-apps.sh "$RG"
+
+      - name: Run database migrations
+        run: |
+          execution="$(az containerapp job start --name "$MIGRATE_JOB" --resource-group "$RG" --query name -o tsv)"
+          echo "Started $execution"
+
+          for _ in $(seq 1 90); do
+            status="$(az containerapp job execution show --name "$MIGRATE_JOB" --resource-group "$RG" \
+              --job-execution-name "$execution" --query properties.status -o tsv)"
+            case "$status" in
+              Succeeded) echo "Migrations applied."; exit 0 ;;
+              Failed|Stopped|Degraded)
+                echo "::error::Migration job $execution ended as $status. See ContainerAppConsoleLogs_CL in Log Analytics."
+                exit 1 ;;
+            esac
+            sleep 10
+          done
+
+          echo "::error::Migration job $execution did not finish within 15 minutes."
+          exit 1
+
+      - name: Roll out the API
+        run: >-
+          az containerapp update
+          --name "$API_APP" --resource-group "$RG"
+          --container-name api
+          --image "$ACR/syntax-api:$GITHUB_SHA"
+          --output none
+
+      - name: Roll out the frontend
+        run: >-
+          az containerapp update
+          --name "$FRONTEND_APP" --resource-group "$RG"
+          --container-name frontend
+          --image "$ACR/syntax-frontend:$GITHUB_SHA"
+          --output none
+
+      - name: Smoke test
+        run: |
+          # Both apps may be scaled to zero, so allow for a cold start.
+          for _ in $(seq 1 12); do
+            if curl -fsS --max-time 30 "$APP_URL/healthz" > /dev/null \
+              && [ "$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$APP_URL/api/authentication/session")" = "204" ]; then
+              echo "### Deployed ${GITHUB_SHA::7} to $APP_URL" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 10
+          done
+
+          echo "::error::$APP_URL did not answer as expected (frontend /healthz, API /api/authentication/session -> 204)."
+          exit 1
