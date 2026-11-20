@@ -1,0 +1,90 @@
+# Rendered at container start by the nginx image's entrypoint (envsubst) into
+# /etc/nginx/conf.d/default.conf. Only ${API_UPSTREAM} is substituted (see
+# NGINX_ENVSUBST_FILTER in the Dockerfile); nginx's own $variables stay as is.
+#
+# API_UPSTREAM is the API's base URL without a trailing slash, e.g.
+# http://ca-syntax-api-dev inside Azure Container Apps.
+
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+# The platform's ingress appends the caller's address to X-Forwarded-For. Take
+# the last entry (the one the ingress added, so clients can't spoof it) and
+# pass the API exactly one address.
+map $http_x_forwarded_for $client_ip {
+    ~(?<last>[^,\s]+)\s*$ $last;
+    default               $remote_addr;
+}
+
+map $http_x_forwarded_proto $forwarded_proto {
+    ''      $scheme;
+    default $http_x_forwarded_proto;
+}
+
+server {
+    listen 8080;
+    server_name _;
+    server_tokens off;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # The API rejects images over 1 MB; leave room for multipart overhead.
+    client_max_body_size 2m;
+
+    gzip on;
+    gzip_min_length 1024;
+    gzip_types text/css application/javascript application/json image/svg+xml;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    # Shared by every proxied location below. Host is left as the upstream's
+    # name because the Container Apps ingress routes on it.
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade           $http_upgrade;
+    proxy_set_header Connection        $connection_upgrade;
+    proxy_set_header X-Forwarded-For   $client_ip;
+    proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    proxy_set_header X-Forwarded-Host  $host;
+
+    location /api/ {
+        proxy_pass ${API_UPSTREAM};
+    }
+
+    # SignalR: negotiate plus a long-lived WebSocket.
+    location /notification/ {
+        proxy_pass ${API_UPSTREAM};
+        proxy_buffering off;
+        proxy_read_timeout 1h;
+        proxy_send_timeout 1h;
+    }
+
+    # Uploaded avatars, streamed by the API from Blob storage.
+    location /users/ {
+        proxy_pass ${API_UPSTREAM};
+    }
+
+    location = /healthz {
+        access_log off;
+        default_type text/plain;
+        return 200 "ok\n";
+    }
+
+    # Vite's hashed build output never changes.
+    location /assets/ {
+        expires max;
+        try_files $uri =404;
+    }
+
+    location = /index.html {
+        expires -1;
+    }
+
+    # Single-page app: unknown paths get index.html and React Router takes over.
+    location / {
+        try_files $uri /index.html;
+    }
+}
