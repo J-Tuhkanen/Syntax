@@ -24,8 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Syntax.API\Syntax.API.csproj" />
-    <ProjectReference Include="..\Syntax.Core\Syntax.Core.csproj" />
+    <ProjectReference Include="..\backend\Syntax.API.csproj" />
+    <ProjectReference Include="..\core\Syntax.Core.csproj" />
   </ItemGroup>
 
 </Project>

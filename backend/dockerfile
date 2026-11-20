@@ -1,24 +1,24 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ENV ASPNETCORE_ENVIRONMENT=Development
+# syntax=docker/dockerfile:1
+#
+# Build from the repository root (the API references ../core):
+#   docker build -f backend/dockerfile -t syntax-api .
 
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+ARG TARGETARCH
 WORKDIR /source
 
-# Copy project file and restore as distinct layers
-COPY ["Syntax.API/Syntax.API.csproj", "./Syntax.API/"]
-COPY ["Syntax.Core/Syntax.Core.csproj", "./Syntax.Core/"]
+# Project files first, so the restore layer is cached until dependencies change.
+COPY backend/Syntax.API.csproj backend/
+COPY core/Syntax.Core.csproj core/
+RUN dotnet restore backend/Syntax.API.csproj -a $TARGETARCH
 
-RUN dotnet restore "./Syntax.API/Syntax.API.csproj"
+COPY backend/ backend/
+COPY core/ core/
+RUN dotnet publish backend/Syntax.API.csproj -c Release -a $TARGETARCH --no-restore -o /app/publish
 
-# Copy source code and publish app
-COPY ./Syntax.API ./Syntax.API
-COPY ./Syntax.Core ./Syntax.Core
-
-WORKDIR /source/Syntax.API
-RUN dotnet publish "Syntax.API.csproj" -c Release -o /app/publish
-
-# Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
-EXPOSE 8080
 WORKDIR /app
+EXPOSE 8080
 COPY --from=build /app/publish .
-ENTRYPOINT ["dotnet", "./Syntax.API.dll"]
+USER $APP_UID
+ENTRYPOINT ["dotnet", "Syntax.API.dll"]

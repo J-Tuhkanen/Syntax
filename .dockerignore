@@ -1,0 +1,16 @@
+# Build context for backend/dockerfile is the repository root; keep it small.
+**/bin/
+**/obj/
+**/node_modules/
+**/.vs/
+.git/
+.claude-transfer/
+Claude outputs/
+frontend/
+infra/
+db/
+tests/
+**/wwwroot/
+**/App_Data/
+**/*.user
+**/appsettings.Development.json
