@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1
+#
+# Flyway with this commit's migrations baked in, so the migration job always
+# runs exactly the scripts that were built and tested together.
+#
+#   docker build -f db/Dockerfile.migrate -t syntax-db-migrate db
+
+FROM flyway/flyway:12-alpine
+
+COPY Migrations/ /flyway/sql/
+
+ENTRYPOINT ["sh", "/flyway/sql/migrate.sh"]
